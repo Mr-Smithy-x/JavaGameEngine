@@ -15,58 +15,62 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
 
 
     public void align() {
-        object.setX(this.world_x + width / 2);
-        object.setY(this.world_y + height / 2);
+        object.setX(this.position_x + width / 2);
+        object.setY(this.position_y + height / 2);
     }
 
     public BoundingBox(int x, int y, int w, int h) {
-        this.world_x = x;
-        this.world_y = y;
+        this.position_x = x;
+        this.position_y = y;
         this.width = w;
         this.height = h;
+        this.bouncy = true;
     }
 
     public boolean contains(int mx, int my) {
-        return (mx > world_x) && (mx < world_x + width) &&
-                (my > world_y) && (my < world_y + height);
+        return (mx > position_x) && (mx < position_x + width) &&
+                (my > position_y) && (my < position_y + height);
     }
-
 
     @Override
     public void draw(Graphics g) {
-        g.drawRect((int)world_x, (int)world_y, (int)width, (int)height);
+        g.drawRect((int) position_x, (int) position_y, (int) width, (int) height);
     }
-
 
     @Override
     public void pushes(BoundingContract<Number> contract) {
-        double dx = world_x - contract.getX().doubleValue();
-        double dy = world_y - contract.getY().doubleValue();
+        double dx = position_x - contract.getX().doubleValue();
+        double dy = position_y - contract.getY().doubleValue();
         double d = Math.sqrt(dx * dx + dy * dy);
         double ux = dx / d;
         double uy = dy / d;
         double ri = getRadius().doubleValue() + contract.getWidth().doubleValue();
         double p = ri - d;
-        world_x += ux * p / 2;
-        world_y += uy * p / 2;
+        position_x += ux * p / 2;
+        position_y += uy * p / 2;
         contract.setX(contract.getX().doubleValue() - (ux * p / 2));
         contract.setY(contract.getY().doubleValue() - (uy * p / 2));
+
     }
 
     @Override
     public void pushedBackBy(BoundingContractLine line) {
-        double d = line.distanceTo(world_x, world_y).doubleValue();
-        double p = getRadius().doubleValue() / 2 - d;
-        this.setX(world_x + p * line.getNx().doubleValue());
-        this.setY(world_y + p * line.getNy().doubleValue());
+        double d = -line.distanceTo(position_x, position_y).doubleValue();
+        double radius = getRadius().doubleValue() / 2;
+        double p =  -height + d;
+        this.position_x += p * line.getNx().doubleValue();
+        this.position_y += p * line.getNy().doubleValue();
+        if(this.bouncy){
+            this.bounce();
+        }
     }
 
     @Override
     public boolean overlaps(BoundingContract<Number> box) {
-        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= world_x) &&
-                (world_x + width >= box.getX().doubleValue()) &&
-                (box.getY().doubleValue() + box.getHeight().doubleValue() >= world_y) &&
-                (world_y + height >= box.getY().doubleValue());
+        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
+                (position_x + width >= box.getX().doubleValue()) &&
+                (box.getY().doubleValue() + box.getHeight().doubleValue() >= position_y) &&
+                (position_y + height >= box.getY().doubleValue());
         if (collides) {
             pushes(box);
         }
@@ -75,9 +79,9 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
 
     @Override
     public boolean overlaps(BoundingContractLine line) {
-        double d = line.distanceTo(world_x, world_y).doubleValue();
-        boolean overlaps = d * d < width * width;
-        if (overlaps) {
+        double d = line.distanceTo(position_x, position_y).doubleValue();
+        boolean overlaps = -d < width ;
+        if (automate && overlaps) {
             pushedBackBy(line);
         }
         return overlaps;

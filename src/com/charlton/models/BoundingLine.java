@@ -13,6 +13,7 @@ public class BoundingLine implements Drawable, BoundingContractLine {
     double y2;
     double Nx;
     double Ny;
+    double c;
 
     public BoundingLine(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
@@ -24,10 +25,20 @@ public class BoundingLine implements Drawable, BoundingContractLine {
         double mag = Math.sqrt(vx * vx + vy * vy); //magnitude (length?) |v|
         double ux = vx / mag; // unit vector <ux, uy> ie. u
         double uy = vy / mag; // direction to
-        Nx = uy;
-        Ny = -ux;
+        Nx = -uy;
+        Ny = ux;
+        c = x1 * Nx + y1 * Ny;
     }
 
+
+    @Override
+    public Number distanceTo(Number x, Number y) {
+        double vx = x1 - x.doubleValue(); // |v| <vx, vy>
+        double vy = y1 - y.doubleValue();
+        double d = Nx * vx + Ny * vy;
+        //return -d;
+       return x.doubleValue() * Nx + y.intValue() * Ny - c;
+    }
 
 
     @Override
@@ -75,13 +86,6 @@ public class BoundingLine implements Drawable, BoundingContractLine {
 
     }
 
-    @Override
-    public Number distanceTo(Number x, Number y) {
-        double vx = x1 - x.doubleValue(); // |v| <vx, vy>
-        double vy = y1 - y.doubleValue();
-        double d = Nx * vx + Ny * vy;
-        return d;
-    }
 
     @Override
     public Number getNx() {
