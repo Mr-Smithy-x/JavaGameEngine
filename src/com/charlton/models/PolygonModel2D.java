@@ -18,8 +18,8 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
 
     public PolygonModel2D(int[][] structure, int world_x, int world_y, int world_angle) {
         this.structure = structure;
-        this.world_x = world_x;
-        this.world_y = world_y;
+        this.position_x = world_x;
+        this.position_y = world_y;
         this.world_angle = world_angle;
         this.cos_angle = cos[world_angle];
         this.sin_angle = sin[world_angle];
@@ -43,8 +43,8 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
                 for (int vertex = 0; vertex < structure[polygon].length; vertex++) {
                     _x = structure[polygon * 2][vertex];
                     _y = structure[polygon * 2 + 1][vertex];
-                    x_points[vertex] = (int) ((_x * cos_angle - _y * sin_angle) + world_x);
-                    y_points[vertex] = (int) ((_y * cos_angle + _x * sin_angle) + world_y);
+                    x_points[vertex] = (int) ((_x * cos_angle - _y * sin_angle) + position_x);
+                    y_points[vertex] = (int) ((_y * cos_angle + _x * sin_angle) + position_y);
                 }
                 g.drawPolygon(x_points, y_points, structure[polygon].length);
             }
@@ -120,8 +120,8 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
                 }
                 return highest1;
             }).max().getAsInt();
-            boundingBox.world_x = world_x - highest;
-            boundingBox.world_y = world_y - highest;
+            boundingBox.position_x = position_x - highest;
+            boundingBox.position_y = position_y - highest;
             boundingBox.width = Math.abs(lowest) + highest;
             boundingBox.height = Math.abs(lowest) + highest;
             long done = System.currentTimeMillis();
