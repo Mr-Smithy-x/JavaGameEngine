@@ -65,8 +65,8 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
     public void pushedBackBy(BoundingContractLine line) {
         double distance = line.distanceTo(position_x, position_y).doubleValue();
         double p = (radius - radius - radius) - distance;
-        position_x += p * line.getNx().doubleValue();
-        position_y += p * line.getNy().doubleValue();
+        position_x += p * line.getNormal_x().doubleValue();
+        position_y += p * line.getNormal_y().doubleValue();
         if (bouncy) {
             this.bounce();
         }

@@ -30,7 +30,7 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     }
 
     public void bounce() {
-        this.velocity_y = -(1.00 - drag_y) * velocity_y;
+        this.velocity_y = -drag_y * velocity_y;
     }
 
     @Override

@@ -58,8 +58,8 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
         double d = -line.distanceTo(position_x, position_y).doubleValue();
         double radius = getRadius().doubleValue() / 2;
         double p =  -height + d;
-        this.position_x += p * line.getNx().doubleValue();
-        this.position_y += p * line.getNy().doubleValue();
+        this.position_x += p * line.getNormal_x().doubleValue();
+        this.position_y += p * line.getNormal_y().doubleValue();
         if(this.bouncy){
             this.bounce();
         }
