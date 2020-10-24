@@ -11,6 +11,7 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
     protected double radius;
     private BoundingContract<Number> object;
+    private boolean bounded = false;
 
     public BoundingCircle(double x, double y, double r, int world_angle) {
         this.position_x = x;
@@ -40,6 +41,7 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         return overlaps;
     }
 
+
     @Override
     public boolean overlaps(BoundingContract<Number> c) {
         double dx = position_x - c.getX().doubleValue();
@@ -47,17 +49,17 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double d2 = dx * dx + dy * dy;
         double ri = radius + c.getRadius().doubleValue();
         boolean collides = d2 <= ri * ri;
-        if(collides){
+        if (collides) {
             pushes(c);
             bounceOff(c);
         }
         return collides;
     }
 
-    public double distanceBetween(BoundingCircle c){
+    public double distanceBetween(BoundingCircle c) {
         double dx = c.position_x - position_x;
         double dy = c.position_y - position_y;
-        double mag = Math.sqrt(dx*dx + dy+dy);
+        double mag = Math.sqrt(dx * dx + dy + dy);
         return mag;
     }
 
@@ -74,11 +76,15 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double p = radius - distance;
         position_x += p * line.getNormalX().doubleValue();
         position_y += p * line.getNormalY().doubleValue();
+        align();
+
     }
 
     @Override
     public void bind(BoundingContract<Number> object) {
         this.object = object;
+        this.bounded = true;
+        System.out.println("BINDED");
     }
 
     @Override
@@ -92,17 +98,20 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double p = ri - d;
         position_x += ux * p / 2;
         position_y += uy * p / 2;
-        contract.setX(contract.getX().doubleValue() - (ux * p / 2));
-        contract.setY(contract.getY().doubleValue() - (uy * p / 2));
+        double set_pos_x = contract.getX().doubleValue() - (ux * p / 2);
+        double set_pos_y = contract.getY().doubleValue() - (uy * p / 2);
+        contract.setX(set_pos_x);
+        contract.setY(set_pos_y);
+        align();
     }
 
 
-    public void bounceOff(BoundingContract<Number> c){
+    public void bounceOff(BoundingContract<Number> c) {
         double dx = c.getX().doubleValue() - position_x;
         double dy = c.getY().doubleValue() - position_y;
         double mag = Math.sqrt(dx * dx + dy * dy);
-        double ux = dx/mag; //in this case unit vector
-        double uy = dy/mag;
+        double ux = dx / mag; //in this case unit vector
+        double uy = dy / mag;
         double tx = -uy; //tangent vector
         double ty = ux;
 
@@ -111,15 +120,14 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
         double cu = c.getVelocityX().doubleValue() * ux + c.getVelocityY().doubleValue() * uy;
         double ct = c.getVelocityX().doubleValue() * tx + c.getVelocityY().doubleValue() * ty;
-
         velocity_x = .9 * (t * tx + cu * ux);
         velocity_y = .9 * (t * ty + cu * uy);
-
         c.setVelocityX(.9 * (ct * tx + u * ux));
         c.setVelocityY(.9 * (ct * ty + u * uy));
+        align();
     }
 
-    public void bounceOffLine(BoundingContractLine line){
+    public void bounceOffLine(BoundingContractLine line) {
         double d = line.distanceTo(position_x, position_y).doubleValue();
         double p = radius - d;
         position_x += 1.9 * (p * line.getNormalX().doubleValue());
@@ -129,7 +137,9 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double ty = mag * line.getNormalY().doubleValue();
         velocity_x -= tx;
         velocity_y -= ty;
+        align();
     }
+
 
     @Override
     public Number getRadius() {
@@ -148,13 +158,18 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
     @Override
     public void align() {
-
-        double x = this.position_x + radius / 2;
-        double y = this.position_y + radius / 2;
+        double x = (this.position_x - radius) - radius/4;
+        double y = (this.position_y - radius) - radius/4;
         if (object != null) {
             object.setX(x);
             object.setY(y);
         }
+    }
+
+    @Override
+    public void gravitate() {
+        super.gravitate();
+        align();
     }
 
     @Override

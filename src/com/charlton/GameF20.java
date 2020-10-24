@@ -14,8 +14,8 @@ public class GameF20 extends GameApplet {
     BoundingLine[] L = new BoundingLine[3];
     BoundingCircle p = new BoundingCircle(300, 100, 40, 90);
     BoundingCircle c = new BoundingCircle(500, 200, 40, 90);
-    BoundingBox box = new BoundingBox(200, 400, 90, 90);
-    Zelda z = new Zelda();
+    Zelda z = new Zelda(300, 300, 3);
+
     public GameF20() throws IOException {}
     @Override
     public void paint(Graphics g) {
@@ -23,7 +23,6 @@ public class GameF20 extends GameApplet {
         p.draw(g);
         g.setColor(Color.BLACK);
         c.draw(g);
-        box.draw(g);
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);
         }
@@ -37,7 +36,7 @@ public class GameF20 extends GameApplet {
         p.setAcceleration(0, gravity)
                 .setVelocity(0, -10)
                 .setDrag(0, 0.3);
-        box.setAcceleration(0, gravity)
+        z.setAcceleration(0, gravity)
                 .setVelocity(0, -10)
                 .setDrag(0, 0.3);
         c.setAcceleration(0, gravity)
@@ -59,33 +58,35 @@ public class GameF20 extends GameApplet {
         super.inGameLoop();
         p.gravitate();
         c.gravitate();
-        box.gravitate();
+        z.gravitate();
         double multiplier = 1D;
         if (pressing[SPACE]) multiplier = 1.8D;
         if (pressing[UP]) {
-            z.moveBy(0, multiplier* -5.0);
+            //z.moveBy(0, multiplier* -5.0);
         }
         if (pressing[DN]) {
-            z.moveBy(0, 5.0 * multiplier);
+            //z.moveBy(0, 5.0 * multiplier);
         }
         if (pressing[LT]) {
-            z.moveBy(-5.0 * multiplier, 0);
+            //z.moveBy(-5.0 * multiplier, 0);
+             z.toss(-5, 0);
         }
         if (pressing[RT]) {
-            z.moveBy(5.0 * multiplier, 0);
+            //z.moveBy(5.0 * multiplier, 0);
+            z.toss(5, 0);
         }
 
         for (BoundingLine boundingLine : L) {
             p.overlaps(boundingLine);
             c.overlaps(boundingLine);
-            box.overlaps(boundingLine);
+            z.overlaps(boundingLine);
         }
         p.overlaps(c);
         //p.overlaps(box);
         //c.overlaps(p);
         //c.overlaps(box);
-        box.overlaps(p);
-        box.overlaps(c);
+        z.overlaps(p);
+        z.overlaps(c);
     }
 
     @Override
