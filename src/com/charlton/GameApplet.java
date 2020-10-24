@@ -65,6 +65,11 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
     public static final int COLON      = KeyEvent.VK_COLON;
     public static final int QUOTE      = KeyEvent.VK_QUOTE;
 
+    /**
+     * Mouse Variables
+     */
+    int mx = 0, my = 0;
+
     public void init()
     {
         requestFocus();

@@ -1,6 +1,7 @@
-package com.charlton.models;
+package com.charlton.polygons;
 
 import com.charlton.contracts.BoundingContract;
+import com.charlton.models.PolygonModel2D;
 
 public class SpaceShip extends PolygonModel2D {
 

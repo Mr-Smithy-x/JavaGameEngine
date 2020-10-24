@@ -19,12 +19,16 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
         object.setY(this.position_y + height / 2);
     }
 
+    @Override
+    public int getType() {
+        return TYPE_POLY;
+    }
+
     public BoundingBox(int x, int y, int w, int h) {
         this.position_x = x;
         this.position_y = y;
         this.width = w;
         this.height = h;
-        this.bouncy = true;
     }
 
     public boolean contains(int mx, int my) {
@@ -34,6 +38,7 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
 
     @Override
     public void draw(Graphics g) {
+
         g.drawRect((int) position_x, (int) position_y, (int) width, (int) height);
     }
 
@@ -44,7 +49,7 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
         double d = Math.sqrt(dx * dx + dy * dy);
         double ux = dx / d;
         double uy = dy / d;
-        double ri = getRadius().doubleValue() + contract.getWidth().doubleValue();
+        double ri = getRadius().doubleValue() + contract.getRadius().doubleValue();
         double p = ri - d;
         position_x += ux * p / 2;
         position_y += uy * p / 2;
@@ -55,22 +60,20 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
 
     @Override
     public void pushedBackBy(BoundingContractLine line) {
-        double d = -line.distanceTo(position_x, position_y).doubleValue();
-        double radius = getRadius().doubleValue() / 2;
-        double p =  -height + d;
-        this.position_x += p * line.getNormal_x().doubleValue();
-        this.position_y += p * line.getNormal_y().doubleValue();
-        if(this.bouncy){
-            this.bounce();
-        }
+        double d = line.distanceTo(position_x, position_y).doubleValue();
+        double p = getRadius().doubleValue() - d;
+        this.position_x += p * line.getNormalX().doubleValue();
+        this.position_y += p * line.getNormalY().doubleValue();
     }
 
     @Override
     public boolean overlaps(BoundingContract<Number> box) {
-        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
+        boolean collides = false;
+        collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
                 (position_x + width >= box.getX().doubleValue()) &&
                 (box.getY().doubleValue() + box.getHeight().doubleValue() >= position_y) &&
                 (position_y + height >= box.getY().doubleValue());
+
         if (collides) {
             pushes(box);
         }
@@ -80,9 +83,10 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
     @Override
     public boolean overlaps(BoundingContractLine line) {
         double d = line.distanceTo(position_x, position_y).doubleValue();
-        boolean overlaps = -d < width ;
-        if (automate && overlaps) {
+        boolean overlaps = d < width;
+        if (overlaps) {
             pushedBackBy(line);
+            bounce();
         }
         return overlaps;
     }
@@ -108,6 +112,6 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
 
     @Override
     public Number getRadius() {
-        return width / 4;
+        return (width + height) / 2;
     }
 }

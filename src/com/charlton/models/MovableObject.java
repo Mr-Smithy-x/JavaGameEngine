@@ -14,23 +14,11 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     protected double sin_angle;
 
 
-    protected boolean bouncy = false;
-    protected boolean automate = false;
-
-
-    @Override
-    public boolean isBouncy() {
-        return bouncy;
-    }
-
-    @Override
-    public Movable setBouncy(boolean bouncy) {
-        this.bouncy = bouncy;
-        return this;
-    }
 
     public void bounce() {
-        this.velocity_y = -drag_y * velocity_y;
+        if(Math.abs(velocity_y) <  0.01) {
+            this.velocity_y = -drag_y * velocity_y;
+        }
     }
 
     @Override
@@ -45,19 +33,6 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         this.accelerate_x = accelerate_x;
         this.accelerate_y = accelerate_y;
         return this;
-    }
-
-    @Override
-    public void moveBy(double dx, double dy) {
-        this.position_x += dx;
-        this.position_y += dy;
-    }
-
-    @Override
-    public void moveForwardBy(double dA) {
-        double dx = (dA * cos_angle);
-        double dy = (dA * sin_angle);
-        this.moveBy(dx, dy);
     }
 
 
@@ -76,12 +51,31 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     }
 
     @Override
-    public void move() {
+    public void gravitate() {
         this.velocity_x += accelerate_x; //Accelerate
         this.velocity_y += accelerate_y;
         this.position_x += this.velocity_x;
         this.position_y += this.velocity_y;
     }
+
+    @Override
+    public void moveBy(double dx, double dy) {
+        this.position_x += dx;
+        this.position_y += dy;
+    }
+
+    @Override
+    public void moveForwardBy(double dA) {
+        double dx = (dA * cos_angle);
+        double dy = (dA * sin_angle);
+        this.moveBy(dx, dy);
+    }
+
+    @Override
+    public void moveBackwardBy(double da) {
+        this.moveForwardBy(-da);
+    }
+
 
     @Override
     public void turnLeft(int dA) {
@@ -91,11 +85,6 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     @Override
     public void turnRight(int dA) {
         rotateBy(dA);
-    }
-
-    @Override
-    public void moveBackwardBy(double da) {
-        this.moveForwardBy(-da);
     }
 
     @Override
@@ -149,7 +138,6 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         return 0;
     }
 
-
     @Override
     public Number getRadius() {
         return 0;
@@ -159,6 +147,48 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     public void align() {
 
     }
+
+
+    @Override
+    public Number getVelocityX() {
+        return velocity_x;
+    }
+
+    @Override
+    public Number getVelocityY() {
+        return velocity_y;
+    }
+
+    @Override
+    public void setVelocityX(Number velocity_x) {
+        this.velocity_x = velocity_x.doubleValue();
+    }
+
+    @Override
+    public void setVelocityY(Number velocity_y) {
+        this.velocity_y = velocity_y.doubleValue();
+    }
+
+    @Override
+    public Number getAccelerationX() {
+        return accelerate_x;
+    }
+
+    @Override
+    public Number getAccelerationY() {
+        return accelerate_y;
+    }
+
+    @Override
+    public void setAccelerationX(Number acceleration_x) {
+        this.accelerate_x = acceleration_x.doubleValue();
+    }
+
+    @Override
+    public void setAccelerationY(Number acceleration_y) {
+        this.accelerate_y = acceleration_y.doubleValue();
+    }
+
 
     @Override
     public Movable setDrag(double drag_x, double drag_y){

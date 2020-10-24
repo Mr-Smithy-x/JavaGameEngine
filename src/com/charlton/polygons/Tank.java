@@ -1,4 +1,6 @@
-package com.charlton.models;
+package com.charlton.polygons;
+
+import com.charlton.models.PolygonModel2D;
 
 public class Tank extends PolygonModel2D {
 

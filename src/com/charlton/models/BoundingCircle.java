@@ -9,19 +9,16 @@ import java.awt.*;
 
 public class BoundingCircle extends MovableObject implements Drawable, CollisionDetection {
 
-
     protected double radius;
     private BoundingContract<Number> object;
-
 
     public BoundingCircle(double x, double y, double r, int world_angle) {
         this.position_x = x;
         this.position_y = y;
         this.world_angle = world_angle;
         this.radius = r;
-        this.bouncy = true;
-        cos_angle = cos[world_angle];
-        sin_angle = sin[world_angle];
+        this.cos_angle = cos[world_angle];
+        this.sin_angle = sin[world_angle];
     }
 
     @Override
@@ -31,6 +28,17 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         g.drawLine((int) position_x, (int) position_y, (int) (position_x + radius * cos_angle), (int) (position_y + radius * sin_angle));
     }
 
+    @Override
+    public boolean overlaps(BoundingContractLine line) {
+        double distance = line.distanceTo(position_x, position_y).doubleValue();
+        boolean overlaps = distance < radius;
+        if (overlaps) {
+            pushedBackBy(line);
+            //bounce();
+            bounceOffLine(line);
+        }
+        return overlaps;
+    }
 
     @Override
     public boolean overlaps(BoundingContract<Number> c) {
@@ -38,23 +46,21 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double dy = position_y - c.getY().doubleValue();
         double d2 = dx * dx + dy * dy;
         double ri = radius + c.getRadius().doubleValue();
-        boolean collides = d2 < ri;
-        if (collides) {
+        boolean collides = d2 <= ri * ri;
+        if(collides){
             pushes(c);
+            bounceOff(c);
         }
         return collides;
     }
 
-
-    @Override
-    public boolean overlaps(BoundingContractLine line) {
-        double distance = line.distanceTo(position_x, position_y).doubleValue();
-        boolean overlaps = -distance < radius;
-        if (automate && overlaps) {
-            pushedBackBy(line);
-        }
-        return overlaps;
+    public double distanceBetween(BoundingCircle c){
+        double dx = c.position_x - position_x;
+        double dy = c.position_y - position_y;
+        double mag = Math.sqrt(dx*dx + dy+dy);
+        return mag;
     }
+
 
     @Override
     public BoundingContract<Number> getBoundingObject() {
@@ -64,14 +70,11 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
     @Override
     public void pushedBackBy(BoundingContractLine line) {
         double distance = line.distanceTo(position_x, position_y).doubleValue();
-        double p = (radius - radius - radius) - distance;
-        position_x += p * line.getNormal_x().doubleValue();
-        position_y += p * line.getNormal_y().doubleValue();
-        if (bouncy) {
-            this.bounce();
-        }
+        //double p = (radius - radius - radius) - distance;
+        double p = radius - distance;
+        position_x += p * line.getNormalX().doubleValue();
+        position_y += p * line.getNormalY().doubleValue();
     }
-
 
     @Override
     public void bind(BoundingContract<Number> object) {
@@ -93,19 +96,69 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         contract.setY(contract.getY().doubleValue() - (uy * p / 2));
     }
 
+
+    public void bounceOff(BoundingContract<Number> c){
+        double dx = c.getX().doubleValue() - position_x;
+        double dy = c.getY().doubleValue() - position_y;
+        double mag = Math.sqrt(dx * dx + dy * dy);
+        double ux = dx/mag; //in this case unit vector
+        double uy = dy/mag;
+        double tx = -uy; //tangent vector
+        double ty = ux;
+
+        double u = velocity_x * ux + velocity_y * uy;
+        double t = velocity_x * tx + velocity_y * ty;
+
+        double cu = c.getVelocityX().doubleValue() * ux + c.getVelocityY().doubleValue() * uy;
+        double ct = c.getVelocityX().doubleValue() * tx + c.getVelocityY().doubleValue() * ty;
+
+        velocity_x = .9 * (t * tx + cu * ux);
+        velocity_y = .9 * (t * ty + cu * uy);
+
+        c.setVelocityX(.9 * (ct * tx + u * ux));
+        c.setVelocityY(.9 * (ct * ty + u * uy));
+    }
+
+    public void bounceOffLine(BoundingContractLine line){
+        double d = line.distanceTo(position_x, position_y).doubleValue();
+        double p = radius - d;
+        position_x += 1.9 * (p * line.getNormalX().doubleValue());
+        position_y += 1.9 * (p * line.getNormalY().doubleValue());
+        double mag = 1.9 * (velocity_x * line.getNormalX().doubleValue() + velocity_y * line.getNormalY().doubleValue());
+        double tx = mag * line.getNormalX().doubleValue();
+        double ty = mag * line.getNormalY().doubleValue();
+        velocity_x -= tx;
+        velocity_y -= ty;
+    }
+
     @Override
     public Number getRadius() {
         return radius;
     }
 
     @Override
+    public Number getWidth() {
+        return radius * 2;
+    }
+
+    @Override
+    public Number getHeight() {
+        return radius * 2;
+    }
+
+    @Override
     public void align() {
+
         double x = this.position_x + radius / 2;
         double y = this.position_y + radius / 2;
-        System.out.println(x);
         if (object != null) {
             object.setX(x);
             object.setY(y);
         }
+    }
+
+    @Override
+    public int getType() {
+        return TYPE_CIRCLE;
     }
 }

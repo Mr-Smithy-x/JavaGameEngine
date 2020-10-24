@@ -1,9 +1,6 @@
 package com.charlton.models;
 
-import com.charlton.contracts.BoundingContract;
-import com.charlton.contracts.BoundingContractLine;
-import com.charlton.contracts.CollisionDetection;
-import com.charlton.contracts.Drawable;
+import com.charlton.contracts.*;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -13,7 +10,32 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     protected BoundingBox boundingBox = new BoundingBox(0, 0, 0, 0);
     private int[][] structure = {};
 
-    private PolygonModel2D() {
+    private PolygonModel2D() { }
+
+    @Override
+    public Movable setAcceleration(double accelerate_x, double accelerate_y) {
+        boundingBox.setAcceleration(accelerate_x, accelerate_y);
+        return super.setAcceleration(accelerate_x, accelerate_y);
+    }
+
+    @Override
+    public Movable setVelocity(double velocity_x, double velocity_y) {
+        boundingBox.setVelocity(velocity_x, velocity_y);
+        return super.setVelocity(velocity_x, velocity_y);
+    }
+
+    @Override
+    public void jump(double velocity) {
+        boundingBox.jump(velocity);
+        super.jump(velocity);
+    }
+
+
+    @Override
+    public void gravitate() {
+        boundingBox.gravitate();
+        super.gravitate();
+        updateBounds();
     }
 
     public PolygonModel2D(int[][] structure, int world_x, int world_y, int world_angle) {
@@ -159,5 +181,10 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     @Override
     public void align() {
         boundingBox.align();
+    }
+
+    @Override
+    public int getType() {
+        return TYPE_POLY;
     }
 }

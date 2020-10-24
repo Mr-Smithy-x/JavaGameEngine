@@ -9,5 +9,4 @@ public interface CollisionDetection {
     void pushes(BoundingContract<Number> contract);
     void pushedBackBy(BoundingContractLine line);
     void bind(BoundingContract<Number> object);
-
 }
