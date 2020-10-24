@@ -20,7 +20,7 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
     protected BufferedImage spriteSheet;
     protected SubImage[][] subImages = new SubImage[4][];
     protected SubImage[] stillImages = new SubImage[4];
-    private File file;
+    protected File file;
     protected int delay = 0;
     protected int duration = 0;
     protected int current_column = 0;
@@ -44,11 +44,10 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
         }
     }
 
-
     protected SubImage[] initAnimation(int column, int row, int width, int height, int size) {
         SubImage[] images = new SubImage[size];
         for (int i = 0; i < size; i++) {
-            images[i] = new SubImage(new Point((column * width) + (i * width), row * height), width, height);
+            images[i] = new SubImage((column * width) + (i * width), row * height, width, height);
         }
         return images;
     }
@@ -80,7 +79,6 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
         delay--;
     }
 
-
     public Image getImage() {
         validate();
         SubImage[] subImage = subImages[pose];
@@ -88,15 +86,13 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
             current_column = 0;
         }
         SubImage sub = subImage[current_column];
-        return spriteSheet.getSubimage(sub.getPoint().x, sub.getPoint().y, sub.getWidth(), sub.getHeight());
+        return spriteSheet.getSubimage(sub.spritePositionStartX, sub.spritePositionStartY, sub.width, sub.height);
     }
-
 
     public Image getStillImage() {
         SubImage stillImage = stillImages[pose];
-        return spriteSheet.getSubimage(stillImage.getPoint().x, stillImage.getPoint().y, stillImage.getWidth(), stillImage.getHeight());
+        return spriteSheet.getSubimage(stillImage.spritePositionStartX, stillImage.spritePositionStartY, stillImage.width, stillImage.height);
     }
-
 
     protected void initializeSheet(String filename) throws IOException {
         ClassLoader cl = getClass().getClassLoader();
@@ -109,23 +105,26 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
 
     }
 
+    class SubImage {
 
-    public static class SubImage {
-
-        private final Point point;
+        private final int spritePositionStartX;
+        private final int spritePositionStartY;
         private final int width;
         private final int height;
 
-        public SubImage(Point point,
-                        int width,
-                        int height) {
-            this.point = point;
+        public SubImage(int x, int y, int width, int height) {
+            this.spritePositionStartX = x;
+            this.spritePositionStartY = y;
             this.width = width;
             this.height = height;
         }
 
-        public Point getPoint() {
-            return point;
+        public int getSpritePositionStartX(){
+            return spritePositionStartX;
+        }
+
+        public int getSpritePositionStartY(){
+            return spritePositionStartY;
         }
 
         public int getWidth() {

@@ -5,8 +5,6 @@ import java.io.IOException;
 
 public class Zelda extends SpriteSheet {
 
-    int rows = 10;
-    int columns = 15;
     boolean moving = false;
 
     public Zelda() throws IOException {
@@ -14,8 +12,8 @@ public class Zelda extends SpriteSheet {
         this.position_x = 200;
         this.position_y = 200;
         this.duration = 3;
-        this.subImages = new SubImage[rows][];
-        this.stillImages = new SubImage[rows];
+        this.subImages = new SubImage[4][];
+        this.stillImages = new SubImage[4];
         initializeSprites();
     }
 
