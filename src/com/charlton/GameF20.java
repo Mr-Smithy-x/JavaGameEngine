@@ -1,9 +1,7 @@
 package com.charlton;
 
-import com.charlton.models.BadBoundingCircle;
-import com.charlton.models.BoundingBox;
-import com.charlton.models.BoundingCircle;
-import com.charlton.models.BoundingLine;
+import com.charlton.models.*;
+import com.charlton.sprites.Bullet;
 import com.charlton.sprites.Zelda;
 
 import java.awt.*;
@@ -15,6 +13,7 @@ public class GameF20 extends GameApplet {
     BoundingLine[] L = new BoundingLine[3];
     BadBoundingCircle p = new BadBoundingCircle(300, 100, 40, 90);
     BadBoundingCircle c = new BadBoundingCircle(500, 200, 40, 90);
+    Bullet bullets[] =  new Bullet[50];
     Zelda z = new Zelda(300, 300, 3);
 
     public GameF20() throws IOException {}
@@ -28,11 +27,16 @@ public class GameF20 extends GameApplet {
             boundingLine.draw(g);
         }
         z.draw(g);
+        for(Bullet b: bullets){
+            b.draw(g);
+        }
     }
 
     public void init() {
         double gravity = 0.7;
-
+        for (int i = 0; i < bullets.length; i++) {
+             bullets[i] = new Bullet();
+        }
 
         p.setAcceleration(0, gravity)
                 .setVelocity(0, -10)
@@ -57,9 +61,15 @@ public class GameF20 extends GameApplet {
     @Override
     public void inGameLoop() {
         super.inGameLoop();
-
+        for(Bullet b: bullets){
+            b.gravitate();
+            b.overlaps(p);
+            b.overlaps(c);
+        }
         double multiplier = 1D;
-        if (pressing[SPACE]) multiplier = 1.8D;
+        if (pressing[SPACE]) {
+            z.shoot(bullets);
+        }
         if (pressing[UP]) {
             z.moveBy(0, multiplier* -5.0);
         }

@@ -5,6 +5,7 @@ import com.charlton.contracts.BoundingContractLine;
 import com.charlton.contracts.CollisionDetection;
 import com.charlton.contracts.Movable;
 import com.charlton.models.BoundingCircle;
+import com.charlton.models.SpriteSheet;
 
 import java.awt.*;
 import java.io.IOException;
@@ -13,6 +14,7 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
 
     boolean moving = false;
     private BoundingCircle circle;
+    private BoundingCircle gun;
 
 
     public Zelda() throws IOException {
@@ -23,12 +25,19 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         this(200, 200, duration);
     }
 
+
+
+    public void shoot(BoundingCircle[] circles) {
+        gun.setWorld(position_x, position_y);
+        gun.setWorldAngle(world_angle);
+        gun.launch(circles);
+    }
+
     @Override
     public void setVelocityX(Number velocity_x) {
         super.setVelocityX(velocity_x);
         circle.setVelocityX(velocity_x);
     }
-
 
 
     @Override
@@ -47,6 +56,7 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         this.stillImages = new SubImage[4];
         initializeSprites();
         this.circle.bind(this);
+        this.gun = new Bullet();
     }
 
     protected void initializeSprites() {
@@ -68,16 +78,23 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         circle.moveBy(dx, dy);
         if (dx < 0) {
             pose = LEFT;
-        }
-        if (dx > 0) {
-            pose = RIGHT;
+            world_angle = 180;
         }
         if (dy > 0) {
             pose = DOWN;
+            world_angle = 90;
+        }
+        if (dx > 0) {
+            pose = RIGHT;
+            world_angle = 0;
         }
         if (dy < 0) {
             pose = UP;
+            world_angle = 270;
         }
+        cos_angle = cos[(int) world_angle];
+        sin_angle = sin[(int) world_angle];
+
         nextImageColumn();
         moving = true;
     }
@@ -113,10 +130,10 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
     @Override
     public void toss(double velocity_x, double velocity_y) {
         super.toss(velocity_x, velocity_y);
-        if(velocity_x > 0){
+        if (velocity_x > 0) {
             pose = RIGHT;
         }
-        if(velocity_x < 0){
+        if (velocity_x < 0) {
             pose = LEFT;
         }
     }

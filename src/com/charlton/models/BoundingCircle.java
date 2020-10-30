@@ -4,7 +4,6 @@ import com.charlton.contracts.BoundingContract;
 import com.charlton.contracts.BoundingContractLine;
 import com.charlton.contracts.CollisionDetection;
 import com.charlton.contracts.Drawable;
-import javafx.scene.shape.Circle;
 
 import java.awt.*;
 
@@ -13,6 +12,21 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
     protected double radius;
     private BoundingContract<Number> object;
     private boolean bounded = false;
+    protected int launch_delay = 20;
+    protected int launch_countdown = 20;
+
+
+    public void launch(BoundingCircle[] obj) {
+        if (launch_delay == 0) {
+            double speed = 25;
+            obj[launch_delay].position_x = position_x;
+            obj[launch_delay].position_y = position_y;
+            obj[launch_delay].velocity_x = speed * cos_angle;
+            obj[launch_delay].velocity_y = speed * sin_angle;
+            launch_delay = launch_countdown;
+        }
+        launch_delay -= 1;
+    }
 
     public BoundingCircle(double x, double y, double r, int world_angle) {
         this.position_x = x;

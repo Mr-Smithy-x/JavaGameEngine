@@ -133,7 +133,7 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
 
 
     @Override
-    public void setWorld(int x, int y) {
+    public void setWorld(double x, double y) {
         this.position_x = x;
         this.position_y = y;
     }
@@ -226,4 +226,12 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         this.drag_y = drag_y;
         return this;
     }
+
+    @Override
+    public void setWorldAngle(double world_angle) {
+        this.world_angle = world_angle;
+        this.sin_angle = sin[(int) world_angle];
+        this.cos_angle = cos[(int) world_angle];
+    }
+
 }

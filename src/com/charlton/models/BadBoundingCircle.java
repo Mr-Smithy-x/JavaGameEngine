@@ -12,14 +12,11 @@ public class BadBoundingCircle extends BoundingCircle {
         double d = distanceTo(circle);
         if (!circle.inFrontOf(this)) turnLeft(7);
         if (!circle.toTheLeftOf(this)) turnRight(7);
-
     }
 
     public void chase(MovableObject circle) {
         turnToward(circle);
-
         moveForwardBy(7);
-
     }
 
 }

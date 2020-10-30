@@ -116,7 +116,7 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
-    public void setWorld(int x, int y) {
+    public void setWorld(double x, double y) {
         super.setWorld(x, y);
         updateBounds();
     }

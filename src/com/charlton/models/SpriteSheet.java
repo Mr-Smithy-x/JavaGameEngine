@@ -1,4 +1,4 @@
-package com.charlton.sprites;
+package com.charlton.models;
 
 import com.charlton.contracts.Drawable;
 import com.charlton.models.MovableObject;
@@ -105,7 +105,7 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
 
     }
 
-    class SubImage {
+    public static class SubImage {
 
         private final int spritePositionStartX;
         private final int spritePositionStartY;

@@ -9,6 +9,7 @@ public interface Movable {
     Movable setVelocity(double velocity_x, double velocity_y);
     Movable setAcceleration(double accelerate_x, double accelerate_y);
     Movable setDrag(double drag_x, double drag_y);
+    void setWorldAngle(double world_angle);
 
     void moveBy(double dx, double dy);
     void moveForwardBy(double dA);
@@ -19,7 +20,7 @@ public interface Movable {
     void toss(double velocity_x, double velocity_y);
     void turnLeft(int dA);
     void turnRight(int dA);
-    void setWorld(int x, int y);
+    void setWorld(double x, double y);
     void bounce();
 
 }

@@ -1,8 +1,9 @@
-package com.charlton.sprites;
+package com.charlton.models;
 
 import com.charlton.contracts.Drawable;
 import com.charlton.helpers.Camera;
 import com.charlton.models.MovableObject;
+import com.charlton.sprites.Animation;
 
 import java.awt.*;
 
@@ -46,6 +47,7 @@ public class Sprite extends MovableObject implements Drawable {
         position_y -= dist;
         action = UP;
         moving = true;
+        world_angle = 0;
     }
 
     public void moveDown(int dist)
@@ -53,6 +55,7 @@ public class Sprite extends MovableObject implements Drawable {
         position_y += dist;
         action = DOWN;
         moving = true;
+        world_angle = 180;
     }
 
     public void moveLeft(int dist)
@@ -60,6 +63,7 @@ public class Sprite extends MovableObject implements Drawable {
         position_x -= dist;
         action = LEFT;
         moving = true;
+        world_angle = 270;
     }
 
     public void moveRight(int dist)
@@ -67,6 +71,7 @@ public class Sprite extends MovableObject implements Drawable {
         position_x += dist;
         action = RIGHT;
         moving = true;
+        world_angle = 90;
     }
 
     @Override

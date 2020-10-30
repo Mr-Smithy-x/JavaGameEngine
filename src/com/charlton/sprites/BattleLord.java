@@ -1,5 +1,7 @@
 package com.charlton.sprites;
 
+import com.charlton.models.Sprite;
+
 public class BattleLord extends Sprite {
     public final static String[] poses = new String[]{
             "bl_up",
