@@ -14,9 +14,39 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     protected double sin_angle;
 
 
+    public boolean toTheLeftOf(MovableObject c) {
+        double dx = position_x - c.position_x;
+        double dy = position_y - c.position_y;
+        return sin_angle * dx - cos_angle * dy > 0;
+    }
+
+    public boolean toTheRightOf(MovableObject c) {
+        return !toTheLeftOf(c);
+    }
+
+    public boolean inFrontOf(MovableObject c) {
+        double dx = c.position_x - position_x;
+        double dy = c.position_y - position_y;
+        return cos_angle * (dx) + sin_angle * dy > 0;
+    }
+
+    public boolean inVicinity(MovableObject c, double pixels) {
+        double dx = position_x - c.position_x;
+        double dy = position_y - c.position_y;
+        return dx * dx + dy + dy < pixels * pixels;
+    }
+
+    public double distanceTo(MovableObject c) {
+        //double vx = point_x - x.doubleValue(); // |v| <vx, vy>
+        //double vy = point_y - y.doubleValue();
+        double vx = c.position_x - position_x;
+        double vy = c.position_y - position_y;
+        return sin_angle * vx - cos_angle * vy;
+    }
+
 
     public void bounce() {
-        if(Math.abs(velocity_y) <  0.01) {
+        if (Math.abs(velocity_y) < 0.01) {
             this.velocity_y = -drag_y * velocity_y;
         }
     }
@@ -191,7 +221,7 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
 
 
     @Override
-    public Movable setDrag(double drag_x, double drag_y){
+    public Movable setDrag(double drag_x, double drag_y) {
         this.drag_x = drag_x;
         this.drag_y = drag_y;
         return this;

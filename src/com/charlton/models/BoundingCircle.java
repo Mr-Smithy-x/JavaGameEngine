@@ -4,6 +4,7 @@ import com.charlton.contracts.BoundingContract;
 import com.charlton.contracts.BoundingContractLine;
 import com.charlton.contracts.CollisionDetection;
 import com.charlton.contracts.Drawable;
+import javafx.scene.shape.Circle;
 
 import java.awt.*;
 
@@ -158,8 +159,8 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
     @Override
     public void align() {
-        double x = (this.position_x - radius) - radius/4;
-        double y = (this.position_y - radius) - radius/4;
+        double x = (this.position_x - radius) - radius / 4;
+        double y = (this.position_y - radius) - radius / 4;
         if (object != null) {
             object.setX(x);
             object.setY(y);
