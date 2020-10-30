@@ -16,6 +16,10 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
     protected int launch_countdown = 20;
 
 
+    /**
+     * Sloppy shoot
+     * @param obj
+     */
     public void launch(BoundingCircle[] obj) {
         if (launch_delay == 0) {
             double speed = 25;
@@ -173,9 +177,9 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
     @Override
     public void align() {
-        double x = (this.position_x - radius) - radius / 4;
-        double y = (this.position_y - radius) - radius / 4;
         if (object != null) {
+            double x = (this.position_x + object.getWidth().doubleValue() / 8);
+            double y = (this.position_y + object.getHeight().doubleValue() / 8);
             object.setX(x);
             object.setY(y);
         }

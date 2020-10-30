@@ -1,52 +1,63 @@
 package com.charlton;
 
+import com.charlton.contracts.Drawable;
 import com.charlton.models.*;
+import com.charlton.models.tileset.ZeldaBGTileSet;
 import com.charlton.sprites.Bullet;
 import com.charlton.sprites.Zelda;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GameF20 extends GameApplet {
 
-    BoundingLine[] L = new BoundingLine[3];
-    BadBoundingCircle p = new BadBoundingCircle(300, 100, 40, 90);
-    BadBoundingCircle c = new BadBoundingCircle(500, 200, 40, 90);
-    Bullet bullets[] =  new Bullet[50];
-    Zelda z = new Zelda(300, 300, 3);
+    ArrayList<MovableObject> objectList = new ArrayList<MovableObject>() {
+        {
 
-    public GameF20() throws IOException {}
+            add(new Zelda(300, 100, 5));
+            //add(new BadBoundingCircle(500, 200, 40, 90));
+        }
+    };
+
+    BoundingLine[] L = new BoundingLine[3];
+    Bullet bullets[] = new Bullet[50];
+    ZeldaBGTileSet zeldaTitles = new ZeldaBGTileSet(this);
+    Zelda z = new Zelda(300, 300, 5);
+
+    public GameF20() throws IOException { }
+
     @Override
     public void paint(Graphics g) {
-        g.setColor(Color.RED);
-        p.draw(g);
+        zeldaTitles.draw(g);
         g.setColor(Color.BLACK);
-        c.draw(g);
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);
         }
         z.draw(g);
-        for(Bullet b: bullets){
+        for (Bullet b : bullets) {
             b.draw(g);
         }
+        objectList.forEach(obj -> {
+            ((Drawable) obj).draw(g);
+        });
     }
 
     public void init() {
         double gravity = 0.7;
         for (int i = 0; i < bullets.length; i++) {
-             bullets[i] = new Bullet();
+            bullets[i] = new Bullet();
         }
 
-        p.setAcceleration(0, gravity)
-                .setVelocity(0, -10)
-                .setDrag(0.7, 0.3);
-        z.setAcceleration(0, gravity)
-                .setVelocity(0, -10)
-                .setDrag(0.7, 0.3);
-        c.setAcceleration(0, gravity)
-                .setVelocity(0, -10)
-                .setDrag(0.7, 0.3);
+        z.setAcceleration(0, 0)
+                .setVelocity(0, 0)
+                .setDrag(0.7, 0.01);
+        objectList.forEach(obj -> {
+            obj.setAcceleration(0, 1)
+                    .setVelocity(0, 0)
+                    .setDrag(0.01, 0.01);
+        });
         double[][] v = {
                 {getWidth(), getHeight() - 200, 0, getHeight() - 200},
                 {getWidth() - 100, 0, getWidth() - 100, getHeight()},
@@ -61,46 +72,52 @@ public class GameF20 extends GameApplet {
     @Override
     public void inGameLoop() {
         super.inGameLoop();
-        for(Bullet b: bullets){
+        for (Bullet b : bullets) {
             b.gravitate();
-            b.overlaps(p);
-            b.overlaps(c);
         }
         double multiplier = 1D;
-        if (pressing[SPACE]) {
-            z.shoot(bullets);
-        }
-        if (pressing[UP]) {
-            z.moveBy(0, multiplier* -5.0);
-        }
-        if (pressing[DN]) {
-            z.moveBy(0, 5.0 * multiplier);
-        }
-        if (pressing[LT]) {
-            z.moveBy(-5.0 * multiplier, 0);
-             z.toss(-5, 0);
-        }
-        if (pressing[RT]) {
-            z.moveBy(5.0 * multiplier, 0);
-            //z.toss(5, 0);
+        if(pressing[_F]){
+            objectList.forEach(o -> o.setWorld(z.getX().doubleValue(), z.getY().doubleValue()));
         }
 
-        for (BoundingLine boundingLine : L) {
-            p.overlaps(boundingLine);
-            c.overlaps(boundingLine);
-            z.overlaps(boundingLine);
+        if (pressing[SPACE]) {
+            z.attack(objectList);
+        } else if (pressing[_Z]) {
+            z.spin();
+        } else {
+            if (pressing[UP]) {
+                z.moveBy(0, multiplier * -5.0);
+            }
+            if (pressing[DN]) {
+                z.moveBy(0, 5.0 * multiplier);
+            }
+            if (pressing[LT]) {
+                z.moveBy(-5.0 * multiplier, 0);
+                //z.toss(-5, 0);
+            }
+            if (pressing[RT]) {
+                z.moveBy(5.0 * multiplier, 0);
+                //z.toss(5, 0);
+            }
         }
-        if(!p.inVicinity(z, 200)){
-            p.chase(z);
-        }
-        if(!c.inVicinity(z, 200)) {
-            c.chase(z);
-        }
-        //p.overlaps(box);
-        //c.overlaps(p);
-        //c.overlaps(box);
-        z.overlaps(p);
-        z.overlaps(c);
+
+        objectList.forEach(obj -> {
+            //obj.gravitate();
+
+            //z.overlaps(obj);
+            if (!obj.inVicinity(z, 80)) {
+                obj.chase(z);
+            }
+            z.overlaps(obj);
+            for (BoundingLine boundingLine : L) {
+                z.overlaps(boundingLine);
+                ((Zelda)obj).overlaps(boundingLine);
+            }
+
+        });
+
+
+
     }
 
     @Override

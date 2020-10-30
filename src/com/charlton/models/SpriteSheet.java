@@ -17,17 +17,86 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
     public static final int JUMP = 4;
+    public static final int ATTACK_UP = 5;
+    public static final int ATTACK_DOWN = 6;
+    public static final int ATTACK_LEFT = 7;
+    public static final int ATTACK_RIGHT = 8;
+    public static final int SPIN_ATTACK = 9;
     protected BufferedImage spriteSheet;
-    protected SubImage[][] subImages = new SubImage[4][];
-    protected SubImage[] stillImages = new SubImage[4];
+    protected SubImage[][] subImages = new SubImage[16][];
+    protected SubImage[] stillImages = new SubImage[16];
     protected File file;
     protected int delay = 0;
     protected int duration = 0;
     protected int current_column = 0;
     protected int pose = 0;
 
+
+
     public SpriteSheet(String name) throws IOException {
         initializeSheet(name);
+    }
+
+
+    @Override
+    public void moveBy(double dx, double dy) {
+        super.moveBy(dx, dy);
+        if(dx < dy){
+            if (dy > 0) {
+                pose = DOWN;
+                System.out.println("DOWN");
+            }
+            if (dy < 0) {
+                pose = UP;
+                System.out.println("UP");
+            }
+            if (dx < 0) {
+                pose = LEFT;
+                System.out.println("LEFT");
+            }
+            if (dx > 0) {
+                pose = RIGHT;
+                System.out.println("RIGHT");
+            }
+        }else if (dy < dx){
+            if (dy > 0) {
+                pose = DOWN;
+                System.out.println("DOWN");
+            }
+            if (dy < 0) {
+                pose = UP;
+                System.out.println("UP");
+            }
+            if (dx < 0) {
+                pose = LEFT;
+                System.out.println("LEFT");
+            }
+            if (dx > 0) {
+                pose = RIGHT;
+                System.out.println("RIGHT");
+            }
+        }
+        switch (pose){
+            case LEFT:
+                world_angle = 180;
+            case DOWN:
+                world_angle = 90;
+            case RIGHT:
+                world_angle = 0;
+            case UP:
+                world_angle = 270;
+        }
+        cos_angle = cos[(int) world_angle];
+        sin_angle = sin[(int) world_angle];
+        nextImageColumn();
+
+    }
+
+    @Override
+    public void moveForwardBy(double dA) {
+        double dx = (dA * cos_angle);
+        double dy = (dA * sin_angle);
+        this.moveBy(dx, dy);
     }
 
     @Deprecated
@@ -51,6 +120,7 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
         }
         return images;
     }
+
 
     protected void validate() {
         if (current_column >= subImages[pose].length) {
@@ -78,6 +148,7 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
         }
         delay--;
     }
+
 
     public Image getImage() {
         validate();
@@ -119,11 +190,11 @@ public abstract class SpriteSheet extends MovableObject implements Drawable {
             this.height = height;
         }
 
-        public int getSpritePositionStartX(){
+        public int getSpritePositionStartX() {
             return spritePositionStartX;
         }
 
-        public int getSpritePositionStartY(){
+        public int getSpritePositionStartY() {
             return spritePositionStartY;
         }
 

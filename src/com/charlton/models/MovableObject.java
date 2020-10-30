@@ -14,9 +14,25 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     protected double sin_angle;
 
 
+    public double last_dx;
+    public double last_dy;
+
+
+    public void turnToward(MovableObject circle) {
+        double d = distanceTo(circle);
+        if (toTheLeftOf(circle)) turnLeft(2);
+        else turnRight(2);
+    }
+
+    public void chase(MovableObject circle) {
+        this.turnToward(circle);
+        this.moveForwardBy(3);
+    }
+
+
     public boolean toTheLeftOf(MovableObject c) {
-        double dx = position_x - c.position_x;
-        double dy = position_y - c.position_y;
+        double dx = c.position_x - position_x;
+        double dy = c.position_y - position_y;
         return sin_angle * dx - cos_angle * dy > 0;
     }
 
@@ -27,13 +43,18 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     public boolean inFrontOf(MovableObject c) {
         double dx = c.position_x - position_x;
         double dy = c.position_y - position_y;
-        return cos_angle * (dx) + sin_angle * dy > 0;
+        return cos_angle * dx + sin_angle * dy > 0;
     }
 
     public boolean inVicinity(MovableObject c, double pixels) {
         double dx = position_x - c.position_x;
         double dy = position_y - c.position_y;
-        return dx * dx + dy + dy < pixels * pixels;
+        double distance = dx * dx + dy * dy;
+        double pixels_squared = pixels * pixels;
+        if (distance < pixels_squared) {
+            //System.out.printf("DISTANCE: %s, pixels: %s\n", distance, pixels * pixels);
+        }
+        return distance < pixels_squared;
     }
 
     public double distanceTo(MovableObject c) {
@@ -84,14 +105,25 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     public void gravitate() {
         this.velocity_x += accelerate_x; //Accelerate
         this.velocity_y += accelerate_y;
-        this.position_x += this.velocity_x;
-        this.position_y += this.velocity_y;
+
+        this.velocity_x *= drag_x;
+        this.velocity_y *= drag_y;
+
+        if (Math.abs(this.velocity_x) > 0.1) {
+            this.position_x += this.velocity_x;
+        }
+        if (Math.abs(this.velocity_y) > 0.1) {
+            this.position_y += this.velocity_y;
+        }
     }
 
     @Override
     public void moveBy(double dx, double dy) {
         this.position_x += dx;
         this.position_y += dy;
+
+        this.last_dx = dx;
+        this.last_dy = dy;
     }
 
     @Override

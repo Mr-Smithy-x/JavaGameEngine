@@ -1,6 +1,7 @@
 package com.charlton;
 
 import java.applet.Applet;
+import java.awt.*;
 import java.awt.event.*;
 
 public abstract class GameApplet extends Applet implements Runnable, KeyListener, MouseListener, MouseMotionListener
@@ -69,9 +70,13 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
      * Mouse Variables
      */
     int mx = 0, my = 0;
+    private Image off_screen_image;
+    private Graphics off_g;
 
     public void init()
     {
+        off_screen_image = this.createImage(2000, 1200);
+        off_g            = off_screen_image.getGraphics();
         requestFocus();
         addKeyListener(this);
         addMouseListener(this);
@@ -81,6 +86,14 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
     }
 
 
+    public void update(Graphics g){
+        off_g.clearRect(0, 0, 2000, 1200);
+
+        paint(off_g);
+
+        g.drawImage(off_screen_image, 0, 0, null);
+    }
+
     public void run()
     {
         while(true)
@@ -89,7 +102,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
             repaint();  // Ask the OS to call paint (but not directly, paint is called via update)
             try
             {
-                t.sleep(16);
+                t.sleep(15);
             }
             catch(InterruptedException x) {};
         }
