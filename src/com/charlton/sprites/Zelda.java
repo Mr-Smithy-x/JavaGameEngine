@@ -1,25 +1,16 @@
 package com.charlton.sprites;
 
-import com.charlton.contracts.BoundingContract;
-import com.charlton.contracts.BoundingContractLine;
-import com.charlton.contracts.CollisionDetection;
-import com.charlton.contracts.Movable;
+import com.charlton.contracts.MovableCollision;
 import com.charlton.models.BoundingCircle;
-import com.charlton.models.MovableObject;
 import com.charlton.models.SpriteSheet;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
-public class Zelda extends SpriteSheet implements CollisionDetection {
+public class Zelda extends SpriteSheet {
 
-    boolean moving = false;
     boolean attacking = false;
-    public BoundingCircle circle;
-    private BoundingCircle gun;
-
 
     public Zelda() throws IOException {
         this(200, 200, 5);
@@ -30,37 +21,21 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
     }
 
     public void shoot(BoundingCircle[] circles) {
-        gun.setWorld(position_x, position_y);
-        gun.setWorldAngle(world_angle);
-        gun.launch(circles);
-    }
-
-    @Override
-    public void setVelocityX(Number velocity_x) {
-        super.setVelocityX(velocity_x);
-        circle.setVelocityX(velocity_x);
-    }
-
-
-    @Override
-    public void setVelocityY(Number velocity_y) {
-        super.setVelocityY(velocity_y);
-        circle.setVelocityY(velocity_y);
+        //gun.setWorld(position_x, position_y);
+        //gun.setWorldAngle(world_angle);
+        //gun.launch(circles);
     }
 
     public Zelda(int position_x, int position_y, int duration) throws IOException {
         super("link.png");
-        this.position_x = position_x;
-        this.position_y = position_y;
-        this.circle = new BoundingCircle(position_x, position_y, 20, 90);
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];
-        initializeSprites();
+        this.circle = new BoundingCircle(position_x, position_y, 20, 90);
+        this.circle.setWorld(position_x, position_y);
         this.circle.bind(this);
-        this.gun = new Bullet();
+        initializeSprites();
     }
-
 
     public void spin() {
         attacking = true;
@@ -68,20 +43,16 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         nextImageColumn();
     }
 
-
-    public void hit(MovableObject obj) {
+    public void hit(MovableCollision obj) {
         double speed = 2000;
-        //obj.setWorld(position_x, position_y);
-        System.out.printf("COS SPEED: %s, SIN SPEED: %s\n", speed * cos_angle, speed * sin_angle);
-        obj.setVelocity(speed * cos_angle, speed * sin_angle);
+        System.out.printf("COS SPEED: %s, SIN SPEED: %s\n", speed * getCosAngle(), speed * getSinAngle());
+        obj.setVelocity(speed * getCosAngle(), speed * getSinAngle());
     }
 
-
-    public void attack(ArrayList<MovableObject> objects) {
+    public void attack(ArrayList<MovableCollision> objects) {
         this.attack();
         objects.stream().filter(o -> o.inVicinity(this, 80))
                 .forEach(this::hit);
-
     }
 
     protected void attack() {
@@ -163,73 +134,6 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         stillImages[SPIN_ATTACK] = stillImages[DOWN];
     }
 
-
-    @Override
-    public void moveBy(double dx, double dy) {
-        moving = true;
-        super.moveBy(dx, dy);
-        circle.moveBy(dx, dy);
-        circle.setWorldAngle(world_angle);
-    }
-
-
-
-    @Override
-    public Movable setDrag(double drag_x, double drag_y) {
-        return circle.setDrag(drag_x, drag_y);
-    }
-
-    @Override
-    public Movable setVelocity(double velocity_x, double velocity_y) {
-        return circle.setVelocity(velocity_x, velocity_y);
-    }
-
-    @Override
-    public Movable setAcceleration(double accelerate_x, double accelerate_y) {
-        return circle.setAcceleration(accelerate_x, accelerate_y);
-    }
-
-
-    @Override
-    public void chase(MovableObject circle) {
-        this.gravitate();
-        this.circle.chase(circle);
-        this.circle.align();
-        double dx = this.circle.last_dx;
-        double dy = this.circle.last_dy;
-        this.moving = true;
-        if(dx < dy){
-            if (dy > 0) {
-                pose = DOWN;
-                System.out.println("DOWN");
-            }else if (dy < 0) {
-                pose = UP;
-                System.out.println("UP");
-            }
-        }else if (dy < dx){
-            if (dx < 0) {
-                pose = LEFT;
-                System.out.println("LEFT");
-            }else if (dx > 0) {
-                pose = RIGHT;
-                System.out.println("RIGHT");
-            }
-        }
-        switch (pose){
-            case LEFT:
-                world_angle = 180;
-            case DOWN:
-                world_angle = 90;
-            case RIGHT:
-                world_angle = 0;
-            case UP:
-                world_angle = 270;
-        }
-        cos_angle = cos[(int) world_angle];
-        sin_angle = sin[(int) world_angle];
-        nextImageColumn();
-    }
-
     @Override
     public void draw(Graphics g) {
         Image image;
@@ -238,15 +142,14 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
         } else {
             image = getStillImage();
         }
-
         //g.drawImage(image, ((int) position_x + (image.getWidth(null) / 2)), ((int) position_y + (image.getHeight(null)) / 2), 3 * image.getWidth(null), 3 * image.getHeight(null), null);
         int scale_computed_x = image.getWidth(null) * 2;
         int scale_computed_y = image.getHeight(null) * 2;
 
-        int destination_x = (int) this.position_x;
-        int destination_y = (int) this.position_y;
-        int destination_x2 = (int) this.position_x;
-        int destination_y2 = (int) this.position_y;
+        int destination_x = (int) this.getX().intValue();
+        int destination_y = (int) this.getY().intValue();
+        int destination_x2 = (int) this.getX().intValue();
+        int destination_y2 = (int) this.getY().intValue();
 
         //Center image
         destination_x -= (scale_computed_x / 2);
@@ -267,79 +170,8 @@ public class Zelda extends SpriteSheet implements CollisionDetection {
     }
 
     @Override
-    public void toss(double velocity_x, double velocity_y) {
-        super.toss(velocity_x, velocity_y);
-        if (velocity_x > 0) {
-            pose = RIGHT;
-        }
-        if (velocity_x < 0) {
-            pose = LEFT;
-        }
-    }
-
-    @Override
-    public int getType() {
-        return SpriteSheet.TYPE_POLY;
-    }
-
-    @Override
-    public Number getWidth() {
-        return getImage().getWidth(null) * 3;
-    }
-
-    @Override
-    public Number getHeight() {
-        return getImage().getHeight(null) * 3;
-    }
-
-    @Override
-    public BoundingContract<Number> getBoundingObject() {
-        return this.circle;
-    }
-
-    @Override
-    public boolean overlaps(BoundingContract<Number> box) {
-        boolean overlaps = circle.overlaps(box);
-        circle.align();
-        return overlaps;
-    }
-
-    @Override
-    public boolean overlaps(BoundingContractLine line) {
-        boolean overlaps = circle.overlaps(line);
-        circle.align();
-        return overlaps;
-    }
-
-    @Override
-    public void pushes(BoundingContract<Number> contract) {
-        circle.pushes(contract);
-        circle.align();
-    }
-
-    @Override
-    public void gravitate() {
-        circle.gravitate();
-        circle.align();
-        nextImageColumn();
-        moving = true;
-    }
-
-    @Override
-    public void pushedBackBy(BoundingContractLine line) {
-        circle.pushedBackBy(line);
-        circle.align();
-    }
-
-    @Override
-    public void setWorld(double x, double y) {
-        super.setWorld(x, y);
-        circle.setWorld(x, y);
-        align();
-    }
-
-    @Override
-    public void bind(BoundingContract<Number> object) {
+    public void bind(MovableCollision object) {
         circle.bind(this);
     }
+
 }

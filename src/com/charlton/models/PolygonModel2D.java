@@ -46,7 +46,7 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
         this.cos_angle = cos[world_angle];
         this.sin_angle = sin[world_angle];
         updateBounds();
-        boundingBox.bind(this);
+        //boundingBox.bind(this);
     }
 
     @Override
@@ -78,10 +78,10 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
-    public boolean overlaps(BoundingContract<Number> box) {
+    public boolean overlaps(MovableCollision box) {
         boolean collision = boundingBox.overlaps(box);
         if(collision) {
-            box.align();
+            //TODO: box.align();
         }
         return collision;
     }
@@ -89,14 +89,12 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     @Override
     public boolean overlaps(BoundingContractLine line) {
         boolean overlaps = boundingBox.overlaps(line);
-        if(overlaps){
-            align();
-        }
+
         return overlaps;
     }
 
     @Override
-    public void pushes(BoundingContract<Number> contract) {
+    public void pushes(MovableCollision contract) {
         boundingBox.pushes(contract);
     }
 
@@ -106,12 +104,13 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
-    public void bind(BoundingContract<Number> object) {
+    public void bind(MovableCollision object) {
 
     }
 
+
     @Override
-    public BoundingBox getBoundingObject() {
+    public MovableCollision getBoundingObject() {
         return boundingBox;
     }
 
@@ -176,11 +175,6 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     @Override
     public Number getRadius() {
         return boundingBox.width / 2;
-    }
-
-    @Override
-    public void align() {
-        boundingBox.align();
     }
 
     @Override

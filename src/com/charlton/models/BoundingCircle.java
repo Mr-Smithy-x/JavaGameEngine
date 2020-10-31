@@ -1,16 +1,13 @@
 package com.charlton.models;
 
-import com.charlton.contracts.BoundingContract;
-import com.charlton.contracts.BoundingContractLine;
-import com.charlton.contracts.CollisionDetection;
-import com.charlton.contracts.Drawable;
+import com.charlton.contracts.*;
 
 import java.awt.*;
 
-public class BoundingCircle extends MovableObject implements Drawable, CollisionDetection {
+public class BoundingCircle extends MovableObject implements Drawable, MovableCollision {
 
     protected double radius;
-    private BoundingContract<Number> object;
+    private Movable object;
     private boolean bounded = false;
     protected int launch_delay = 20;
     protected int launch_countdown = 20;
@@ -44,7 +41,6 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
     @Override
     public void draw(Graphics g) {
         g.drawOval((int) (position_x - radius), (int) (position_y - radius), (int) (2.0 * radius), (int) (2.0 * radius));
-
         g.drawLine((int) position_x, (int) position_y, (int) (position_x + radius * cos_angle), (int) (position_y + radius * sin_angle));
     }
 
@@ -62,7 +58,7 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
 
     @Override
-    public boolean overlaps(BoundingContract<Number> c) {
+    public boolean overlaps(MovableCollision c) {
         double dx = position_x - c.getX().doubleValue();
         double dy = position_y - c.getY().doubleValue();
         double d2 = dx * dx + dy * dy;
@@ -84,7 +80,7 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
 
 
     @Override
-    public BoundingContract<Number> getBoundingObject() {
+    public MovableCollision getBoundingObject() {
         return this;
     }
 
@@ -95,19 +91,18 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double p = radius - distance;
         position_x += p * line.getNormalX().doubleValue();
         position_y += p * line.getNormalY().doubleValue();
-        align();
-
     }
 
+
     @Override
-    public void bind(BoundingContract<Number> object) {
+    public void bind(MovableCollision object) {
         this.object = object;
         this.bounded = true;
         System.out.println("BINDED");
     }
 
     @Override
-    public void pushes(BoundingContract<Number> contract) {
+    public void pushes(MovableCollision contract) {
         double dx = position_x - contract.getX().doubleValue();
         double dy = position_y - contract.getY().doubleValue();
         double d = Math.sqrt(dx * dx + dy * dy);
@@ -121,11 +116,10 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double set_pos_y = contract.getY().doubleValue() - (uy * p / 2);
         contract.setX(set_pos_x);
         contract.setY(set_pos_y);
-        align();
     }
 
 
-    public void bounceOff(BoundingContract<Number> c) {
+    public void bounceOff(Movable c) {
         double dx = c.getX().doubleValue() - position_x;
         double dy = c.getY().doubleValue() - position_y;
         double mag = Math.sqrt(dx * dx + dy * dy);
@@ -143,7 +137,6 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         velocity_y = .9 * (t * ty + cu * uy);
         c.setVelocityX(.9 * (ct * tx + u * ux));
         c.setVelocityY(.9 * (ct * ty + u * uy));
-        align();
     }
 
     public void bounceOffLine(BoundingContractLine line) {
@@ -156,7 +149,6 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         double ty = mag * line.getNormalY().doubleValue();
         velocity_x -= tx;
         velocity_y -= ty;
-        align();
     }
 
 
@@ -175,20 +167,10 @@ public class BoundingCircle extends MovableObject implements Drawable, Collision
         return radius * 2;
     }
 
-    @Override
-    public void align() {
-        if (object != null) {
-            double x = (this.position_x + object.getWidth().doubleValue() / 8);
-            double y = (this.position_y + object.getHeight().doubleValue() / 8);
-            object.setX(x);
-            object.setY(y);
-        }
-    }
 
     @Override
     public void gravitate() {
         super.gravitate();
-        align();
     }
 
     @Override

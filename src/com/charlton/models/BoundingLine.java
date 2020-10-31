@@ -102,50 +102,6 @@ public class BoundingLine implements Drawable, BoundingContractLine {
         return 1;
     }
 
-    @Override
-    public Number getVelocityX() {
-        return 0;
-    }
-
-    @Override
-    public Number getVelocityY() {
-        return 0;
-    }
-
-    @Override
-    public void setVelocityX(Number velocity_x) {
-
-    }
-
-    @Override
-    public void setVelocityY(Number velocity_y) {
-
-    }
-
-    @Override
-    public Number getAccelerationX() {
-        return 0;
-    }
-
-    @Override
-    public Number getAccelerationY() {
-        return 0;
-    }
-
-    @Override
-    public void setAccelerationX(Number acceleration_x) {
-
-    }
-
-    @Override
-    public void setAccelerationY(Number acceleration_y) {
-
-    }
-
-    @Override
-    public void align() {
-
-    }
 
     @Override
     public int getType() {

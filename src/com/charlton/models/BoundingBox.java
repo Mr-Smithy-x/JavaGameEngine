@@ -1,23 +1,13 @@
 package com.charlton.models;
 
-import com.charlton.contracts.BoundingContract;
-import com.charlton.contracts.BoundingContractLine;
-import com.charlton.contracts.CollisionDetection;
-import com.charlton.contracts.Drawable;
+import com.charlton.contracts.*;
 
 import java.awt.*;
 
-public class BoundingBox extends MovableObject implements Drawable, CollisionDetection {
+public class BoundingBox extends MovableObject implements Drawable, MovableCollision {
 
     double width;
     double height;
-    private BoundingContract<Number> object;
-
-
-    public void align() {
-        object.setX(this.position_x + width / 2);
-        object.setY(this.position_y + height / 2);
-    }
 
     @Override
     public int getType() {
@@ -43,7 +33,7 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
     }
 
     @Override
-    public void pushes(BoundingContract<Number> contract) {
+    public void pushes(MovableCollision contract) {
         double dx = position_x - contract.getX().doubleValue();
         double dy = position_y - contract.getY().doubleValue();
         double d = Math.sqrt(dx * dx + dy * dy);
@@ -67,7 +57,12 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
     }
 
     @Override
-    public boolean overlaps(BoundingContract<Number> box) {
+    public void bind(MovableCollision object) {
+
+    }
+
+    @Override
+    public boolean overlaps(MovableCollision box) {
         boolean collides = false;
         collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
                 (position_x + width >= box.getX().doubleValue()) &&
@@ -92,13 +87,10 @@ public class BoundingBox extends MovableObject implements Drawable, CollisionDet
     }
 
     @Override
-    public BoundingContract<Number> getBoundingObject() {
+    public MovableCollision getBoundingObject() {
         return this;
     }
 
-    public void bind(BoundingContract<Number> object) {
-        this.object = object;
-    }
 
     @Override
     public Number getWidth() {

@@ -1,6 +1,8 @@
 package com.charlton.polygons;
 
 import com.charlton.contracts.BoundingContract;
+import com.charlton.contracts.Movable;
+import com.charlton.contracts.MovableCollision;
 import com.charlton.models.PolygonModel2D;
 
 public class SpaceShip extends PolygonModel2D {
@@ -15,7 +17,7 @@ public class SpaceShip extends PolygonModel2D {
     }
 
     @Override
-    public boolean overlaps(BoundingContract<Number> box) {
+    public boolean overlaps(MovableCollision box) {
         boolean fix = super.overlaps(box);
         if(fix){
             updateBounds();

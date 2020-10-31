@@ -1,7 +1,8 @@
 package com.charlton;
 
 import com.charlton.contracts.Drawable;
-import com.charlton.models.*;
+import com.charlton.contracts.MovableCollision;
+import com.charlton.models.BoundingLine;
 import com.charlton.models.tileset.ZeldaBGTileSet;
 import com.charlton.sprites.Bullet;
 import com.charlton.sprites.Zelda;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class GameF20 extends GameApplet {
 
-    ArrayList<MovableObject> objectList = new ArrayList<MovableObject>() {
+    ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
         {
 
             add(new Zelda(300, 100, 5));
@@ -35,13 +36,11 @@ public class GameF20 extends GameApplet {
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);
         }
-        z.draw(g);
         for (Bullet b : bullets) {
             b.draw(g);
         }
-        objectList.forEach(obj -> {
-            ((Drawable) obj).draw(g);
-        });
+        objectList.forEach(obj -> ((Drawable) obj).draw(g));
+        z.draw(g);
     }
 
     public void init() {
@@ -49,15 +48,12 @@ public class GameF20 extends GameApplet {
         for (int i = 0; i < bullets.length; i++) {
             bullets[i] = new Bullet();
         }
-
         z.setAcceleration(0, 0)
                 .setVelocity(0, 0)
-                .setDrag(0.7, 0.01);
-        objectList.forEach(obj -> {
-            obj.setAcceleration(0, 1)
-                    .setVelocity(0, 0)
-                    .setDrag(0.01, 0.01);
-        });
+                .setDrag(0.01, 0.01);
+        objectList.forEach(obj -> obj.setAcceleration(0, 1)
+                .setVelocity(0, 0)
+                .setDrag(0.01, 0.01));
         double[][] v = {
                 {getWidth(), getHeight() - 200, 0, getHeight() - 200},
                 {getWidth() - 100, 0, getWidth() - 100, getHeight()},

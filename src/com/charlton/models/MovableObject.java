@@ -18,37 +18,43 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     public double last_dy;
 
 
-    public void turnToward(MovableObject circle) {
+    @Override
+    public void turnToward(Movable circle) {
         double d = distanceTo(circle);
         if (toTheLeftOf(circle)) turnLeft(2);
         else turnRight(2);
     }
 
-    public void chase(MovableObject circle) {
+    @Override
+    public void chase(Movable circle) {
         this.turnToward(circle);
         this.moveForwardBy(3);
     }
 
 
-    public boolean toTheLeftOf(MovableObject c) {
-        double dx = c.position_x - position_x;
-        double dy = c.position_y - position_y;
+    @Override
+    public boolean toTheLeftOf(Movable c) {
+        double dx = c.getX().doubleValue() - position_x;
+        double dy = c.getY().doubleValue() - position_y;
         return sin_angle * dx - cos_angle * dy > 0;
     }
 
-    public boolean toTheRightOf(MovableObject c) {
+    @Override
+    public boolean toTheRightOf(Movable c) {
         return !toTheLeftOf(c);
     }
 
-    public boolean inFrontOf(MovableObject c) {
-        double dx = c.position_x - position_x;
-        double dy = c.position_y - position_y;
+    @Override
+    public boolean inFrontOf(Movable c) {
+        double dx = c.getX().doubleValue() - position_x;
+        double dy = c.getY().doubleValue() - position_y;
         return cos_angle * dx + sin_angle * dy > 0;
     }
 
-    public boolean inVicinity(MovableObject c, double pixels) {
-        double dx = position_x - c.position_x;
-        double dy = position_y - c.position_y;
+    @Override
+    public boolean inVicinity(Movable c, double pixels) {
+        double dx = position_x - c.getX().doubleValue();
+        double dy = position_y - c.getY().doubleValue();
         double distance = dx * dx + dy * dy;
         double pixels_squared = pixels * pixels;
         if (distance < pixels_squared) {
@@ -57,11 +63,12 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         return distance < pixels_squared;
     }
 
-    public double distanceTo(MovableObject c) {
+    @Override
+    public double distanceTo(Movable c) {
         //double vx = point_x - x.doubleValue(); // |v| <vx, vy>
         //double vy = point_y - y.doubleValue();
-        double vx = c.position_x - position_x;
-        double vy = c.position_y - position_y;
+        double vx = c.getX().doubleValue() - position_x;
+        double vy = c.getY().doubleValue() - position_y;
         return sin_angle * vx - cos_angle * vy;
     }
 
@@ -205,11 +212,6 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         return 0;
     }
 
-    @Override
-    public void align() {
-
-    }
-
 
     @Override
     public Number getVelocityX() {
@@ -266,4 +268,18 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
         this.cos_angle = cos[(int) world_angle];
     }
 
+    @Override
+    public double getSinAngle() {
+        return sin_angle;
+    }
+
+    @Override
+    public double getCosAngle() {
+        return cos_angle;
+    }
+
+    @Override
+    public double getWorldAngle() {
+        return world_angle;
+    }
 }

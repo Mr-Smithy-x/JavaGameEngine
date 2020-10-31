@@ -3,10 +3,10 @@ package com.charlton.contracts;
 
 public interface CollisionDetection {
     boolean TESTING = true;
-    BoundingContract<Number> getBoundingObject();
-    boolean overlaps(BoundingContract<Number> box);
+    MovableCollision getBoundingObject();
+    boolean overlaps(MovableCollision box);
     boolean overlaps(BoundingContractLine line);
-    void pushes(BoundingContract<Number> contract);
+    void pushes(MovableCollision contract);
     void pushedBackBy(BoundingContractLine line);
-    void bind(BoundingContract<Number> object);
+    void bind(MovableCollision object);
 }
