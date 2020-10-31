@@ -98,16 +98,16 @@ public class GameF20 extends GameApplet {
         }
 
         objectList.forEach(obj -> {
-            //obj.gravitate();
+            obj.gravitate();
 
             //z.overlaps(obj);
             if (!obj.inVicinity(z, 80)) {
                 obj.chase(z);
             }
-            z.overlaps(obj);
+            //z.overlaps(obj);
             for (BoundingLine boundingLine : L) {
                 z.overlaps(boundingLine);
-                ((Zelda)obj).overlaps(boundingLine);
+                obj.overlaps(boundingLine);
             }
 
         });

@@ -27,7 +27,7 @@ public class Zelda extends SpriteSheet {
     }
 
     public Zelda(int position_x, int position_y, int duration) throws IOException {
-        super("link.png");
+        super("link.png",2);
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];
@@ -143,19 +143,19 @@ public class Zelda extends SpriteSheet {
             image = getStillImage();
         }
         //g.drawImage(image, ((int) position_x + (image.getWidth(null) / 2)), ((int) position_y + (image.getHeight(null)) / 2), 3 * image.getWidth(null), 3 * image.getHeight(null), null);
-        int scale_computed_x = image.getWidth(null) * 2;
-        int scale_computed_y = image.getHeight(null) * 2;
+        int scale_computed_x = image.getWidth(null) * scale;
+        int scale_computed_y = image.getHeight(null) * scale;
 
-        int destination_x = (int) this.getX().intValue();
-        int destination_y = (int) this.getY().intValue();
-        int destination_x2 = (int) this.getX().intValue();
-        int destination_y2 = (int) this.getY().intValue();
+        int destination_x = this.getX().intValue();
+        int destination_y = this.getY().intValue();
+        int destination_x2 = this.getX().intValue();
+        int destination_y2 = this.getY().intValue();
 
         //Center image
-        destination_x -= (scale_computed_x / 2);
-        destination_y -= (scale_computed_y / 2);
-        destination_x2 += (scale_computed_x / 2);
-        destination_y2 += (scale_computed_y / 2);
+        destination_x -= (scale_computed_x / scale);
+        destination_y -= (scale_computed_y / scale);
+        destination_x2 += (scale_computed_x / scale);
+        destination_y2 += (scale_computed_y / scale);
 
 
         int source_x = 0;

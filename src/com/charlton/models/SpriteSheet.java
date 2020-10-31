@@ -21,6 +21,7 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
     public static final int ATTACK_LEFT = 7;
     public static final int ATTACK_RIGHT = 8;
     public static final int SPIN_ATTACK = 9;
+    protected final int scale;
 
     protected boolean moving = false;
     protected BufferedImage spriteSheet;
@@ -35,6 +36,11 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
 
 
     public SpriteSheet(String name) throws IOException {
+        this(name, 2);
+    }
+
+    public SpriteSheet(String name, int scale) throws IOException {
+        this.scale = scale;
         initializeSheet(name);
     }
 
@@ -129,8 +135,8 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
 
     @Override
     public void moveForwardBy(double dA) {
-        double dx = (dA * circle.getWorldAngle());
-        double dy = (dA * circle.getWorldAngle());
+        double dx = (dA * circle.getCosAngle());
+        double dy = (dA * circle.getSinAngle());
         this.moveBy(dx, dy);
     }
 
@@ -275,12 +281,12 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
 
     @Override
     public Number getWidth() {
-        return getImage().getWidth(null) * 3;
+        return getImage().getWidth(null) * scale;
     }
 
     @Override
     public Number getHeight() {
-        return getImage().getHeight(null) * 3;
+        return getImage().getHeight(null) * scale;
     }
 
     @Override
