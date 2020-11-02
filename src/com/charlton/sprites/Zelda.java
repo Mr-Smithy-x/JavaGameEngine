@@ -51,7 +51,8 @@ public class Zelda extends SpriteSheet {
 
     public void attack(ArrayList<MovableCollision> objects) {
         this.attack();
-        objects.stream().filter(o -> o.inVicinity(this, 80))
+        objects.stream()
+                .filter(o -> o.inVicinity(this, 80))
                 .forEach(this::hit);
     }
 
@@ -74,6 +75,8 @@ public class Zelda extends SpriteSheet {
         }
         nextImageColumn();
     }
+
+
 
     protected void initializeSprites() {
         subImages[UP] = initAnimation(0, 4, 30, 30, 8);
@@ -136,37 +139,11 @@ public class Zelda extends SpriteSheet {
 
     @Override
     public void draw(Graphics g) {
-        Image image;
-        if (moving || attacking) {
-            image = getImage();
-        } else {
-            image = getStillImage();
+        if(attacking) {
+            moving = attacking;
         }
-        //g.drawImage(image, ((int) position_x + (image.getWidth(null) / 2)), ((int) position_y + (image.getHeight(null)) / 2), 3 * image.getWidth(null), 3 * image.getHeight(null), null);
-        int scale_computed_x = image.getWidth(null) * scale;
-        int scale_computed_y = image.getHeight(null) * scale;
-
-        int destination_x = this.getX().intValue();
-        int destination_y = this.getY().intValue();
-        int destination_x2 = this.getX().intValue();
-        int destination_y2 = this.getY().intValue();
-
-        //Center image
-        destination_x -= (scale_computed_x / scale);
-        destination_y -= (scale_computed_y / scale);
-        destination_x2 += (scale_computed_x / scale);
-        destination_y2 += (scale_computed_y / scale);
-
-
-        int source_x = 0;
-        int source_y = 0;
-        int source_x2 = image.getWidth(null);
-        int source_y2 = image.getHeight(null);
-        //Aligns image to the bottom
-        g.drawImage(image, destination_x, destination_y, destination_x2, destination_y2, source_x, source_y, source_x2, source_y2, null);
-        moving = false;
+        super.draw(g);
         attacking = false;
-        //circle.draw(g);
     }
 
     @Override

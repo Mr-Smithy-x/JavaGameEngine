@@ -5,6 +5,7 @@ import com.charlton.contracts.MovableCollision;
 import com.charlton.models.BoundingLine;
 import com.charlton.models.tileset.ZeldaBGTileSet;
 import com.charlton.sprites.Bullet;
+import com.charlton.sprites.Dog;
 import com.charlton.sprites.Zelda;
 
 import java.awt.*;
@@ -18,6 +19,7 @@ public class GameF20 extends GameApplet {
         {
 
             add(new Zelda(300, 100, 5));
+            add(new Dog(300, 300, 5));
             //add(new BadBoundingCircle(500, 200, 40, 90));
         }
     };
@@ -31,7 +33,7 @@ public class GameF20 extends GameApplet {
 
     @Override
     public void paint(Graphics g) {
-        zeldaTitles.draw(g);
+        //zeldaTitles.draw(g);
         g.setColor(Color.BLACK);
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);
@@ -103,6 +105,7 @@ public class GameF20 extends GameApplet {
             //z.overlaps(obj);
             if (!obj.inVicinity(z, 80)) {
                 obj.chase(z);
+
             }
             //z.overlaps(obj);
             for (BoundingLine boundingLine : L) {
