@@ -3,10 +3,8 @@ package com.charlton;
 import com.charlton.contracts.Drawable;
 import com.charlton.contracts.MovableCollision;
 import com.charlton.models.BoundingLine;
-import com.charlton.models.tileset.ZeldaBGTileSet;
-import com.charlton.sprites.Bullet;
 import com.charlton.sprites.Dog;
-import com.charlton.sprites.Zelda;
+import com.charlton.sprites.Link;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -18,16 +16,22 @@ public class GameF20 extends GameApplet {
     ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
         {
 
-            add(new Zelda(300, 100, 5));
-            add(new Dog(300, 300, 5));
+            //add(new Link(700, 700, 5));
+            //add(new Dog(300, 300, 5));
             //add(new BadBoundingCircle(500, 200, 40, 90));
         }
     };
 
+
+
     BoundingLine[] L = new BoundingLine[3];
-    Bullet bullets[] = new Bullet[50];
-    ZeldaBGTileSet zeldaTitles = new ZeldaBGTileSet(this);
-    Zelda z = new Zelda(300, 300, 5);
+    Link link = new Link(300, 300, 5);
+    Dog dog = new Dog(200, 200, 5) {
+        {
+            this.setTurnSpeed(5);
+            this.setChaseSpeed(5);
+        }
+    };
 
     public GameF20() throws IOException { }
 
@@ -38,19 +42,14 @@ public class GameF20 extends GameApplet {
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);
         }
-        for (Bullet b : bullets) {
-            b.draw(g);
-        }
         objectList.forEach(obj -> ((Drawable) obj).draw(g));
-        z.draw(g);
+        link.draw(g);
+        dog.draw(g);
     }
 
     public void init() {
         double gravity = 0.7;
-        for (int i = 0; i < bullets.length; i++) {
-            bullets[i] = new Bullet();
-        }
-        z.setAcceleration(0, 0)
+        link.setAcceleration(0, 0)
                 .setVelocity(0, 0)
                 .setDrag(0.01, 0.01);
         objectList.forEach(obj -> obj.setAcceleration(0, 1)
@@ -70,46 +69,49 @@ public class GameF20 extends GameApplet {
     @Override
     public void inGameLoop() {
         super.inGameLoop();
-        for (Bullet b : bullets) {
-            b.gravitate();
-        }
         double multiplier = 1D;
         if(pressing[_F]){
-            objectList.forEach(o -> o.setWorld(z.getX().doubleValue(), z.getY().doubleValue()));
+            objectList.forEach(o -> o.setWorld(link.getX().doubleValue(), link.getY().doubleValue()));
         }
 
-        if (pressing[SPACE]) {
-            z.attack(objectList);
+        if(pressing[_D]){
+            link.sendAttackDog();
+        }
+        else if (pressing[SPACE]) {
+            link.attack(objectList);
         } else if (pressing[_Z]) {
-            z.spin();
+            link.spin();
         } else {
             if (pressing[UP]) {
-                z.moveBy(0, multiplier * -5.0);
+                link.moveBy(0, multiplier * -5.0);
             }
             if (pressing[DN]) {
-                z.moveBy(0, 5.0 * multiplier);
+                link.moveBy(0, 5.0 * multiplier);
             }
             if (pressing[LT]) {
-                z.moveBy(-5.0 * multiplier, 0);
+                link.moveBy(-5.0 * multiplier, 0);
                 //z.toss(-5, 0);
             }
             if (pressing[RT]) {
-                z.moveBy(5.0 * multiplier, 0);
+                link.moveBy(5.0 * multiplier, 0);
                 //z.toss(5, 0);
             }
         }
 
+        dog.gravitate();
         objectList.forEach(obj -> {
             obj.gravitate();
 
+            link.attackDog(dog, obj);
             //z.overlaps(obj);
-            if (!obj.inVicinity(z, 80)) {
-                obj.chase(z);
-
+            if (!obj.inVicinity(link, 80)) {
+                obj.chase(link);
             }
+            dog.overlaps(obj);
             //z.overlaps(obj);
             for (BoundingLine boundingLine : L) {
-                z.overlaps(boundingLine);
+                link.overlaps(boundingLine);
+                dog.overlaps(boundingLine);
                 obj.overlaps(boundingLine);
             }
 

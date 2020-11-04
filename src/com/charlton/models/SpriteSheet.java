@@ -251,6 +251,10 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         //circle.draw(g);
     }
 
+    public void setPose(int pose) {
+        this.pose = pose;
+    }
+
     public static class SubImage {
 
         private final int spritePositionStartX;
@@ -366,6 +370,16 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
     @Override
     public void chase(Movable movable) {
         circle.chase(movable);
+    }
+
+    @Override
+    public Movable setChaseSpeed(int speed) {
+        return circle.setChaseSpeed(speed);
+    }
+
+    @Override
+    public Movable setTurnSpeed(int turnspeed) {
+        return circle.setTurnSpeed(turnspeed);
     }
 
     @Override

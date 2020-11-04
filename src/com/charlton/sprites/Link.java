@@ -3,20 +3,22 @@ package com.charlton.sprites;
 import com.charlton.contracts.MovableCollision;
 import com.charlton.models.BoundingCircle;
 import com.charlton.models.SpriteSheet;
+import com.charlton.sprites.contracts.Animal;
 
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Zelda extends SpriteSheet {
+public class Link extends SpriteSheet {
 
     boolean attacking = false;
+    boolean dogAttack = false;
 
-    public Zelda() throws IOException {
+    public Link() throws IOException {
         this(200, 200, 5);
     }
 
-    public Zelda(int duration) throws IOException {
+    public Link(int duration) throws IOException {
         this(200, 200, duration);
     }
 
@@ -26,8 +28,9 @@ public class Zelda extends SpriteSheet {
         //gun.launch(circles);
     }
 
-    public Zelda(int position_x, int position_y, int duration) throws IOException {
-        super("link.png",2);
+
+    public Link(int position_x, int position_y, int duration) throws IOException {
+        super("link.png", 2);
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];
@@ -41,6 +44,20 @@ public class Zelda extends SpriteSheet {
         attacking = true;
         pose = SPIN_ATTACK;
         nextImageColumn();
+    }
+
+
+    public void attackDog(Animal animal, MovableCollision collision) {
+        if (inVicinity(collision, 400)) {
+            if (dogAttack) {
+                animal.getSpriteSheet().chase(collision);
+                double distance = animal.getSpriteSheet().distanceTo(collision);
+                if (Math.abs(distance) < 3) {
+                    hit(collision);
+                    dogAttack = false;
+                }
+            }
+        }
     }
 
     public void hit(MovableCollision obj) {
@@ -75,7 +92,6 @@ public class Zelda extends SpriteSheet {
         }
         nextImageColumn();
     }
-
 
 
     protected void initializeSprites() {
@@ -139,7 +155,7 @@ public class Zelda extends SpriteSheet {
 
     @Override
     public void draw(Graphics g) {
-        if(attacking) {
+        if (attacking) {
             moving = attacking;
         }
         super.draw(g);
@@ -151,4 +167,7 @@ public class Zelda extends SpriteSheet {
         circle.bind(this);
     }
 
+    public void sendAttackDog() {
+        dogAttack = true;
+    }
 }

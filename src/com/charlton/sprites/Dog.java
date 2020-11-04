@@ -2,12 +2,13 @@ package com.charlton.sprites;
 
 import com.charlton.models.BoundingCircle;
 import com.charlton.models.SpriteSheet;
+import com.charlton.sprites.contracts.Animal;
 
 import java.awt.*;
 import java.io.IOException;
 
-public class Dog extends SpriteSheet {
-
+public class Dog extends SpriteSheet implements Animal {
+    
 
     public Dog(int position_x, int position_y, int duration) throws IOException {
         super("dog.png", 2);
@@ -37,5 +38,10 @@ public class Dog extends SpriteSheet {
         super.draw(g);
         g.setPaintMode();
         g.drawString("Skeet", getX().intValue()-10, getY().intValue() - 15);
+    }
+
+    @Override
+    public SpriteSheet getSpriteSheet() {
+        return this;
     }
 }

@@ -13,6 +13,10 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     protected double cos_angle;
     protected double sin_angle;
 
+    protected int turnspeed = 2;
+    protected int speed = 3;
+
+
 
     public double last_dx;
     public double last_dy;
@@ -21,16 +25,28 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     @Override
     public void turnToward(Movable circle) {
         double d = distanceTo(circle);
-        if (toTheLeftOf(circle)) turnLeft(2);
-        else turnRight(2);
+        if (toTheLeftOf(circle)) turnLeft(this.turnspeed);
+        else turnRight(this.turnspeed);
     }
 
     @Override
     public void chase(Movable circle) {
         this.turnToward(circle);
-        this.moveForwardBy(3);
+        this.moveForwardBy(speed);
     }
 
+
+    @Override
+    public Movable setChaseSpeed(int speed) {
+        this.speed = speed;
+        return this;
+    }
+
+    @Override
+    public Movable setTurnSpeed(int turnspeed) {
+        this.turnspeed = turnspeed;
+        return this;
+    }
 
     @Override
     public boolean toTheLeftOf(Movable c) {

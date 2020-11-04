@@ -48,6 +48,8 @@ public interface Movable {
     void setAccelerationX(Number acceleration_x);
     void setAccelerationY(Number acceleration_y);
     void chase(Movable movable);
+    Movable setChaseSpeed(int speed);
+    Movable setTurnSpeed(int turnspeed);
     void turnToward(Movable circle);
     void bind(MovableCollision movable);
 }

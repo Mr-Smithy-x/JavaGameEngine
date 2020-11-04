@@ -106,4 +106,5 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
     public Number getRadius() {
         return (width + height) / 2;
     }
+
 }
