@@ -1,6 +1,7 @@
 package com.charlton.models;
 
 import com.charlton.contracts.*;
+import com.charlton.helpers.Camera;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -226,8 +227,8 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
             image = getStillImage();
         }
         //g.drawImage(image, ((int) position_x + (image.getWidth(null) / 2)), ((int) position_y + (image.getHeight(null)) / 2), 3 * image.getWidth(null), 3 * image.getHeight(null), null);
-        int scale_computed_x = image.getWidth(null) * scale;
-        int scale_computed_y = image.getHeight(null) * scale;
+        int scale_computed_x = image.getWidth(null) * Camera.scaling_factor / 2;
+        int scale_computed_y = image.getHeight(null) * Camera.scaling_factor / 2;
 
         int destination_x = this.getX().intValue();
         int destination_y = this.getY().intValue();
@@ -235,10 +236,10 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         int destination_y2 = this.getY().intValue();
 
         //Center image
-        destination_x -= (scale_computed_x / scale);
-        destination_y -= (scale_computed_y / scale);
-        destination_x2 += (scale_computed_x / scale);
-        destination_y2 += (scale_computed_y / scale);
+        destination_x -= (scale_computed_x);
+        destination_y -= (scale_computed_y);
+        destination_x2 += (scale_computed_x);
+        destination_y2 += (scale_computed_y);
 
 
         int source_x = 0;
@@ -249,7 +250,7 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         g.drawImage(image, destination_x, destination_y, destination_x2, destination_y2, source_x, source_y, source_x2, source_y2, null);
         moving = false;
 
-        ((Drawable)circle).draw(g);
+        //((Drawable)circle).draw(g);
     }
 
     public void setPose(int pose) {

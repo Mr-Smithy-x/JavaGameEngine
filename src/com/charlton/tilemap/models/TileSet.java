@@ -1,6 +1,7 @@
 package com.charlton.tilemap.models;
 
 import com.charlton.GameApplet;
+import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -127,9 +128,11 @@ public class TileSet implements Iterable<Long> {
     }
 
     public boolean canMove(SpriteSheet link, int direction) {
-        int x = link.getX().intValue();
-        int y = link.getY().intValue();
-        int tile_pos_x = x - (x % tile_width);
+        int x = link.getX().intValue() / Camera.scaling_factor;
+        int y = link.getY().intValue() / Camera.scaling_factor;
+        //(Camera.scaling_factor * p.getX()) - (int)Camera.x + Camera.x_origin,
+        //(Camera.scaling_factor * p.getY()) - (int)Camera.y + Camera.y_origin,
+        int tile_pos_x = x - (x % tile_width) ;
         int tile_pos_y = y - (y % tile_height);
         switch (direction) {
             case GameApplet.LT:
