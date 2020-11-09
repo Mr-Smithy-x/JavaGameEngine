@@ -3,6 +3,7 @@ package com.charlton;
 import com.charlton.contracts.Drawable;
 import com.charlton.contracts.MovableCollision;
 import com.charlton.models.BoundingLine;
+import com.charlton.models.tileset.ZeldaBGTileSet;
 import com.charlton.sprites.Dog;
 import com.charlton.sprites.Link;
 
@@ -16,7 +17,7 @@ public class GameF20 extends GameApplet {
     ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
         {
 
-            //add(new Link(700, 700, 5));
+            add(new Link(700, 700, 5));
             //add(new Dog(300, 300, 5));
             //add(new BadBoundingCircle(500, 200, 40, 90));
         }
@@ -32,12 +33,13 @@ public class GameF20 extends GameApplet {
             this.setChaseSpeed(5);
         }
     };
+    private ZeldaBGTileSet zeldaTitles = new ZeldaBGTileSet(this);
 
     public GameF20() throws IOException { }
 
     @Override
     public void paint(Graphics g) {
-        //zeldaTitles.draw(g);
+        zeldaTitles.draw(g);
         g.setColor(Color.BLACK);
         for (BoundingLine boundingLine : L) {
             boundingLine.draw(g);

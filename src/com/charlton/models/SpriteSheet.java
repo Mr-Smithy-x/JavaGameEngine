@@ -248,7 +248,8 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         //Aligns image to the bottom
         g.drawImage(image, destination_x, destination_y, destination_x2, destination_y2, source_x, source_y, source_x2, source_y2, null);
         moving = false;
-        //circle.draw(g);
+
+        ((Drawable)circle).draw(g);
     }
 
     public void setPose(int pose) {
