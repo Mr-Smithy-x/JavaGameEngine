@@ -4,7 +4,6 @@ import com.charlton.GameApplet;
 import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
 
 import javax.imageio.ImageIO;
@@ -98,6 +97,20 @@ public class TileSet implements Iterable<Long> {
 
     public Iterable<Point> pointIterator() {
         return () -> tiles.keySet().stream().map(Point::fromLong).iterator();
+    }
+
+    public Iterable<Point> nonCollisionTitles() {
+        return () -> tiles.keySet().stream().filter(point -> {
+            long tile = get(point);
+            return !Tile.isCollisionTile(tile);
+        }).map(Point::fromLong).iterator();
+    }
+
+    public Iterable<Point> collisionTitles() {
+        return () -> tiles.keySet().stream().filter(point -> {
+            long tile = get(point);
+            return Tile.isCollisionTile(tile);
+        }).map(Point::fromLong).iterator();
     }
 
     @Override

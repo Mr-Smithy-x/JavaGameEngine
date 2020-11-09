@@ -2,6 +2,7 @@ package com.charlton;
 
 import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
+import com.charlton.sprites.Dog;
 import com.charlton.sprites.Link;
 import com.charlton.tilemap.models.Point;
 import com.charlton.tilemap.models.Tile;
@@ -16,7 +17,7 @@ public class CustomTileGame extends GameApplet {
 
     private TileSet tileSet;
     private BufferedImage image;
-    private SpriteSheet link = new Link(400, 250, 5, 20) {
+    private SpriteSheet link = new Link(400, 250, 1) {
         {
             setVelocity(0.0, 0.7);
             setAcceleration(0, 1);
@@ -30,8 +31,8 @@ public class CustomTileGame extends GameApplet {
     public void init() {
         try {
             tileSet = TileSet.from("collision_test.json");
-            image = tileSet.getImage();
-            image.flush();
+            image = toCompatibleImage(tileSet.getImage());
+            this.image.flush();
             Camera.setOrigin(link);
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,6 +47,7 @@ public class CustomTileGame extends GameApplet {
             long tileAddress = tileSet.get(p);
             Tile tile = Tile.create(tileAddress);
             BufferedImage subimage = image.getSubimage(tile.getPositionX(), tile.getPositionY(), tile.getPixelW(), tile.getPixelH());
+
 
             subimage.flush();
             int scaled_x = Camera.scaling_factor * p.getX();
@@ -86,36 +88,42 @@ public class CustomTileGame extends GameApplet {
     @Override
     public void inGameLoop() {
         super.inGameLoop();
-        if (pressing[UP]) {
+        if(pressing[_Z]){
+            ((Link)link).spin();
+        }else if(pressing[SPACE]) {
+            ((Link)link).attack();
+        }else {
+            if (pressing[UP]) {
 
-            link.setPose(SpriteSheet.UP);
-            if (tileSet.canMove(link, UP)) {
-                //link.moveBy(0, -Camera.scaling_factor);
-                Camera.moveUp(Camera.scaling_factor);
+                link.setPose(SpriteSheet.UP);
+                if (tileSet.canMove(link, UP)) {
+                    //link.moveBy(0, -Camera.scaling_factor);
+                    Camera.moveUp(Camera.scaling_factor * Camera.scaling_factor);
+                }
             }
-        }
-        if (pressing[DN]) {
+            if (pressing[DN]) {
 
-            link.setPose(SpriteSheet.DOWN);
-            if (tileSet.canMove(link, DN)) {
-                //link.moveBy(0, Camera.scaling_factor);
-                Camera.moveDown(Camera.scaling_factor);
+                link.setPose(SpriteSheet.DOWN);
+                if (tileSet.canMove(link, DN)) {
+                    //link.moveBy(0, Camera.scaling_factor);
+                    Camera.moveDown(Camera.scaling_factor * Camera.scaling_factor);
+                }
             }
-        }
-        if (pressing[LT]) {
+            if (pressing[LT]) {
 
-            link.setPose(SpriteSheet.LEFT);
-            if (tileSet.canMove(link, LT)) {
-                //link.moveBy(-Camera.scaling_factor, 0);
-                Camera.moveLeft(Camera.scaling_factor);
+                link.setPose(SpriteSheet.LEFT);
+                if (tileSet.canMove(link, LT)) {
+                    //link.moveBy(-Camera.scaling_factor, 0);
+                    Camera.moveLeft(Camera.scaling_factor * Camera.scaling_factor);
+                }
             }
-        }
-        if (pressing[RT]) {
+            if (pressing[RT]) {
 
-            link.setPose(SpriteSheet.RIGHT);
-            if (tileSet.canMove(link, RT)) {
-                //link.moveBy(Camera.scaling_factor, 0);
-                Camera.moveRight(Camera.scaling_factor);
+                link.setPose(SpriteSheet.RIGHT);
+                if (tileSet.canMove(link, RT)) {
+                    //link.moveBy(Camera.scaling_factor, 0);
+                    Camera.moveRight(Camera.scaling_factor * Camera.scaling_factor);
+                }
             }
         }
         Camera.update();
