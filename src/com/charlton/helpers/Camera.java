@@ -1,5 +1,8 @@
 package com.charlton.helpers;
 
+import com.charlton.contracts.Movable;
+import com.charlton.models.SpriteSheet;
+
 public class Camera {
     public static double x;
     public static double y;
@@ -52,5 +55,12 @@ public class Camera {
 
     public static void update() {
 
+    }
+
+    public static void setOrigin(Movable link) {
+        x_origin = link.getX().intValue();
+        y_origin = link.getY().intValue();
+        x = x_origin;
+        y = y_origin;
     }
 }

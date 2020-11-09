@@ -8,6 +8,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
 {
     Thread t;
 
+    protected static final boolean DEBUG = false;
     boolean[] pressing = new boolean[1024];
 
 

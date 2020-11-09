@@ -2,16 +2,12 @@ package com.charlton;
 
 import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
-import com.charlton.models.tileset.ZeldaBGTileSet;
-import com.charlton.sprites.Dog;
 import com.charlton.sprites.Link;
 import com.charlton.tilemap.models.Point;
 import com.charlton.tilemap.models.Tile;
 import com.charlton.tilemap.models.TileSet;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -36,10 +32,7 @@ public class CustomTileGame extends GameApplet {
             tileSet = TileSet.from("collision_test.json");
             image = tileSet.getImage();
             image.flush();
-            Camera.x = Camera.x_origin;
-            Camera.y = Camera.y_origin;
-
-                    //set(link.getX().doubleValue() * Camera.scaling_factor, link.getY().doubleValue()* Camera.scaling_factor);
+            Camera.setOrigin(link);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,12 +46,38 @@ public class CustomTileGame extends GameApplet {
             long tileAddress = tileSet.get(p);
             Tile tile = Tile.create(tileAddress);
             BufferedImage subimage = image.getSubimage(tile.getPositionX(), tile.getPositionY(), tile.getPixelW(), tile.getPixelH());
+
+            subimage.flush();
+            int scaled_x = Camera.scaling_factor * p.getX();
+            int scaled_y = Camera.scaling_factor * p.getY();
+            int camera_offset_x = (int) Camera.x + Camera.x_origin;
+            int camera_offset_y = (int) Camera.y + Camera.y_origin;
+            int scaled_width = subimage.getWidth() * Camera.scaling_factor;
+            int scaled_height = subimage.getHeight() * Camera.scaling_factor;
+
             g.drawImage(subimage,
-                    (Camera.scaling_factor * p.getX()) - (int)Camera.x + Camera.x_origin,
-                    (Camera.scaling_factor * p.getY()) - (int)Camera.y + Camera.y_origin,
-                    subimage.getWidth() * Camera.scaling_factor,
-                    subimage.getHeight() * Camera.scaling_factor,
+                    scaled_x - camera_offset_x,
+                    scaled_y - camera_offset_y,
+                    scaled_width,
+                    scaled_height,
                     null);
+
+            if(DEBUG) {
+                g.setColor(Color.RED);
+                if (Tile.isCollisionTile(tileAddress)) {
+                    g.fillRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+
+                } else {
+                    g.drawRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+                }
+            }
+
         }
         link.draw(g);
     }
@@ -68,29 +87,35 @@ public class CustomTileGame extends GameApplet {
     public void inGameLoop() {
         super.inGameLoop();
         if (pressing[UP]) {
+
+            link.setPose(SpriteSheet.UP);
             if (tileSet.canMove(link, UP)) {
-                link.moveBy(0, -1);
-                Camera.moveUp(10);
+                //link.moveBy(0, -Camera.scaling_factor);
+                Camera.moveUp(Camera.scaling_factor);
             }
         }
         if (pressing[DN]) {
+
+            link.setPose(SpriteSheet.DOWN);
             if (tileSet.canMove(link, DN)) {
-                link.moveBy(0, +1);
-                Camera.moveDown(10);
+                //link.moveBy(0, Camera.scaling_factor);
+                Camera.moveDown(Camera.scaling_factor);
             }
         }
         if (pressing[LT]) {
 
+            link.setPose(SpriteSheet.LEFT);
             if (tileSet.canMove(link, LT)) {
-                link.moveBy(-1, 0);
-                Camera.moveLeft(10);
+                //link.moveBy(-Camera.scaling_factor, 0);
+                Camera.moveLeft(Camera.scaling_factor);
             }
         }
         if (pressing[RT]) {
 
+            link.setPose(SpriteSheet.RIGHT);
             if (tileSet.canMove(link, RT)) {
-                link.moveBy(+1, 0);
-                Camera.moveRight(10);
+                //link.moveBy(Camera.scaling_factor, 0);
+                Camera.moveRight(Camera.scaling_factor);
             }
         }
         Camera.update();

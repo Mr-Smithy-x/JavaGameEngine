@@ -82,6 +82,7 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
     }
 
 
+
     @Override
     public void moveBy(double dx, double dy) {
         moving = true;
@@ -103,7 +104,8 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
                 pose = RIGHT;
                 System.out.println("RIGHT");
             }
-        } else if (dy < dx) {
+        }
+        else if (dy < dx) {
             if (dy > 0) {
                 pose = DOWN;
                 System.out.println("DOWN");
@@ -250,11 +252,23 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         g.drawImage(image, destination_x, destination_y, destination_x2, destination_y2, source_x, source_y, source_x2, source_y2, null);
         moving = false;
 
-        //((Drawable)circle).draw(g);
+        ((Drawable)circle).draw(g);
     }
 
     public void setPose(int pose) {
+        moving = true;
         this.pose = pose;
+        switch (pose) {
+            case LEFT:
+                circle.setWorldAngle(180);
+            case DOWN:
+                circle.setWorldAngle(90);
+            case RIGHT:
+                circle.setWorldAngle(0);
+            case UP:
+                circle.setWorldAngle(270);
+        }
+        nextImageColumn();
     }
 
     public static class SubImage {
@@ -287,6 +301,7 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
             return height;
         }
     }
+
 
 
     @Override
