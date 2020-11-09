@@ -47,4 +47,7 @@ public class Camera
     }
 
 
+    public static void update() {
+
+    }
 }
