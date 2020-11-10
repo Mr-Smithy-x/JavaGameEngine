@@ -189,7 +189,6 @@ public class TileSet implements Iterable<Long> {
                 break;
         }
 
-
         int real_tile_pos_x = scaled_tile_position_x / Camera.scaling_factor;
         int real_tile_pos_y = scaled_tile_position_y / Camera.scaling_factor;
         System.out.printf("REAL: (%s, %s)\n", real_tile_pos_x, real_tile_pos_y);
