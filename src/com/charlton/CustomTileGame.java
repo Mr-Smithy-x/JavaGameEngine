@@ -1,6 +1,10 @@
 package com.charlton;
 
+import com.charlton.audioplayer.SoundTrack;
+import com.charlton.contracts.Drawable;
+import com.charlton.contracts.MovableCollision;
 import com.charlton.helpers.Camera;
+import com.charlton.models.BoundingLine;
 import com.charlton.models.SpriteSheet;
 import com.charlton.sprites.Dog;
 import com.charlton.sprites.Link;
@@ -8,21 +12,32 @@ import com.charlton.tilemap.models.Point;
 import com.charlton.tilemap.models.Tile;
 import com.charlton.tilemap.models.TileSet;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CustomTileGame extends GameApplet {
 
 
     private TileSet tileSet;
     private BufferedImage image;
-    private SpriteSheet link = new Link(400, 250, 1) {
+    private SpriteSheet link = null;
+
+
+    ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
         {
-            setVelocity(0.0, 0.7);
-            setAcceleration(0, 1);
+
+            //add(new Link(400, 400, 1));
+            //add(new Dog(300, 300, 1));
+
         }
     };
+
 
     public CustomTileGame() throws IOException {
     }
@@ -33,11 +48,38 @@ public class CustomTileGame extends GameApplet {
             tileSet = TileSet.from("collision_test.json");
             image = toCompatibleImage(tileSet.getImage());
             this.image.flush();
+
+            objectList.forEach(obj -> obj.setAcceleration(0, 1)
+                    .setVelocity(0, 0)
+                    .setDrag(0.01, 0.01));
+            link = new Link(getWidth()/2, getHeight()/2, 1) {
+                {
+                    setVelocity(0.0, 0.7);
+                    setAcceleration(0, 1);
+                }
+            };
             Camera.setOrigin(link);
         } catch (IOException e) {
             e.printStackTrace();
         }
         super.init();
+        SoundTrack s = new SoundTrack("overworld.wav");
+
+        try {
+            s.play();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (InvalidMidiDataException e) {
+            e.printStackTrace();
+        } catch (MidiUnavailableException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -64,7 +106,7 @@ public class CustomTileGame extends GameApplet {
                     scaled_height,
                     null);
 
-            if(DEBUG) {
+            if (DEBUG) {
                 g.setColor(Color.RED);
                 if (Tile.isCollisionTile(tileAddress)) {
                     g.fillRect(scaled_x - camera_offset_x,
@@ -82,17 +124,19 @@ public class CustomTileGame extends GameApplet {
 
         }
         link.draw(g);
+        objectList.forEach(obj -> ((Drawable) obj).draw(g));
+
     }
 
 
     @Override
     public void inGameLoop() {
         super.inGameLoop();
-        if(pressing[_Z]){
-            ((Link)link).spin();
-        }else if(pressing[SPACE]) {
-            ((Link)link).attack();
-        }else {
+        if (pressing[_Z]) {
+            ((Link) link).spin();
+        } else if (pressing[SPACE]) {
+            ((Link) link).attack();
+        } else {
             if (pressing[UP]) {
 
                 link.setPose(SpriteSheet.UP);
@@ -126,6 +170,17 @@ public class CustomTileGame extends GameApplet {
                 }
             }
         }
+
+
+        objectList.forEach(obj -> {
+            obj.gravitate();
+
+            if (!obj.inVicinity(link, 80)) {
+                obj.chase(link);
+            }
+            obj.overlaps(link);
+        });
+
         Camera.update();
     }
 }
