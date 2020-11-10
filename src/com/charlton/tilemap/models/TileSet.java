@@ -1,9 +1,9 @@
 package com.charlton.tilemap.models;
 
 import com.charlton.GameApplet;
+import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
 
 import javax.imageio.ImageIO;
@@ -99,6 +99,20 @@ public class TileSet implements Iterable<Long> {
         return () -> tiles.keySet().stream().map(Point::fromLong).iterator();
     }
 
+    public Iterable<Point> nonCollisionTitles() {
+        return () -> tiles.keySet().stream().filter(point -> {
+            long tile = get(point);
+            return !Tile.isCollisionTile(tile);
+        }).map(Point::fromLong).iterator();
+    }
+
+    public Iterable<Point> collisionTitles() {
+        return () -> tiles.keySet().stream().filter(point -> {
+            long tile = get(point);
+            return Tile.isCollisionTile(tile);
+        }).map(Point::fromLong).iterator();
+    }
+
     @Override
     public Iterator<Long> iterator() {
         return this.tiles.keySet().iterator();
@@ -126,33 +140,64 @@ public class TileSet implements Iterable<Long> {
         return this.tiles.containsKey(pointKey);
     }
 
-    public boolean canMove(SpriteSheet link, int direction) {
-        int x = link.getX().intValue();
-        int y = link.getY().intValue();
-        int tile_pos_x = x - (x % tile_width);
-        int tile_pos_y = y - (y % tile_height);
+    public boolean canMove(SpriteSheet sprite, int direction) {
+        //int sprite_position_x = sprite.getX().intValue(); //X & Y in the world, ie (0,0) - (600,600) window
+        //int sprite_position_y = sprite.getY().intValue();
+
+        //int camera_offset_x = (int) (Camera.x + Camera.x_origin); //Origin of where the camera
+        //int camera_offset_y = (int) (Camera.y + Camera.y_origin); //is on the screen + distance
+
+        int sprite_position_x = (int) (Camera.x + Camera.x_origin); //X & Y in the world, ie (0,0) - (600,600) window
+        int sprite_position_y = (int) (Camera.y + Camera.y_origin);
+
+        int camera_offset_x = sprite.getX().intValue(); //Origin of where the camera
+        int camera_offset_y = sprite.getY().intValue(); //is on the screen + distance
+
+
+        int scaled_sprite_position_x = (sprite_position_x);// * Camera.scaling_factor);
+        int scaled_sprite_position_y = (sprite_position_y);// * Camera.scaling_factor);
+
+        int scaled_tile_width = tile_width * Camera.scaling_factor; //Size of the tile, now scaled
+        int scaled_tile_height = tile_height * Camera.scaling_factor;
+
+        int scaled_sprite_position_offset_x = scaled_sprite_position_x + camera_offset_x;
+        int scaled_sprite_position_offset_y = scaled_sprite_position_y + camera_offset_y;
+
+        int scaled_tile_position_x = scaled_sprite_position_offset_x - (scaled_sprite_position_offset_x % scaled_tile_width);
+        int scaled_tile_position_y = scaled_sprite_position_offset_y - (scaled_sprite_position_offset_y % scaled_tile_height);
+
+        System.out.printf("Character WORLD (%s, %s). Scaled: %s x (%s, %s)\n",
+                sprite_position_x, sprite_position_y,
+                Camera.scaling_factor,
+                scaled_sprite_position_x,
+                scaled_sprite_position_y);
+        System.out.printf("ScaledXY: (%s, %s) - Camera Offset: (%s, %s)\n",
+                scaled_tile_position_x, scaled_tile_position_y,
+                camera_offset_x, camera_offset_y);
         switch (direction) {
             case GameApplet.LT:
-                tile_pos_x -= tile_width;
+                scaled_tile_position_x -= tile_width * Camera.scaling_factor;
                 break;
             case GameApplet.RT:
-                tile_pos_x += tile_width;
+                scaled_tile_position_x += tile_width * Camera.scaling_factor;
                 break;
             case GameApplet.DN:
-                tile_pos_y += tile_height;
+                scaled_tile_position_y += tile_height * Camera.scaling_factor;
                 break;
             case GameApplet.UP:
-                tile_pos_y -= tile_height;
+                scaled_tile_position_y -= tile_height * Camera.scaling_factor;
                 break;
         }
 
-        long point = Point.toLong(tile_pos_x, tile_pos_y);
-        if(!tiles.containsKey(point)){
-            System.out.println("OUT OF BOUNDS!!!");
 
+        int real_tile_pos_x = scaled_tile_position_x / Camera.scaling_factor;
+        int real_tile_pos_y = scaled_tile_position_y / Camera.scaling_factor;
+        System.out.printf("REAL: (%s, %s)\n", real_tile_pos_x, real_tile_pos_y);
+        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
+        if (!tiles.containsKey(point)) {
+            System.out.println("OUT OF BOUNDS!!!");
             return false;
         }
-        System.out.printf("TILE_POS: (%s, %s)\n", tile_pos_x, tile_pos_y);
         long tileAddress = get(point);
         return !Tile.isCollisionTile(tileAddress);
     }

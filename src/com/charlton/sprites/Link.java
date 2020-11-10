@@ -84,7 +84,7 @@ public class Link extends SpriteSheet {
                 .forEach(this::hit);
     }
 
-    protected void attack() {
+    public void attack() {
         attacking = true;
         switch (pose) {
             case UP:
