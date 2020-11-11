@@ -1,7 +1,6 @@
 package com.charlton.helpers;
 
 import com.charlton.contracts.Movable;
-import com.charlton.models.SpriteSheet;
 
 public class Camera {
     public static double x;
@@ -16,7 +15,7 @@ public class Camera {
     public static int y_origin = 440;
 
     public static final int GRAVITY = 1;
-    public final static int scaling_factor = 4;
+    public final static int scaling_factor = 2;
 
     public static double getX() {
         return x;

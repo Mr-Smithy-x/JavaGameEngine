@@ -1,10 +1,12 @@
 package com.charlton;
 
+import com.charlton.algorithms.pathfinding.AStar;
+import com.charlton.algorithms.pathfinding.models.Node;
 import com.charlton.audioplayer.SoundTrack;
 import com.charlton.contracts.Drawable;
 import com.charlton.contracts.MovableCollision;
 import com.charlton.helpers.Camera;
-import com.charlton.models.BoundingLine;
+import com.charlton.helpers.SpriteHelper;
 import com.charlton.models.SpriteSheet;
 import com.charlton.sprites.Dog;
 import com.charlton.sprites.Link;
@@ -27,8 +29,8 @@ public class CustomTileGame extends GameApplet {
     private TileSet tileSet;
     private BufferedImage image;
     private SpriteSheet link = null;
-
-
+    private Dog dog = null;
+    private AStar<TileSet, Tile> aStar;
     ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
         {
 
@@ -37,22 +39,31 @@ public class CustomTileGame extends GameApplet {
 
         }
     };
+    private ArrayList<Node> path;
 
 
-    public CustomTileGame() throws IOException {
+    public CustomTileGame() {
     }
 
     @Override
     public void init() {
         try {
-            tileSet = TileSet.from("collision_test.json");
+            tileSet = TileSet.from("collision_with_layer.json");
+            aStar = new AStar<>(tileSet);
             image = toCompatibleImage(tileSet.getImage());
             this.image.flush();
 
             objectList.forEach(obj -> obj.setAcceleration(0, 1)
                     .setVelocity(0, 0)
                     .setDrag(0.01, 0.01));
+
             link = new Link(getWidth()/2, getHeight()/2, 1) {
+                {
+                    setVelocity(0.0, 0.7);
+                    setAcceleration(0, 1);
+                }
+            };
+            dog = new Dog(0, 0, 1) {
                 {
                     setVelocity(0.0, 0.7);
                     setAcceleration(0, 1);
@@ -67,15 +78,7 @@ public class CustomTileGame extends GameApplet {
 
         try {
             s.play();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
+        } catch (IOException | UnsupportedAudioFileException | InvalidMidiDataException | MidiUnavailableException | LineUnavailableException e) {
             e.printStackTrace();
         }
 
@@ -85,9 +88,8 @@ public class CustomTileGame extends GameApplet {
 
     @Override
     public void paint(Graphics g) {
-        for (Point p : tileSet.pointIterator()) {
-            long tileAddress = tileSet.get(p);
-            Tile tile = Tile.create(tileAddress);
+        for (Point p : tileSet) {
+            Tile tile = tileSet.get(p);
             BufferedImage subimage = image.getSubimage(tile.getPositionX(), tile.getPositionY(), tile.getPixelW(), tile.getPixelH());
 
 
@@ -106,9 +108,19 @@ public class CustomTileGame extends GameApplet {
                     scaled_height,
                     null);
 
+            if(path != null){
+                if(path.contains(p)) {
+                    g.setColor(new Color(255, 0, 0, 0.4f));
+                    g.fillRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+                }
+            }
+
             if (DEBUG) {
                 g.setColor(Color.RED);
-                if (Tile.isCollisionTile(tileAddress)) {
+                if (tile.isCollision()) {
                     g.fillRect(scaled_x - camera_offset_x,
                             scaled_y - camera_offset_y,
                             scaled_width,
@@ -123,15 +135,32 @@ public class CustomTileGame extends GameApplet {
             }
 
         }
+
+
         link.draw(g);
+        dog.draw(g);
         objectList.forEach(obj -> ((Drawable) obj).draw(g));
 
+
     }
+
 
 
     @Override
     public void inGameLoop() {
         super.inGameLoop();
+        //BFS.toCamera(tileSet);
+
+        //Off bounds
+
+
+        if(pressing[SPACE]){
+            aStar.setStartNode(SpriteHelper.getCurrentTile(tileSet, dog));
+            aStar.setEndNode(SpriteHelper.getCurrentTile(tileSet, link));
+            aStar.solve();
+            this.path = aStar.getPath();
+            System.out.println(path);
+        }
         if (pressing[_Z]) {
             ((Link) link).spin();
         } else if (pressing[SPACE]) {
@@ -170,6 +199,7 @@ public class CustomTileGame extends GameApplet {
                 }
             }
         }
+
 
 
         objectList.forEach(obj -> {
