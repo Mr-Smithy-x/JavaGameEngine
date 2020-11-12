@@ -1,6 +1,7 @@
 package com.charlton.models;
 
 import com.charlton.contracts.*;
+import com.charlton.helpers.Camera;
 
 import java.awt.*;
 
@@ -15,6 +16,7 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
 
     /**
      * Sloppy shoot
+     *
      * @param obj
      */
     public void launch(BoundingCircle[] obj) {
@@ -42,6 +44,16 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
     public void draw(Graphics g) {
         g.drawOval((int) (position_x - radius), (int) (position_y - radius), (int) (2.0 * radius), (int) (2.0 * radius));
         g.drawLine((int) position_x, (int) position_y, (int) (position_x + radius * cos_angle), (int) (position_y + radius * sin_angle));
+    }
+
+    @Override
+    public void drawRelativeToCamera(Graphics g) {
+        g.drawOval((int) (position_x - radius),
+                (int) (position_y - radius), (int) (2.0 * radius), (int) (2.0 * radius));
+        g.drawLine((int) position_x,
+                (int) position_y,
+                (int) (position_x + radius * cos_angle),
+                (int) (position_y + radius * sin_angle));
     }
 
     @Override

@@ -32,6 +32,10 @@ public class Sprite extends MovableObject implements Drawable {
         moving = false;
     }
 
+    @Override
+    public void drawRelativeToCamera(Graphics g) {
+
+    }
 
 
     public Sprite(int x, int y, String[] poses, int count, int duration)

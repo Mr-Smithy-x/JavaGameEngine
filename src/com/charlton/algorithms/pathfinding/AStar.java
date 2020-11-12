@@ -22,6 +22,9 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
     }
 
     public void solve() {
+        if(path != null && !path.isEmpty()){
+            path.clear();
+        }
 
         if (start == null && end == null) {
             return;
@@ -50,6 +53,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
             openList.remove(current);
             closedList.add(current);
 
+            System.out.printf("CURRENT: (%s)\n", current);
             for (Node n : current.getNeighbours()) {
 
                 if (closedList.contains(n) || !n.isValid()) {
@@ -65,7 +69,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
                     }
                 } else {
                     n.setCost(tempScore);
-                    openList.add((Node) n);
+                    openList.add(n);
                     n.setParent(current);
                 }
 

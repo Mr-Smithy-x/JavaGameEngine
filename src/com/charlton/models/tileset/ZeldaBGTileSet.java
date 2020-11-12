@@ -49,4 +49,9 @@ public class ZeldaBGTileSet extends BaseTileSet implements Drawable {
             }
         }
     }
+
+    @Override
+    public void drawRelativeToCamera(Graphics g) {
+
+    }
 }

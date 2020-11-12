@@ -82,7 +82,6 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
     }
 
 
-
     @Override
     public void moveBy(double dx, double dy) {
         moving = true;
@@ -104,8 +103,7 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
                 pose = RIGHT;
                 System.out.println("RIGHT");
             }
-        }
-        else if (dy < dx) {
+        } else if (dy < dx) {
             if (dy > 0) {
                 pose = DOWN;
                 System.out.println("DOWN");
@@ -252,7 +250,53 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
         g.drawImage(image, destination_x, destination_y, destination_x2, destination_y2, source_x, source_y, source_x2, source_y2, null);
         moving = false;
 
-        ((Drawable)circle).draw(g);
+        ((Drawable) circle).draw(g);
+    }
+
+    @Override
+    public void drawRelativeToCamera(Graphics g) {
+        Image image;
+        if (moving) {
+            image = getImage();
+        } else {
+            image = getStillImage();
+        }
+        //g.drawImage(image, ((int) position_x + (image.getWidth(null) / 2)), ((int) position_y + (image.getHeight(null)) / 2), 3 * image.getWidth(null), 3 * image.getHeight(null), null);
+        int scale_computed_x = image.getWidth(null);// * Camera.scaling_factor;
+        int scale_computed_y = image.getHeight(null);// * Camera.scaling_factor;
+
+        int destination_x = this.getX().intValue();
+        int destination_y = this.getY().intValue();
+        int destination_x2 = this.getX().intValue();
+        int destination_y2 = this.getY().intValue();
+        destination_x2 += (scale_computed_x);
+        destination_y2 += (scale_computed_y);
+
+
+        int source_x = 0;
+        int source_y = 0;
+        int source_x2 = image.getWidth(null);
+        int source_y2 = image.getHeight(null);
+        //Aligns image to the bottom
+
+
+        int scaled_camera_offset_x = Camera.x_origin;
+        int scaled_camera_offset_y = Camera.y_origin;
+        int scaled_destination_x = destination_x - (scaled_camera_offset_x / (Camera.scaling_factor * 2));
+        int scaled_destination_y = destination_y - (scaled_camera_offset_y / (Camera.scaling_factor * 2));
+        int scaled_destination_x2 = destination_x2 + (scaled_camera_offset_x / (Camera.scaling_factor * 2));
+        int scaled_destination_y2 = destination_y2 + (scaled_camera_offset_y / (Camera.scaling_factor * 2));
+
+        g.drawImage(image,
+                scaled_destination_x,
+                scaled_destination_y,
+                scaled_destination_x2,
+                scaled_destination_y2,
+                source_x, source_y,
+                source_x2, source_y2, null);
+
+        moving = false;
+        ((Drawable) circle).draw(g);
     }
 
     public void setPose(int pose) {
@@ -301,7 +345,6 @@ public class SpriteSheet implements Drawable, BoundingContract<Number>, MovableC
             return height;
         }
     }
-
 
 
     @Override

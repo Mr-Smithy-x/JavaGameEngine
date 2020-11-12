@@ -33,6 +33,11 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
     }
 
     @Override
+    public void drawRelativeToCamera(Graphics g) {
+
+    }
+
+    @Override
     public void pushes(MovableCollision contract) {
         double dx = position_x - contract.getX().doubleValue();
         double dy = position_y - contract.getY().doubleValue();

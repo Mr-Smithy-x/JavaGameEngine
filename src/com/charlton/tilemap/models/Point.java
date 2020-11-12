@@ -12,8 +12,7 @@ public class Point extends Number implements Comparable<Long> {
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
         if (x != point.x) return false;
-        if (y != point.y) return false;
-        return true;
+        return y == point.y;
     }
 
     @Override

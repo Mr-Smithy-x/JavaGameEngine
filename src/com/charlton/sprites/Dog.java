@@ -1,5 +1,6 @@
 package com.charlton.sprites;
 
+import com.charlton.contracts.Drawable;
 import com.charlton.models.BoundingCircle;
 import com.charlton.models.SpriteSheet;
 import com.charlton.sprites.contracts.Animal;
@@ -38,6 +39,7 @@ public class Dog extends SpriteSheet implements Animal {
         super.draw(g);
         g.setPaintMode();
         g.drawString("Skeet", getX().intValue()-10, getY().intValue() - 15);
+        ((Drawable)circle).draw(g);
     }
 
     @Override

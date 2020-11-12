@@ -3,6 +3,7 @@ package com.charlton.helpers;
 import com.charlton.contracts.Movable;
 
 public class Camera {
+
     public static double x;
     public static double y;
 
@@ -11,11 +12,11 @@ public class Camera {
 
     public static int ay;
 
-    public static int x_origin = 900;
-    public static int y_origin = 440;
+    public static int x_origin = 96;
+    public static int y_origin = 128;
 
     public static final int GRAVITY = 1;
-    public final static int scaling_factor = 2;
+    public final static int scaling_factor = 4;
 
     public static double getX() {
         return x;
