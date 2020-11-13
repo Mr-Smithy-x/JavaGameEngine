@@ -41,7 +41,7 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         int x_radius = (int) (position_x - radius);
         int y_radius = (int) (position_y - radius);
         g.drawOval((int) (x_radius - GlobalCamera.getInstance().getX()), (int) (y_radius - GlobalCamera.getInstance().getY()), (int) (2.0 * radius), (int) (2.0 * radius));
@@ -183,5 +183,10 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
     @Override
     public int getType() {
         return TYPE_CIRCLE;
+    }
+
+    @Override
+    public float getSpeed() {
+        return speed;
     }
 }

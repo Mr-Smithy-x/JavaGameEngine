@@ -1,6 +1,8 @@
 package com.charlton.game.models.sprites;
 
 import com.charlton.game.contracts.MovableCollision;
+import com.charlton.game.display.Camera;
+import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
 import com.charlton.game.models.base.BoundingCircle;
 import com.charlton.game.models.SpriteSheet;
@@ -59,7 +61,7 @@ public class Link extends SpriteSheet {
     }
 
 
-    public void attackDog(Animal animal, MovableCollision collision) {
+    public void attackDog(Animal animal, SpriteSheet collision) {
         if (inVicinity(collision, 400)) {
             if (dogAttack) {
                 animal.getSpriteSheet().chase(collision);
@@ -72,13 +74,35 @@ public class Link extends SpriteSheet {
         }
     }
 
-    public void hit(MovableCollision obj) {
+    public void hit(SpriteSheet obj) {
         double speed = 2000;
-        System.out.printf("COS SPEED: %s, SIN SPEED: %s\n", speed * getCosAngle(), speed * getSinAngle());
-        obj.setVelocity(speed * getCosAngle(), speed * getSinAngle());
+        double cosAngle = speed * getCosAngle();
+        double sinAngle = speed * getSinAngle();
+
+        switch (getPose()){
+            case ATTACK_UP:
+                sinAngle *= 1;
+                cosAngle = 0;
+                break;
+            case ATTACK_DOWN:
+                sinAngle *= -1;
+                cosAngle = 0;
+                break;
+            case ATTACK_LEFT:
+                sinAngle = 0;
+                cosAngle *= -1;
+                break;
+            case ATTACK_RIGHT:
+                sinAngle = 0;
+                cosAngle *= 1;
+                break;
+        }
+
+        System.out.printf("COS SPEED: %s, SIN SPEED: %s\n", cosAngle, sinAngle);
+        obj.setVelocity(cosAngle, sinAngle);
     }
 
-    public void attack(ArrayList<MovableCollision> objects) {
+    public void attack(ArrayList<SpriteSheet> objects) {
         this.attack();
         objects.stream()
                 .filter(o -> o.inVicinity(this, 80))
@@ -166,12 +190,16 @@ public class Link extends SpriteSheet {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         if (attacking) {
             moving = attacking;
         }
-        super.draw(g);
+        super.render(g);
         attacking = false;
+
+        String string = "I'm working on final project which is a game.";
+        int width = g.getFontMetrics().stringWidth(string);
+        g.drawString(string, (int)(getX().intValue() - GlobalCamera.getInstance().getX()) - width / 2, (int)(getY().intValue() - GlobalCamera.getInstance().getY()) - getHeight().intValue() / 2);
     }
 
     @Override
@@ -181,5 +209,10 @@ public class Link extends SpriteSheet {
 
     public void sendAttackDog() {
         dogAttack = true;
+    }
+
+    @Override
+    public float getSpeed() {
+        return Camera.getInstance().getScaling() * 4;
     }
 }

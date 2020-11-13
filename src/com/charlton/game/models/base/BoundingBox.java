@@ -27,14 +27,9 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
 
         g.drawRect((int) position_x, (int) position_y, (int) width, (int) height);
-    }
-
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-
     }
 
     @Override
@@ -112,4 +107,8 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
         return (width + height) / 2;
     }
 
+    @Override
+    public float getSpeed() {
+        return (float) getCurrentSpeed();
+    }
 }

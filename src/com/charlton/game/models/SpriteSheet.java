@@ -1,8 +1,8 @@
 package com.charlton.game.models;
 
 import com.charlton.game.contracts.*;
-import com.charlton.game.gfx.SubImage;
 import com.charlton.game.display.GlobalCamera;
+import com.charlton.game.gfx.SubImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -10,7 +10,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class SpriteSheet implements Drawable, BoundingContract<Number>, MovableCollision {
+public abstract class SpriteSheet
+        implements Drawable,
+        BoundingContract<Number>,
+        MovableCollision {
 
 
     public static final int UP = 0;
@@ -84,47 +87,44 @@ public abstract class SpriteSheet implements Drawable, BoundingContract<Number>,
         if (dx < dy) {
             if (dy > 0) {
                 pose = DOWN;
-                System.out.println("DOWN");
             }
             if (dy < 0) {
                 pose = UP;
-                System.out.println("UP");
             }
             if (dx < 0) {
                 pose = LEFT;
-                System.out.println("LEFT");
             }
             if (dx > 0) {
                 pose = RIGHT;
-                System.out.println("RIGHT");
             }
-        } else if (dy < dx) {
+        }
+        else if (dy < dx) {
             if (dy > 0) {
                 pose = DOWN;
-                System.out.println("DOWN");
             }
             if (dy < 0) {
                 pose = UP;
-                System.out.println("UP");
             }
             if (dx < 0) {
                 pose = LEFT;
-                System.out.println("LEFT");
             }
             if (dx > 0) {
                 pose = RIGHT;
-                System.out.println("RIGHT");
             }
         }
         switch (pose) {
             case LEFT:
                 circle.setWorldAngle(180);
+                break;
             case DOWN:
                 circle.setWorldAngle(90);
+                break;
             case RIGHT:
                 circle.setWorldAngle(0);
+                break;
             case UP:
                 circle.setWorldAngle(270);
+                break;
         }
         nextImageColumn();
     }
@@ -215,7 +215,7 @@ public abstract class SpriteSheet implements Drawable, BoundingContract<Number>,
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         Image image;
         if (moving) {
             image = getImage();
@@ -231,26 +231,34 @@ public abstract class SpriteSheet implements Drawable, BoundingContract<Number>,
         );
         moving = false;
         if(GlobalCamera.DEBUG) {
-            ((Drawable) circle).draw(g);
+            ((Drawable) circle).render(g);
         }
     }
 
     public void setPose(int pose) {
-        moving = true;
+        moving = false;
         this.pose = pose;
+
         switch (pose) {
             case LEFT:
                 circle.setWorldAngle(180);
+                break;
             case DOWN:
                 circle.setWorldAngle(90);
+                break;
             case RIGHT:
                 circle.setWorldAngle(0);
+                break;
             case UP:
                 circle.setWorldAngle(270);
+                break;
         }
         nextImageColumn();
     }
 
+    public int getPose() {
+        return pose;
+    }
 
     @Override
     public int getType() {

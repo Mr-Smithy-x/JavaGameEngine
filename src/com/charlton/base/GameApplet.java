@@ -1,36 +1,12 @@
-package com.charlton.applets.base;
+package com.charlton.base;
 
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 
 public abstract class GameApplet extends Applet implements Runnable, KeyListener, MouseListener, MouseMotionListener {
+
     Thread t;
-
-    private static final GraphicsConfiguration GFX_CONFIG = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-
-    public static BufferedImage toCompatibleImage(final BufferedImage image) {
-        /*
-         * if image is already compatible and optimized for current system settings, simply return it
-         */
-        if (image.getColorModel().equals(GFX_CONFIG.getColorModel())) {
-            return image;
-        }
-
-        // image is not optimized, so create a new image that is
-        final BufferedImage new_image = GFX_CONFIG.createCompatibleImage(image.getWidth(), image.getHeight(), image.getTransparency());
-
-        // get the graphics context of the new image to draw the old image on
-        final Graphics2D g2d = (Graphics2D) new_image.getGraphics();
-
-        // actually draw the image and dispose of context no longer needed
-        g2d.drawImage(image, 0, 0, null);
-        g2d.dispose();
-
-        // return the new optimized image
-        return new_image;
-    }
 
     protected boolean[] pressing = new boolean[1024];
 
@@ -97,6 +73,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
     private Image off_screen_image;
     private Graphics off_g;
 
+    @Override
     public void init() {
         off_screen_image = this.createImage(getWidth(), getHeight());
         off_g = off_screen_image.getGraphics();
@@ -121,6 +98,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
         g.drawImage(off_screen_image, 0, 0, null);
     }
 
+    @Override
     public void run() {
         while (true) {
             inGameLoop();
@@ -133,8 +111,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
         }
     }
 
-    public void inGameLoop() {
-    }
+    public void inGameLoop() { }
 
     public void mouseMoved(MouseEvent e) {
     }
@@ -156,7 +133,6 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
 
     public void mouseExited(MouseEvent e) {
     }
-
 
     public final void keyPressed(KeyEvent e) {
         pressing[e.getKeyCode()] = true;

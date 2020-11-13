@@ -56,7 +56,7 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         if (structure.length > 0) {
             int[] x_points = new int[structure[0].length];
             int[] y_points = new int[structure[0].length];
@@ -73,13 +73,8 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
 
         }
         if (TESTING) {
-            boundingBox.draw(g);
+            boundingBox.render(g);
         }
-    }
-
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-
     }
 
     @Override

@@ -1,16 +1,16 @@
 package com.charlton.game.world;
 
 import com.charlton.Game;
-import com.charlton.game.contracts.Renderable;
-import com.charlton.game.states.State;
+import com.charlton.game.contracts.Drawable;
 import com.charlton.game.models.tilemap.Point;
 import com.charlton.game.models.tilemap.Tile;
 import com.charlton.game.models.tilemap.TileMap;
+import com.charlton.game.states.State;
 
 import java.awt.*;
 import java.io.IOException;
 
-public class World implements Renderable {
+public class World implements Drawable {
 
     private Game game;
     private TileMap tiles;

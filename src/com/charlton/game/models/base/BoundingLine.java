@@ -51,13 +51,8 @@ public class BoundingLine implements Drawable, BoundingContractLine {
 
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         g.drawLine((int) point_x, (int) point_y, (int) point_x2, (int) point_y2);
-    }
-
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-
     }
 
     @Override

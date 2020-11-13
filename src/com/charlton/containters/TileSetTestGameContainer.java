@@ -1,17 +1,18 @@
-package com.charlton.applets;
+package com.charlton.containters;
 
-import com.charlton.applets.base.GameApplet;
+import com.charlton.base.GameHolder;
 import com.charlton.game.models.SpriteSheet;
-import com.charlton.game.models.tileset.ZeldaBGTileSet;
 import com.charlton.game.models.sprites.Link;
+import com.charlton.game.models.tileset.ZeldaBGTileSet;
 
+import javax.swing.*;
+import java.applet.Applet;
 import java.awt.*;
 import java.io.IOException;
 
-public class TileSetTestGame extends GameApplet {
+public class TileSetTestGameContainer extends GameHolder {
 
-
-    ZeldaBGTileSet set = new ZeldaBGTileSet(this);
+    ZeldaBGTileSet set;
     SpriteSheet link = new Link(32, 32, 4) {
         {
             setVelocity(0.0, 0.7);
@@ -35,16 +36,16 @@ public class TileSetTestGame extends GameApplet {
             "#..............................................#",
             "#.......########################################",
             "#..............................................#",
-           //"####.....#######################################",
-           //"...#.....########################################",
-           //"...#...........................................#",
-           //"...####..#######################################",
-           //"................................................",
-           //"###########...#############...##################",
-           //"...#...........................................#",
-           //"####...#################...#####################",
-           ////"...............#...........#.....................",
-           ////"...#....#######################################",
+            //"####.....#######################################",
+            //"...#.....########################################",
+            //"...#...........................................#",
+            //"...####..#######################################",
+            //"................................................",
+            //"###########...#############...##################",
+            //"...#...........................................#",
+            //"####...#################...#####################",
+            ////"...............#...........#.....................",
+            ////"...#....#######################################",
             //"...#...........................................#",
             //"...######...##############################.....#",
             //".........................................#.....#",
@@ -57,14 +58,24 @@ public class TileSetTestGame extends GameApplet {
     };
     private Image tile;
 
-    public TileSetTestGame() throws IOException {
+
+    protected TileSetTestGameContainer(JFrame container, Canvas canvas) throws IOException {
+        super(container, canvas);
+    }
+
+    public TileSetTestGameContainer(Applet container) throws IOException {
+        super(container);
     }
 
 
     @Override
     public void init() {
-        super.init();
-        tile = set.getTile();
+        try {
+            set = new ZeldaBGTileSet(getContainer());
+            tile = set.getTile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -90,7 +101,7 @@ public class TileSetTestGame extends GameApplet {
             }
         }
 
-        link.draw(g);
+        link.render(g);
     }
 
     int S = 16;
@@ -149,4 +160,29 @@ public class TileSetTestGame extends GameApplet {
 
         }
     }
+
+
+    public static GameHolder frame(int width, int height) throws IOException {
+        JFrame frame = new JFrame("Zelda Game");
+        frame.setSize(width, height);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        Canvas canvas = new Canvas();
+        canvas.setFocusable(true);
+        canvas.setFocusTraversalKeysEnabled(true);
+        canvas.setPreferredSize(new Dimension(width, height));
+        canvas.setMaximumSize(new Dimension(width, height));
+        canvas.setMinimumSize(new Dimension(width, height));
+        canvas.setFocusable(false);
+        frame.add(canvas);
+        frame.pack();
+        return new TileSetTestGameContainer(frame, canvas);
+    }
+
+    public static GameHolder applet(Applet applet) throws IOException {
+        return new TileSetTestGameContainer(applet);
+    }
+
 }

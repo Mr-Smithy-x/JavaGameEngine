@@ -22,6 +22,7 @@ public interface Movable {
     double distanceTo(Movable c);
     void bounce();
 
+
     boolean toTheLeftOf(Movable c);
     boolean toTheRightOf(Movable c);
     boolean inFrontOf(Movable c);
@@ -52,4 +53,23 @@ public interface Movable {
     Movable setTurnSpeed(int turnspeed);
     void turnToward(Movable circle);
     void bind(MovableCollision movable);
+
+
+
+    default void moveLeft(Number speed) {
+        moveBy(-speed.doubleValue(), 0);
+    }
+
+    default void moveRight(Number speed) {
+        moveBy(speed.doubleValue(), 0);
+    }
+
+    default void moveDown(Number speed) {
+        moveBy(0, speed.doubleValue());
+    }
+
+    default void moveUp(Number speed) {
+        moveBy(0, -speed.doubleValue());
+    }
+
 }

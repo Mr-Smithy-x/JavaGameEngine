@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class SpriteSheetEntity implements Renderable, BoundingContract<Number>, MovableCollision {
+public abstract class SpriteSheetEntity implements Drawable, BoundingContract<Number>, MovableCollision {
 
     public static final int UP = 0;
     public static final int DOWN = 1;

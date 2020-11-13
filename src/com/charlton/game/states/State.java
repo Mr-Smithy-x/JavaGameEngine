@@ -2,9 +2,9 @@ package com.charlton.game.states;
 
 
 import com.charlton.Game;
-import com.charlton.game.contracts.Renderable;
+import com.charlton.game.contracts.Drawable;
 
-public abstract class State implements Renderable {
+public abstract class State implements Drawable {
 
     private static State currentState = null;
 

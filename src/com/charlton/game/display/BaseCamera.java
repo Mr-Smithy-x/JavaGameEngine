@@ -6,7 +6,17 @@ public abstract class BaseCamera {
 
     protected float x, y;
     protected float x_origin, y_origin;
-    protected float scale = 1;
+    protected int scaling = 4;
+
+
+    public int getScaling() {
+        return scaling;
+    }
+
+
+    public void setScaling(int scaling) {
+        this.scaling = scaling;
+    }
 
 
     public float getX() {
@@ -29,8 +39,16 @@ public abstract class BaseCamera {
 
 
     public void setOrigin(Movable e, float screen_width, float screen_height) {
-        x_origin = e.getX().floatValue() - screen_width / 2 + e.getWidth().floatValue() / 2;
-        y_origin = e.getY().floatValue() - screen_height / 2 + e.getHeight().floatValue() / 2;
+        float x = e.getX().floatValue();
+        float y = e.getY().floatValue();
+        //Commented out code would center the pixel onto the screen, but with this dynamic, it works much differently
+        x_origin = x - (screen_width / 2);// + (e.getWidth().floatValue() / 2);
+        y_origin = y - (screen_height / 2);// + (e.getHeight().floatValue() / 2);
+
+        this.x = x_origin;
+        this.y = y_origin;
+
+       // System.out.printf("(X: %s,Y: %s), ORIGIN: (x: %s, y: %s)", x, y, x_origin, y_origin);
     }
 
     public void setup(float x, float y) {

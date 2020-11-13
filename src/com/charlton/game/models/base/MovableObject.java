@@ -17,7 +17,6 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     protected int speed = 3;
 
 
-
     public double last_dx;
     public double last_dy;
 
@@ -110,7 +109,7 @@ public abstract class MovableObject implements Movable, BoundingContract<Number>
     }
 
 
-    public double getSpeed() {
+    public double getCurrentSpeed() {
         return Math.sqrt(velocity_x * velocity_x + velocity_y * velocity_y);
     }
 

@@ -1,5 +1,6 @@
 package com.charlton.game.models.sprites;
 
+import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
 import com.charlton.game.models.SpriteSheet;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 public class Dog extends SpriteSheet implements Animal {
 
+    int speed = 3;
 
     public Dog(int position_x, int position_y, int duration) throws IOException {
         super("dog.png");
@@ -36,8 +38,8 @@ public class Dog extends SpriteSheet implements Animal {
     }
 
     @Override
-    public void draw(Graphics g) {
-        super.draw(g);
+    public void render(Graphics g) {
+        super.render(g);
         g.setPaintMode();
         g.drawString("Skeet", (int) (getX().intValue() - 10 - GlobalCamera.getInstance().getX()), (int) (getY().intValue() - 15 - GlobalCamera.getInstance().getY()));
     }
@@ -45,5 +47,10 @@ public class Dog extends SpriteSheet implements Animal {
     @Override
     public SpriteSheet getSpriteSheet() {
         return this;
+    }
+
+    @Override
+    public float getSpeed() {
+        return Camera.getInstance().getScaling() * speed;
     }
 }

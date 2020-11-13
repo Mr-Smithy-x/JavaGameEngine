@@ -1,21 +1,27 @@
-package com.charlton.applets;
+package com.charlton.containters;
 
-import com.charlton.applets.base.GameApplet;
+import com.charlton.base.GameHolder;
 import com.charlton.game.contracts.Drawable;
-import com.charlton.game.contracts.MovableCollision;
+import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.base.BoundingLine;
-import com.charlton.game.models.tileset.ZeldaBGTileSet;
 import com.charlton.game.models.sprites.Dog;
 import com.charlton.game.models.sprites.Link;
+import com.charlton.game.models.tileset.ZeldaBGTileSet;
 
+import javax.swing.*;
+import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GameF20 extends GameApplet {
+public class GameF20Container extends GameHolder  {
 
-    ArrayList<MovableCollision> objectList = new ArrayList<MovableCollision>() {
+
+
+
+    private ZeldaBGTileSet zeldaTitles;
+    ArrayList<SpriteSheet> objectList = new ArrayList<SpriteSheet>() {
         {
 
             add(new Link(700, 700, 5));
@@ -23,9 +29,6 @@ public class GameF20 extends GameApplet {
             //add(new BadBoundingCircle(500, 200, 40, 90));
         }
     };
-
-
-
     BoundingLine[] L = new BoundingLine[3];
     Link link = new Link(300, 300, 5);
     Dog dog = new Dog(200, 200, 5) {
@@ -34,39 +37,41 @@ public class GameF20 extends GameApplet {
             this.setChaseSpeed(5);
         }
     };
-    private ZeldaBGTileSet zeldaTitles = new ZeldaBGTileSet(this);
-
-    public GameF20() throws IOException { }
 
     @Override
-    public void paint(Graphics g) {
-        zeldaTitles.draw(g);
+    protected void paint(Graphics g) {
+        zeldaTitles.render(g);
         g.setColor(Color.BLACK);
         for (BoundingLine boundingLine : L) {
-            boundingLine.draw(g);
+            boundingLine.render(g);
         }
-        objectList.forEach(obj -> ((Drawable) obj).draw(g));
-        link.draw(g);
-        dog.draw(g);
+        objectList.forEach(obj -> ((Drawable) obj).render(g));
+        link.render(g);
+        dog.render(g);
     }
 
+    @Override
     public void init() {
-        double gravity = 0.7;
-        link.setAcceleration(0, 0)
-                .setVelocity(0, 0)
-                .setDrag(0.01, 0.01);
-        objectList.forEach(obj -> obj.setAcceleration(0, 1)
-                .setVelocity(0, 0)
-                .setDrag(0.01, 0.01));
-        double[][] v = {
-                {getWidth(), getHeight() - 200, 0, getHeight() - 200},
-                {getWidth() - 100, 0, getWidth() - 100, getHeight()},
-                {100, getHeight(), 100, 0},
-        };
-        for (int i = 0; i < v.length; i++) {
-            L[i] = new BoundingLine(v[i][0], v[i][1], v[i][2], v[i][3]);
+        try {
+            zeldaTitles = new ZeldaBGTileSet(getContainer());
+            double gravity = 0.7;
+            link.setAcceleration(0, 0)
+                    .setVelocity(0, 0)
+                    .setDrag(0.01, 0.01);
+            objectList.forEach(obj -> obj.setAcceleration(0, 1)
+                    .setVelocity(0, 0)
+                    .setDrag(0.01, 0.01));
+            double[][] v = {
+                    {getWidth(), getHeight() - 200, 0, getHeight() - 200},
+                    {getWidth() - 100, 0, getWidth() - 100, getHeight()},
+                    {100, getHeight(), 100, 0},
+            };
+            for (int i = 0; i < v.length; i++) {
+                L[i] = new BoundingLine(v[i][0], v[i][1], v[i][2], v[i][3]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        super.init();
     }
 
     @Override
@@ -158,4 +163,40 @@ public class GameF20 extends GameApplet {
             boundingLine.draggedBy(dx, dy);
         }
     }
+
+
+    protected GameF20Container(JFrame container, Canvas canvas) throws IOException {
+        super(container, canvas);
+    }
+
+    protected GameF20Container(Applet applet) throws IOException {
+        super(applet);
+    }
+
+    public static GameHolder frame(int width, int height) throws IOException {
+        JFrame frame = new JFrame("Zelda Game");
+        frame.setSize(width, height);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        Canvas canvas = new Canvas();
+        canvas.setFocusable(true);
+        canvas.setFocusTraversalKeysEnabled(true);
+        canvas.setPreferredSize(new Dimension(width, height));
+        canvas.setMaximumSize(new Dimension(width, height));
+        canvas.setMinimumSize(new Dimension(width, height));
+        canvas.setFocusable(false);
+        frame.add(canvas);
+        frame.pack();
+        return new GameF20Container(frame, canvas);
+    }
+
+    public static GameHolder applet(Applet applet) throws IOException {
+        return new GameF20Container(applet);
+    }
+
+
+
+
 }

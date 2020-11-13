@@ -29,7 +29,7 @@ public class ZeldaBGTileSet extends BaseTileSet implements Drawable {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         Image tile = getTile();
         int tw = tile.getWidth(null);
         int th = tile.getHeight(null);
@@ -50,8 +50,4 @@ public class ZeldaBGTileSet extends BaseTileSet implements Drawable {
         }
     }
 
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-
-    }
 }

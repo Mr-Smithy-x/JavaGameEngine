@@ -23,17 +23,12 @@ public class Sprite extends MovableObject implements Drawable {
 
 
     @Override
-    public void draw(Graphics g) {
+    public void render(Graphics g) {
         if(moving)
             g.drawImage(anim[action].getCurrentImage(), (int)position_x - (int) GlobalCamera.getInstance().getX(), (int)position_y, null);
         else
             g.drawImage(anim[action].getStillImage(), (int)position_x - (int) GlobalCamera.getInstance().getX(), (int)position_y, null);
         moving = false;
-    }
-
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-
     }
 
 

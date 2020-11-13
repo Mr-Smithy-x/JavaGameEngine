@@ -9,17 +9,7 @@ public class GlobalCamera extends BaseCamera {
     private float ay, av;
 
     protected int GRAVITY = 1;
-    protected int scaling = 4;
 
-
-    public int getScaling() {
-        return scaling;
-    }
-
-
-    public void setScaling(int scaling) {
-        this.scaling = scaling;
-    }
 
     public static GlobalCamera getInstance(){
         if(camera == null){

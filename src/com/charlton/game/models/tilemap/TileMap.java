@@ -1,10 +1,9 @@
 package com.charlton.game.models.tilemap;
 
-import com.charlton.applets.base.GameApplet;
 import com.charlton.game.contracts.Movable;
+import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.SpriteSheet;
-import com.charlton.game.models.SpriteSheetEntity;
 import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
 import com.charlton.game.algorithms.pathfinding.models.Network;
@@ -161,12 +160,14 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
         int scaled_tile_position_x = sprite_position_x - (sprite_position_x % scaled_tile_width);
         int scaled_tile_position_y = sprite_position_y - (sprite_position_y % scaled_tile_height);
 
-        System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
-                sprite_position_x,
-                sprite_position_y,
-                scaled_tile_position_x,
-                scaled_tile_position_y
-        );
+        if(Camera.DEBUG) {
+            System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
+                    sprite_position_x,
+                    sprite_position_y,
+                    scaled_tile_position_x,
+                    scaled_tile_position_y
+            );
+        }
         switch (direction) {
             case SpriteSheet.LEFT:
                 scaled_tile_position_x -= scaled_tile_width;
