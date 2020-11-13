@@ -56,6 +56,11 @@ public class BoundingLine implements Drawable, BoundingContractLine {
     }
 
     @Override
+    public void drawRelativeToCamera(Graphics g) {
+
+    }
+
+    @Override
     public Number getX() {
         return point_x;
     }

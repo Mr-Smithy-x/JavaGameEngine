@@ -5,28 +5,23 @@ import com.charlton.helpers.Camera;
 import com.charlton.models.SpriteSheet;
 import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
+import com.charlton.algorithms.pathfinding.models.Network;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class TileSet implements Iterable<Long> {
+public class TileSet extends Network<Tile> implements Iterable<Point> {
+
     String map_image;
     LongMap tiles = new LongMap();
+    HashMap<Point, Tile> points = new HashMap<Point, Tile>();
     int tile_width;
     int tile_height;
-
-    public File getImageFile() {
-        ClassLoader cl = TileSet.class.getClassLoader();
-        URL resource = cl.getResource(String.format("assets/sets/%s", map_image));
-        return new File(resource.getFile());
-    }
-
 
     public static TileSet from(String json) throws IOException {
         if (json.endsWith(".json")) {
@@ -39,9 +34,52 @@ public class TileSet implements Iterable<Long> {
             //File file = new File(fileString);
             return from(file);
         }
-        return new Gson().fromJson(json, TileSet.class);
+        TileSet set = new Gson().fromJson(json, TileSet.class);
+        set.initializePoints();
+        return set;
     }
 
+
+    public static TileSet from(File file) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        StringBuilder sb = new StringBuilder();
+        String stub = null;
+        while ((stub = br.readLine()) != null) {
+            sb.append(stub);
+        }
+        br.close();
+        return from(sb.toString());
+    }
+
+
+    private void initializePoints() {
+        for (long p : tiles.keySet()) {
+            Tile value = Tile.create(getTileAddress(p));
+            Point point = Point.fromLong(p);
+            value.setPoint(point);
+            points.put(point, value);
+        }
+        points.values().forEach(t -> t.calculateNearestNodes(this));
+    }
+
+
+    public File getImageFile() {
+        ClassLoader cl = TileSet.class.getClassLoader();
+        URL resource = cl.getResource(String.format("assets/sets/%s", map_image));
+        return new File(resource.getFile());
+    }
+
+    public Tile find(int x, int y) {
+        for (Point point : this) {
+            if (point.getX() == x && point.getY() == y)
+                return points.get(point);
+        }
+        return null;
+    }
+
+    protected List<Point> getPoints() {
+        return tiles.keySet().stream().map(Point::fromLong).collect(Collectors.toList());
+    }
 
     public BufferedImage getImage() throws IOException {
         return ImageIO.read(getImageFile());
@@ -51,93 +89,60 @@ public class TileSet implements Iterable<Long> {
         return map_image;
     }
 
-    public void setMapImage(String map_image) {
-        this.map_image = map_image;
-    }
-
     public int getTileWidth() {
         return tile_width;
-    }
-
-    public void setTileWidth(int tile_width) {
-        this.tile_width = tile_width;
     }
 
     public int getTileHeight() {
         return tile_height;
     }
 
-    public void setTileHeight(int tile_height) {
-        this.tile_height = tile_height;
-    }
-
     public LongMap getTiles() {
         return tiles;
     }
 
-    public void put(Long key, Long value) {
-        tiles.put(key, value);
-    }
-
-    public void remove(Long key) {
-        tiles.remove(key);
-    }
 
     public void setTiles(@NotNull LongMap tiles) {
         this.tiles = tiles;
     }
 
-    public void clear() {
-        this.tiles.clear();
-    }
 
-    public void putAll(@NotNull LongMap tiles) {
-        this.tiles.putAll(tiles);
-    }
-
-    public Iterable<Point> pointIterator() {
-        return () -> tiles.keySet().stream().map(Point::fromLong).iterator();
-    }
-
-    public Iterable<Point> nonCollisionTitles() {
-        return () -> tiles.keySet().stream().filter(point -> {
-            long tile = get(point);
-            return !Tile.isCollisionTile(tile);
-        }).map(Point::fromLong).iterator();
-    }
-
-    public Iterable<Point> collisionTitles() {
-        return () -> tiles.keySet().stream().filter(point -> {
-            long tile = get(point);
-            return Tile.isCollisionTile(tile);
-        }).map(Point::fromLong).iterator();
+    private Iterable<Point> layeredTiles(int level) {
+        return () -> points.keySet().stream().filter(point -> {
+            Tile tile = get(point);
+            return tile.getLevel() == level;
+        }).iterator();
     }
 
     @Override
-    public Iterator<Long> iterator() {
-        return this.tiles.keySet().iterator();
+    public Iterator<Point> iterator() {
+        return this.points.keySet().iterator();
     }
 
     @Override
-    public void forEach(Consumer<? super Long> action) {
-        this.tiles.keySet().forEach(action);
+    public void forEach(Consumer<? super Point> action) {
+        this.points.keySet().forEach(action);
     }
 
     @Override
-    public Spliterator<Long> spliterator() {
-        return this.tiles.keySet().spliterator();
+    public Spliterator<Point> spliterator() {
+        return this.points.keySet().spliterator();
     }
 
-    public long get(Long key) {
+    public Tile get(Point point) {
+        return this.points.get(point);
+    }
+
+    protected long getTileAddress(Long key) {
         return this.tiles.get(key);
     }
 
-    public long get(Point position) {
-        return this.tiles.get(position.longValue());
+    protected long getTileAddress(Point position) {
+        return this.tiles.get(position.toLong());
     }
 
     public boolean has(long pointKey) {
-        return this.tiles.containsKey(pointKey);
+        return this.points.containsKey(Point.fromLong(pointKey));
     }
 
     public boolean canMove(SpriteSheet sprite, int direction) {
@@ -197,24 +202,33 @@ public class TileSet implements Iterable<Long> {
             System.out.println("OUT OF BOUNDS!!!");
             return false;
         }
-        long tileAddress = get(point);
+        long tileAddress = getTileAddress(point);
         return !Tile.isCollisionTile(tileAddress);
     }
+
+    @Override
+    public Iterable<Tile> getNodes() {
+        return () -> points.values().iterator();
+    }
+
+    //We are talking about 0,1,2,3, not 0,16,32,48
+
+    public Iterable<Point> groundLayerTiles() {
+        return layeredTiles(Tile.LEVEL_GROUND);
+    }
+
+    public Iterable<Point> midLayerTiles() {
+        return layeredTiles(Tile.LEVEL_MID);
+    }
+
+    public Iterable<Point> skyLayerTiles() {
+        return layeredTiles(Tile.LEVEL_SKY);
+    }
+
 
     public static class LongMap extends HashMap<Long, Long> {
     }
 
-
-    public static TileSet from(File file) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        StringBuilder sb = new StringBuilder();
-        String stub = null;
-        while ((stub = br.readLine()) != null) {
-            sb.append(stub);
-        }
-        br.close();
-        return from(sb.toString());
-    }
 
 }
 

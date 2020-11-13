@@ -32,7 +32,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
         return new_image;
     }
 
-    protected static final boolean DEBUG = false;
+    protected static  boolean DEBUG = true;
     boolean[] pressing = new boolean[1024];
 
 
@@ -163,7 +163,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
         pressing[e.getKeyCode()] = true;
     }
 
-    public final void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e) {
         pressing[e.getKeyCode()] = false;
     }
 

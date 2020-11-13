@@ -78,6 +78,11 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
+    public void drawRelativeToCamera(Graphics g) {
+
+    }
+
+    @Override
     public boolean overlaps(MovableCollision box) {
         boolean collision = boundingBox.overlaps(box);
         if(collision) {
