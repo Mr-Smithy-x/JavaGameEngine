@@ -9,7 +9,6 @@ public class MainApplet extends Applet {
 
     GameHolder game;
 
-
     @Override
     public void init() {
         super.init();
