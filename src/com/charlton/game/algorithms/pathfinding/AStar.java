@@ -3,19 +3,18 @@ package com.charlton.game.algorithms.pathfinding;
 import com.charlton.game.algorithms.pathfinding.models.Network;
 import com.charlton.game.algorithms.pathfinding.models.Node;
 
-import java.util.ArrayList;
-import java.util.Observable;
+import java.util.*;
 
 public class AStar<T extends Network<N>, N extends Node> extends Observable {
 
     private T network;
-    private ArrayList<Node> path;
+    private PriorityQueue<Node> path;
 
     private Node start;
     private Node end;
 
-    private ArrayList<Node> openList;
-    private ArrayList<Node> closedList;
+    private Set<Node> openList;
+    private Set<Node> closedList;
 
     public AStar(T network) {
         this.network = network;
@@ -31,14 +30,14 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
         }
 
         if (start.equals(end)) {
-            this.path = new ArrayList<>();
+            this.path = new PriorityQueue<>(1000);
             return;
         }
 
-        this.path = new ArrayList<>();
+        this.path = new PriorityQueue<>(1000);
 
-        this.openList = new ArrayList<>();
-        this.closedList = new ArrayList<>();
+        this.openList = new HashSet<>();
+        this.closedList = new HashSet<>();
 
         this.openList.add(start);
 
@@ -53,7 +52,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
             openList.remove(current);
             closedList.add(current);
 
-            System.out.printf("CURRENT: (%s)\n", current);
+            //System.out.printf("CURRENT: (%s)\n", current);
             for (Node n : current.getNeighbours()) {
 
                 if (closedList.contains(n) || !n.isValid()) {
@@ -80,7 +79,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
 
         }
 
-        updateUI();
+        //updateUI();
     }
 
     public void reset() {
@@ -107,7 +106,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
     }
 
     private Node getLowestFunction() {
-        Node lowest = openList.get(0);
+        Node lowest = openList.stream().findFirst().orElse(null);
         for (Node n : openList) {
             if (n.getFunction() < lowest.getFunction()) {
                 lowest = n;
@@ -126,7 +125,7 @@ public class AStar<T extends Network<N>, N extends Node> extends Observable {
         return network;
     }
 
-    public ArrayList<Node> getPath() {
+    public PriorityQueue<Node> getPath() {
         return path;
     }
 

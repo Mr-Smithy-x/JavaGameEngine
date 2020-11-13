@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Tile extends Node implements Comparable<Long> {
+public class Tile extends Node implements Comparable<Node> {
 
 
     public final static int LEVEL_GROUND = 0, LEVEL_MID = 1, LEVEL_SKY = 2;
@@ -325,8 +325,10 @@ public class Tile extends Node implements Comparable<Long> {
     //region Number Overrides
 
     @Override
-    public int compareTo(Long o) {
-        return Long.compare(toLong(), o);
+    public int compareTo(Node o) {
+        double b1Priority = this.getFunction();
+        double b2Priority = o.getFunction();
+        return Double.compare(b1Priority, b2Priority);
     }
 
     public int getCollision() {
@@ -353,37 +355,62 @@ public class Tile extends Node implements Comparable<Long> {
         int y = point.y;
 
         if (x > minX) {
-            nodes.add(grid.find(x - pixel_w, y)); //west
+            Tile e = grid.find(x - pixel_w, y);
+            if(e != null && e.isValid()) {
+                nodes.add(e); //west
+            }
         }
 
         if (x < maxX) {
-            nodes.add(grid.find(x + pixel_w, y)); //east
+            Tile e = grid.find(x + pixel_w, y);
+            if(e != null && e.isValid()) {
+                nodes.add(e); //east
+            }
         }
 
         if (y > minY) {
-            nodes.add(grid.find(x, y - pixel_h)); //north
+            Tile e = grid.find(x, y - pixel_h);
+            if(e != null && e.isValid()) {
+                nodes.add(e); //north
+            }
         }
 
         if (y < maxY) {
-            nodes.add(grid.find(x, y + pixel_h)); //south
+            Tile e = grid.find(x, y + pixel_h);
+            if(e != null && e.isValid()) {
+                nodes.add(e); //south
+            }
         }
 
-        if (x > minX && y > minY) {
-            nodes.add(grid.find(x - pixel_w, y - pixel_h)); //northwest
-        }
+        if(network.hasCrossDirection()) {
+            if (x > minX && y > minY) {
+                Tile e = grid.find(x - pixel_w, y - pixel_h);
+                if(e != null && e.isValid()) {
+                    nodes.add(e); //northwest
+                }
+            }
 
-        if (x < maxX && y < maxY) {
-            nodes.add(grid.find(x + pixel_w, y + pixel_h)); //southeast
-        }
+            if (x < maxX && y < maxY) {
+                Tile e = grid.find(x + pixel_w, y + pixel_h);
+                if(e != null && e.isValid()) {
+                    nodes.add(e); //southeast
+                }
+            }
 
-        if (x < maxX && y > minY) {
-            nodes.add(grid.find(x + pixel_w, y - pixel_h)); //northeast
-        }
+            if (x < maxX && y > minY) {
+                Tile e = grid.find(x + pixel_w, y - pixel_h);
+                if(e != null && e.isValid()) {
+                    nodes.add(e); //northeast
+                }
+            }
 
-        if (x > minY && y < maxY) {
-            nodes.add(grid.find(x - pixel_w, y + pixel_h)); //southwest
+            if (x > minY && y < maxY) {
+                Tile e = grid.find(x - pixel_w, y + pixel_h);
+                if(e != null && e.isValid()) {
+                    nodes.add(e); //southwest
+                }
+            }
         }
-
         setNeighbours(nodes);
     }
 
