@@ -33,8 +33,8 @@ public class World implements Renderable {
     public void render(Graphics g) {
         for (Point point : tiles) {
             Tile tile = tiles.get(point);
-            int x = (int) (point.getX() - game.getGameCamera().getxOffset());
-            int y = (int) (point.getY() - game.getGameCamera().getyOffset());
+            int x = (int) (point.getX() - game.getGameCamera().getXOrigin());
+            int y = (int) (point.getY() - game.getGameCamera().getYOrigin());
             tile.render(g, x, y);
             if(State.DEBUG){
                 if(tile.isCollision()){

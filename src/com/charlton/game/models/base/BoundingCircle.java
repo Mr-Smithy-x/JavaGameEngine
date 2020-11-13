@@ -1,6 +1,7 @@
 package com.charlton.game.models.base;
 
 import com.charlton.game.contracts.*;
+import com.charlton.game.display.GlobalCamera;
 
 import java.awt.*;
 
@@ -41,18 +42,13 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
 
     @Override
     public void draw(Graphics g) {
-        g.drawOval((int) (position_x - radius), (int) (position_y - radius), (int) (2.0 * radius), (int) (2.0 * radius));
-        g.drawLine((int) position_x, (int) position_y, (int) (position_x + radius * cos_angle), (int) (position_y + radius * sin_angle));
-    }
-
-    @Override
-    public void drawRelativeToCamera(Graphics g) {
-        g.drawOval((int) (position_x - radius),
-                (int) (position_y - radius), (int) (2.0 * radius), (int) (2.0 * radius));
-        g.drawLine((int) position_x,
-                (int) position_y,
-                (int) (position_x + radius * cos_angle),
-                (int) (position_y + radius * sin_angle));
+        int x_radius = (int) (position_x - radius);
+        int y_radius = (int) (position_y - radius);
+        g.drawOval((int) (x_radius - GlobalCamera.getInstance().getX()), (int) (y_radius - GlobalCamera.getInstance().getY()), (int) (2.0 * radius), (int) (2.0 * radius));
+        g.drawLine((int) (position_x - GlobalCamera.getInstance().getX()),
+                (int) (position_y - GlobalCamera.getInstance().getY()),
+                (int) (position_x - GlobalCamera.getInstance().getX() + radius * cos_angle),
+                (int) (position_y - GlobalCamera.getInstance().getY() + radius * sin_angle));
     }
 
     @Override

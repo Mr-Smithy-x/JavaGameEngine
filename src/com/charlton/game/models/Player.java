@@ -134,8 +134,8 @@ public class Player extends Creature {
             image = getStillImage();
         }
         int x = (int)
-                (getX().floatValue() - game.getGameCamera().getxOffset());
-        int y = (int) (getY().floatValue() - game.getGameCamera().getyOffset());
+                (getX().floatValue() - game.getGameCamera().getXOrigin());
+        int y = (int) (getY().floatValue() - game.getGameCamera().getYOrigin());
         g.drawImage(image, x,
                 y,
                 getWidth().intValue(), getHeight().intValue(), null);

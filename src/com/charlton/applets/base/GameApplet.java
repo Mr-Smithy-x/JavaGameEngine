@@ -32,7 +32,6 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
         return new_image;
     }
 
-    protected static  boolean DEBUG = true;
     protected boolean[] pressing = new boolean[1024];
 
 
@@ -94,7 +93,7 @@ public abstract class GameApplet extends Applet implements Runnable, KeyListener
     /**
      * Mouse Variables
      */
-    int mx = 0, my = 0;
+    protected int mx = 0, my = 0;
     private Image off_screen_image;
     private Graphics off_g;
 

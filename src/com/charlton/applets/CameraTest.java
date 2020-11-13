@@ -2,7 +2,7 @@ package com.charlton.applets;
 
 import com.charlton.applets.base.GameApplet;
 import com.charlton.game.gfx.ImageLayer;
-import com.charlton.game.helpers.GlobalCamera2D;
+import com.charlton.game.display.GlobalCamera;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -21,7 +21,7 @@ public class CameraTest  extends GameApplet {
     }
 
     public void init() {
-        GlobalCamera2D.setup(0, 0);
+        GlobalCamera.getInstance().setup(0, 0);
         super.init();
     }
 
@@ -29,10 +29,10 @@ public class CameraTest  extends GameApplet {
     public void inGameLoop() {
         super.inGameLoop();
         if(pressing[LT]){
-            GlobalCamera2D.x -= 4;
+            GlobalCamera.getInstance().moveLeft(4);
         }
         if(pressing[RT]){
-            GlobalCamera2D.x += 4;
+            GlobalCamera.getInstance().moveRight(4);
         }
     }
 

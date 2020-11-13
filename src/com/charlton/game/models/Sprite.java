@@ -2,7 +2,7 @@ package com.charlton.game.models;
 
 import com.charlton.game.contracts.Drawable;
 import com.charlton.game.contracts.MovableCollision;
-import com.charlton.game.helpers.GlobalCamera;
+import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.base.MovableObject;
 import com.charlton.game.models.sprites.Animation;
 
@@ -25,9 +25,9 @@ public class Sprite extends MovableObject implements Drawable {
     @Override
     public void draw(Graphics g) {
         if(moving)
-            g.drawImage(anim[action].getCurrentImage(), (int)position_x - (int) GlobalCamera.getX(), (int)position_y, null);
+            g.drawImage(anim[action].getCurrentImage(), (int)position_x - (int) GlobalCamera.getInstance().getX(), (int)position_y, null);
         else
-            g.drawImage(anim[action].getStillImage(), (int)position_x - (int) GlobalCamera.getX(), (int)position_y, null);
+            g.drawImage(anim[action].getStillImage(), (int)position_x - (int) GlobalCamera.getInstance().getX(), (int)position_y, null);
         moving = false;
     }
 

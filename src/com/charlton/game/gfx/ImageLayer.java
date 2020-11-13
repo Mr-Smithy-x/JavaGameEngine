@@ -1,6 +1,6 @@
 package com.charlton.game.gfx;
 
-import com.charlton.game.helpers.GlobalCamera2D;
+import com.charlton.game.display.GlobalCamera;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,6 +35,6 @@ public class ImageLayer {
 
 
     public void draw(Graphics g) {
-        g.drawImage(image, x - GlobalCamera2D.x, y - GlobalCamera2D.y, null);
+        g.drawImage(image, (int)(x - GlobalCamera.getInstance().getX()), (int)(y - GlobalCamera.getInstance().getY()), null);
     }
 }

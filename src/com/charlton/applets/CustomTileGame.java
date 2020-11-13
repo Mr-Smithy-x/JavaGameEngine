@@ -5,7 +5,7 @@ import com.charlton.game.algorithms.pathfinding.AStar;
 import com.charlton.game.algorithms.pathfinding.models.Node;
 import com.charlton.game.audioplayer.SoundTrack;
 import com.charlton.game.contracts.MovableCollision;
-import com.charlton.game.helpers.GlobalCamera;
+import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.helpers.SpriteHelper;
 import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.sprites.Dog;
@@ -68,13 +68,13 @@ public class CustomTileGame extends GameApplet {
                     setAcceleration(0, 1);
                 }
             };
-            GlobalCamera.setOrigin(link);
+            GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
         } catch (IOException e) {
             e.printStackTrace();
         }
         super.init();
-        SoundTrack s = new SoundTrack("overworld.wav");
         try {
+            SoundTrack s = new SoundTrack("overworld.wav");
             s.play();
         } catch (IOException | UnsupportedAudioFileException | InvalidMidiDataException | MidiUnavailableException | LineUnavailableException e) {
             e.printStackTrace();
@@ -87,12 +87,12 @@ public class CustomTileGame extends GameApplet {
         for (Point p : tileSet) {
             Tile tile = tileSet.get(p);
             BufferedImage subimage = tile.getImage();
-            int scaled_x = GlobalCamera.scaling_factor * p.getX();
-            int scaled_y = GlobalCamera.scaling_factor * p.getY();
-            int camera_offset_x = (int) GlobalCamera.x + GlobalCamera.x_origin;
-            int camera_offset_y = (int) GlobalCamera.y + GlobalCamera.y_origin;
-            int scaled_width = subimage.getWidth() * GlobalCamera.scaling_factor;
-            int scaled_height = subimage.getHeight() * GlobalCamera.scaling_factor;
+            int scaled_x = GlobalCamera.getInstance().getScaling() * p.getX();
+            int scaled_y = GlobalCamera.getInstance().getScaling() * p.getY();
+            int camera_offset_x = (int) ((int) GlobalCamera.getInstance().getX() + GlobalCamera.getInstance().getXOrigin());
+            int camera_offset_y = (int) ((int) GlobalCamera.getInstance().getY() + GlobalCamera.getInstance().getYOrigin());
+            int scaled_width = subimage.getWidth() * GlobalCamera.getInstance().getScaling();
+            int scaled_height = subimage.getHeight() * GlobalCamera.getInstance().getScaling();
             g.drawImage(subimage, scaled_x - camera_offset_x, scaled_y - camera_offset_y,
                     scaled_width, scaled_height,
                     null);
@@ -106,7 +106,7 @@ public class CustomTileGame extends GameApplet {
                 }
             }
 
-            if (DEBUG) {
+            if (GlobalCamera.DEBUG) {
                 g.setColor(new Color(0.2f, 0, 0, 0.4f));
                 if (tile.isCollision()) {
                     g.fillRect(scaled_x - camera_offset_x,
@@ -125,8 +125,8 @@ public class CustomTileGame extends GameApplet {
         }
 
 
-        link.drawRelativeToCamera(g);
-        dog.drawRelativeToCamera(g);
+        link.draw(g);
+        dog.draw(g);
         //objectList.forEach(obj -> ((Drawable) obj).draw(g));
 
 
@@ -143,33 +143,33 @@ public class CustomTileGame extends GameApplet {
         } else {
             if (pressing[UP]) {
                 link.setPose(SpriteSheet.UP);
-                if (tileSet.canMove(link, UP)) {
-                    //link.moveBy(0, -CameraHelper.scaling_factor);
-                    GlobalCamera.moveUp(16);
+                if (tileSet.canMove(link, SpriteSheet.UP)) {
+                    link.moveBy(0, -16);
+                    GlobalCamera.getInstance().moveUp(16);
                 }
             }
             if (pressing[DN]) {
 
                 link.setPose(SpriteSheet.DOWN);
-                if (tileSet.canMove(link, DN)) {
-                    //link.moveBy(0, CameraHelper.scaling_factor);
-                    GlobalCamera.moveDown(16);
+                if (tileSet.canMove(link, SpriteSheet.DOWN)) {
+                    link.moveBy(0, 16);
+                    GlobalCamera.getInstance().moveDown(16);
                 }
             }
             if (pressing[LT]) {
 
                 link.setPose(SpriteSheet.LEFT);
-                if (tileSet.canMove(link, LT)) {
-                    //link.moveBy(-CameraHelper.scaling_factor, 0);
-                    GlobalCamera.moveLeft(16);
+                if (tileSet.canMove(link, SpriteSheet.LEFT)) {
+                    link.moveBy(-16, 0);
+                    GlobalCamera.getInstance().moveLeft(16);
                 }
             }
             if (pressing[RT]) {
 
                 link.setPose(SpriteSheet.RIGHT);
-                if (tileSet.canMove(link, RT)) {
-                    //link.moveBy(CameraHelper.scaling_factor, 0);
-                    GlobalCamera.moveRight(16);
+                if (tileSet.canMove(link, SpriteSheet.RIGHT)) {
+                    link.moveBy(16, 0);
+                    GlobalCamera.getInstance().moveRight(16);
                 }
             }
         }
@@ -198,7 +198,7 @@ public class CustomTileGame extends GameApplet {
         }
 
         if (e.getKeyCode() == _D) {
-            DEBUG = !DEBUG;
+            GlobalCamera.DEBUG = !GlobalCamera.DEBUG;
         }
     }
 

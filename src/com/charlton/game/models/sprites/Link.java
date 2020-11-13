@@ -31,7 +31,7 @@ public class Link extends SpriteSheet {
 
 
     public Link(int position_x, int position_y, int duration) throws IOException {
-        super("link.png", 2);
+        super("link.png");
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];
@@ -42,7 +42,7 @@ public class Link extends SpriteSheet {
     }
 
     public Link(int position_x, int position_y, int duration, int scale) throws IOException {
-        super("link.png", scale);
+        super("link.png");
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];

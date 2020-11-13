@@ -1,19 +1,19 @@
 package com.charlton.game.models.sprites;
 
-import com.charlton.game.contracts.Drawable;
+import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
-import com.charlton.game.models.base.BoundingCircle;
 import com.charlton.game.models.SpriteSheet;
+import com.charlton.game.models.base.BoundingCircle;
 import com.charlton.game.models.contracts.Animal;
 
 import java.awt.*;
 import java.io.IOException;
 
 public class Dog extends SpriteSheet implements Animal {
-    
+
 
     public Dog(int position_x, int position_y, int duration) throws IOException {
-        super("dog.png", 2);
+        super("dog.png");
         this.duration = duration;
         this.subImages = new SubImage[16][];
         this.stillImages = new SubImage[16];
@@ -39,8 +39,7 @@ public class Dog extends SpriteSheet implements Animal {
     public void draw(Graphics g) {
         super.draw(g);
         g.setPaintMode();
-        g.drawString("Skeet", getX().intValue()-10, getY().intValue() - 15);
-        ((Drawable)circle).draw(g);
+        g.drawString("Skeet", (int) (getX().intValue() - 10 - GlobalCamera.getInstance().getX()), (int) (getY().intValue() - 15 - GlobalCamera.getInstance().getY()));
     }
 
     @Override
