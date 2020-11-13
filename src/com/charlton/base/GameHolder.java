@@ -6,7 +6,7 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 
-public abstract   class GameHolder implements Runnable, KeyListener, MouseListener, MouseMotionListener {
+public abstract class GameHolder implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
     Thread t;
     protected boolean[] pressing = new boolean[1024];
@@ -20,7 +20,7 @@ public abstract   class GameHolder implements Runnable, KeyListener, MouseListen
     protected Graphics off_g;
 
 
-    protected GameHolder(JFrame container, Canvas canvas){
+    protected GameHolder(JFrame container, Canvas canvas) {
         this.container = canvas;
         off_screen_image = canvas.createImage(canvas.getWidth(), canvas.getHeight());
         off_g = off_screen_image.getGraphics();
@@ -30,7 +30,7 @@ public abstract   class GameHolder implements Runnable, KeyListener, MouseListen
         container.addMouseMotionListener(this);
     }
 
-    public GameHolder(Applet container){
+    public GameHolder(Applet container) {
         this.container = container;
         off_screen_image = container.createImage(container.getWidth(), container.getHeight());
         off_g = off_screen_image.getGraphics();
@@ -56,11 +56,11 @@ public abstract   class GameHolder implements Runnable, KeyListener, MouseListen
 
     protected abstract void paint(Graphics g);
 
-    public int getWidth(){
+    public int getWidth() {
         return container.getWidth();
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return container.getWidth();
     }
 
@@ -82,11 +82,13 @@ public abstract   class GameHolder implements Runnable, KeyListener, MouseListen
             try {
                 t.sleep(16);
             } catch (InterruptedException x) {
-            };
+            }
+            ;
         }
     }
 
-    public void inGameLoop() { }
+    public void inGameLoop() {
+    }
 
     public void mouseMoved(MouseEvent e) {
     }
@@ -119,8 +121,6 @@ public abstract   class GameHolder implements Runnable, KeyListener, MouseListen
 
     public final void keyTyped(KeyEvent e) {
     }
-
-
 
 
     public static final int UP = KeyEvent.VK_UP;
