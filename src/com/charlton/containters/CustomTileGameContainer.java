@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 public class CustomTileGameContainer extends GameHolder {
 
@@ -31,7 +32,7 @@ public class CustomTileGameContainer extends GameHolder {
     private Link link = null;
     private Dog dog = null;
     private AStar<TileMap, Tile> aStar;
-    private ArrayList<Node> path;
+    private PriorityQueue<Node> path;
 
 
     @Override
@@ -198,8 +199,11 @@ public class CustomTileGameContainer extends GameHolder {
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
         if (e.getKeyCode() == _D) {
-            System.out.println("OK");
             GlobalCamera.DEBUG = !GlobalCamera.DEBUG;
+        }
+
+        if(e.getKeyCode() == _A){
+            find();
         }
     }
 
@@ -207,11 +211,21 @@ public class CustomTileGameContainer extends GameHolder {
         Tile currentTile = SpriteHelper.getCurrentTile(tileSet, dog);
         Tile currentTile1 = SpriteHelper.getCurrentTile(tileSet, link);
         System.out.printf("DOG: (%s) - Link: (%s)\n", currentTile, currentTile1);
-        aStar.setStartNode(currentTile);
-        aStar.setEndNode(currentTile1);
-        aStar.solve();
-        this.path = aStar.getPath();
-        System.out.println(path);
+        //aStar.setStartNode(currentTile);
+        //aStar.setEndNode(currentTile1);
+
+        if(currentTile.isCollision() || currentTile1.isCollision()){
+            System.out.println("Someone is in a collision tile..");
+            return;
+        }
+
+
+        System.out.println("This feature runs oom when you are too close...");
+
+
+        //aStar.solve();
+        //this.path = aStar.getPath();
+        //System.out.println(path);
     }
 
 

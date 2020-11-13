@@ -23,6 +23,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
     HashMap<Point, Tile> points = new HashMap<Point, Tile>();
     int tile_width;
     int tile_height;
+    private boolean crossDirection = true;
 
     public static TileMap from(String json) throws IOException {
         if (json.endsWith(".json")) {
@@ -36,6 +37,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
             return from(file);
         }
         TileMap set = new Gson().fromJson(json, TileMap.class);
+        set.crossDirection = false;
         set.initializePoints();
         return set;
     }
@@ -161,12 +163,12 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
         int scaled_tile_position_y = sprite_position_y - (sprite_position_y % scaled_tile_height);
 
         if(Camera.DEBUG) {
-            System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
+            /*System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
                     sprite_position_x,
                     sprite_position_y,
                     scaled_tile_position_x,
                     scaled_tile_position_y
-            );
+            );*/
         }
         switch (direction) {
             case SpriteSheet.LEFT:
@@ -186,7 +188,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
         int real_tile_pos_y = scaled_tile_position_y;
         long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
         if (!tiles.containsKey(point)) {
-            System.out.println("Collision Detection");
+            //System.out.println("Collision Detection");
             return false;
         }
         long tileAddress = getTileAddress(point);
@@ -197,6 +199,11 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
     @Override
     public Iterable<Tile> getNodes() {
         return () -> points.values().iterator();
+    }
+
+    @Override
+    public boolean hasCrossDirection() {
+        return crossDirection;
     }
 
     //We are talking about 0,1,2,3, not 0,16,32,48
