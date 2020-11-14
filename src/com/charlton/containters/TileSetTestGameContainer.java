@@ -108,7 +108,6 @@ public class TileSetTestGameContainer extends GameHolder {
 
     @Override
     public void inGameLoop() {
-        super.inGameLoop();
         int top = link.getY().intValue();
         int bottom = link.getY().intValue() + S - 1;
         int left = link.getX().intValue();

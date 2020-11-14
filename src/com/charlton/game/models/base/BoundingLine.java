@@ -2,6 +2,7 @@ package com.charlton.game.models.base;
 
 import com.charlton.game.contracts.BoundingContractLine;
 import com.charlton.game.contracts.Drawable;
+import com.charlton.game.display.GlobalCamera;
 
 import java.awt.*;
 
@@ -52,7 +53,10 @@ public class BoundingLine implements Drawable, BoundingContractLine {
 
     @Override
     public void render(Graphics g) {
-        g.drawLine((int) point_x, (int) point_y, (int) point_x2, (int) point_y2);
+        g.drawLine((int) ((int) point_x - GlobalCamera.getInstance().getX()),
+                (int) ((int) point_y - GlobalCamera.getInstance().getY()),
+                (int) ((int) point_x2 - GlobalCamera.getInstance().getX()),
+                (int) ((int) point_y2 - GlobalCamera.getInstance().getY()));
     }
 
     @Override

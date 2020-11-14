@@ -173,6 +173,7 @@ public abstract class SpriteSheet
         }
     }
 
+
     protected void nextImageColumn() {
         if (delay == 0) {
             current_column++;
@@ -384,6 +385,12 @@ public abstract class SpriteSheet
     @Override
     public MovableCollision getBoundingObject() {
         return this.circle;
+    }
+
+
+    @Override
+    public boolean overlaps(BoundingContractLine line, boolean action) {
+        return circle.overlaps(line, action);
     }
 
     @Override

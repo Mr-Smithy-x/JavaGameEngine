@@ -87,6 +87,11 @@ public class PolygonModel2D extends MovableObject implements Drawable, Collision
     }
 
     @Override
+    public boolean overlaps(BoundingContractLine line, boolean action) {
+        return boundingBox.overlaps(line, action);
+    }
+
+    @Override
     public boolean overlaps(BoundingContractLine line) {
         boolean overlaps = boundingBox.overlaps(line);
 

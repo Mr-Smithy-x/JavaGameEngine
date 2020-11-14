@@ -1,5 +1,6 @@
 package com.charlton.game.models.tilemap;
 
+import com.charlton.game.contracts.Drawable;
 import com.charlton.game.contracts.Movable;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
@@ -9,14 +10,16 @@ import com.sun.istack.internal.NotNull;
 import com.charlton.game.algorithms.pathfinding.models.Network;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class TileMap extends Network<Tile> implements Iterable<Point> {
+public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable {
 
     String map_image;
     LongMap tiles = new LongMap();
@@ -218,6 +221,45 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
 
     public Iterable<Point> skyLayerTiles() {
         return layeredTiles(Tile.LEVEL_SKY);
+    }
+
+    @Override
+    public void render(Graphics g) {
+        for (Point p : this) {
+            Tile tile = get(p);
+            BufferedImage subimage = tile.getImage();
+            int scaled_x = GlobalCamera.getInstance().getScaling() * p.getX();
+            int scaled_y = GlobalCamera.getInstance().getScaling() * p.getY();
+            int camera_offset_x = (int) ((int) GlobalCamera.getInstance().getX());
+            int camera_offset_y = (int) ((int) GlobalCamera.getInstance().getY());
+            int scaled_width = subimage.getWidth() * GlobalCamera.getInstance().getScaling();
+            int scaled_height = subimage.getHeight() * GlobalCamera.getInstance().getScaling();
+            g.drawImage(subimage, scaled_x - camera_offset_x, scaled_y - camera_offset_y,
+                    scaled_width, scaled_height,
+                    null);
+
+            if (GlobalCamera.DEBUG) {
+                g.setColor(new Color(0.2f, 0, 0, 0.4f));
+                if (tile.isCollision()) {
+                    g.fillRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+
+                } else {
+                    g.drawRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+                }
+
+                g.setColor(new Color(1, 1, 1));
+                String format = String.format("(%s, %s)", p.getX(), p.getY());
+                int formatWidth = g.getFontMetrics().stringWidth(format);
+
+                g.drawString(format, (scaled_x - camera_offset_x) + (scaled_width / 2) - (formatWidth / 2), (scaled_y - camera_offset_y) + scaled_height / 2);
+            }
+        }
     }
 
 

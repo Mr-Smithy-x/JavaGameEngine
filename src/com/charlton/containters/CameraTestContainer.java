@@ -7,7 +7,6 @@ import com.charlton.game.gfx.ImageLayer;
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class CameraTestContainer extends GameHolder {
@@ -27,13 +26,13 @@ public class CameraTestContainer extends GameHolder {
         mountains.draw(g);
     }
 
+    @Override
     public void init() {
         GlobalCamera.getInstance().setup(0, 0);
     }
 
     @Override
     public void inGameLoop() {
-        super.inGameLoop();
         if(pressing[LT]){
             GlobalCamera.getInstance().moveLeft(4);
         }

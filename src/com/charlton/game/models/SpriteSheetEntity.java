@@ -72,6 +72,11 @@ public abstract class SpriteSheetEntity implements Drawable, BoundingContract<Nu
     }
 
     @Override
+    public boolean overlaps(BoundingContractLine line, boolean action) {
+        return circle.overlaps(line, action);
+    }
+
+    @Override
     public Movable setDrag(double drag_x, double drag_y) {
         return circle.setDrag(drag_x, drag_y);
     }

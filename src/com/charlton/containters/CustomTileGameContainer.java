@@ -118,7 +118,6 @@ public class CustomTileGameContainer extends GameHolder {
 
     @Override
     public void inGameLoop() {
-        super.inGameLoop();
         dog.gravitate();
         if (dog.inVicinity(link, 400)) {
             if (dog.getY().intValue() + 16 * GlobalCamera.getInstance().getScaling() > link.getY().intValue()) {

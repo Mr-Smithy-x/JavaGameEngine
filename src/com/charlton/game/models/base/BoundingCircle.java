@@ -51,18 +51,18 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
                 (int) (position_y - GlobalCamera.getInstance().getY() + radius * sin_angle));
     }
 
+
     @Override
-    public boolean overlaps(BoundingContractLine line) {
+    public boolean overlaps(BoundingContractLine line, boolean action) {
         double distance = line.distanceTo(position_x, position_y).doubleValue();
         boolean overlaps = distance < radius;
-        if (overlaps) {
+        if (overlaps && action) {
             pushedBackBy(line);
             //bounce();
             bounceOffLine(line);
         }
         return overlaps;
     }
-
 
     @Override
     public boolean overlaps(MovableCollision c) {
@@ -77,6 +77,7 @@ public class BoundingCircle extends MovableObject implements Drawable, MovableCo
         }
         return collides;
     }
+
 
     public double distanceBetween(BoundingCircle c) {
         double dx = c.position_x - position_x;

@@ -35,6 +35,11 @@ public class ImageLayer {
 
 
     public void draw(Graphics g) {
-        g.drawImage(image, (int)(x - GlobalCamera.getInstance().getX()), (int)(y - GlobalCamera.getInstance().getY()), null);
+        for (int i = 0; i < 10; i++) {
+            int width = image.getWidth(null) * 3;
+            int height = image.getHeight(null) * 3;
+            int x = (int) (this.x - GlobalCamera.getInstance().getX()) + (width * i);
+            g.drawImage(image, x, y, width, height, null);
+        }
     }
 }

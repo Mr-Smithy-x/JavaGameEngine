@@ -76,14 +76,19 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
     }
 
     @Override
-    public boolean overlaps(BoundingContractLine line) {
+    public boolean overlaps(BoundingContractLine line, boolean action) {
         double d = line.distanceTo(position_x, position_y).doubleValue();
         boolean overlaps = d < width;
-        if (overlaps) {
+        if (overlaps && action) {
             pushedBackBy(line);
             bounce();
         }
         return overlaps;
+    }
+
+    @Override
+    public boolean overlaps(BoundingContractLine line) {
+        return overlaps(line, false);
     }
 
     @Override

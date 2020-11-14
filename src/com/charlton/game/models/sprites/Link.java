@@ -43,17 +43,6 @@ public class Link extends SpriteSheet {
         initializeSprites();
     }
 
-    public Link(int position_x, int position_y, int duration, int scale) throws IOException {
-        super("link.png");
-        this.duration = duration;
-        this.subImages = new SubImage[16][];
-        this.stillImages = new SubImage[16];
-        this.circle = new BoundingCircle(position_x, position_y, 20, 90);
-        this.circle.setWorld(position_x, position_y);
-        this.circle.bind(this);
-        initializeSprites();
-    }
-
     public void spin() {
         attacking = true;
         pose = SPIN_ATTACK;

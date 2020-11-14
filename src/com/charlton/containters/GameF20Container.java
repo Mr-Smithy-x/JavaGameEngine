@@ -76,7 +76,6 @@ public class GameF20Container extends GameHolder  {
 
     @Override
     public void inGameLoop() {
-        super.inGameLoop();
         double multiplier = 1D;
         if(pressing[_F]){
             objectList.forEach(o -> o.setWorld(link.getX().doubleValue(), link.getY().doubleValue()));

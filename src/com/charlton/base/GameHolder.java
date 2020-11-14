@@ -81,14 +81,12 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
             repaint();  // Ask the OS to call paint (but not directly, paint is called via update)
             try {
                 t.sleep(16);
-            } catch (InterruptedException x) {
+            } catch (InterruptedException ignored) {
             }
-            ;
         }
     }
 
-    public void inGameLoop() {
-    }
+    public abstract void inGameLoop();
 
     public void mouseMoved(MouseEvent e) {
     }
