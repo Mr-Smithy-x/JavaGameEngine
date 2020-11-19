@@ -8,7 +8,11 @@ import com.charlton.game.models.base.BoundingCircle;
 import com.charlton.game.models.contracts.Animal;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Dog extends SpriteSheet implements Animal {
 
@@ -17,24 +21,19 @@ public class Dog extends SpriteSheet implements Animal {
     public Dog(int position_x, int position_y, int duration) throws IOException {
         super("dog.png");
         this.duration = duration;
-        this.subImages = new SubImage[16][];
-        this.stillImages = new SubImage[16];
         this.circle = new BoundingCircle(position_x, position_y, 20, 90);
         this.circle.setWorld(position_x, position_y);
-        this.circle.bind(this);
-        initializeSprites();
     }
 
-    private void initializeSprites() {
-        subImages[DOWN] = initAnimation(0, 0, 32, 32, 4);
-        subImages[RIGHT] = initAnimation(0, 1, 32, 32, 4);
-        subImages[UP] = initAnimation(0, 2, 32, 32, 4);
-        subImages[LEFT] = initAnimation(0, 3, 32, 32, 4);
 
-        stillImages[UP] = subImages[UP][0];
-        stillImages[DOWN] = subImages[DOWN][0];
-        stillImages[LEFT] = subImages[LEFT][0];
-        stillImages[RIGHT] = subImages[RIGHT][0];
+    @Override
+    protected Map<Pose, List<SubImage>> initializeSheet(BufferedImage spriteSheet) {
+        Map<Pose, List<SubImage>> images = new HashMap<>();
+        images.put(Pose.DOWN, initAnimation(0, 0, 32, 32, 4));
+        images.put(Pose.RIGHT, initAnimation(0, 1, 32, 32, 4));
+        images.put(Pose.UP, initAnimation(0, 2, 32, 32, 4));
+        images.put(Pose.LEFT, initAnimation(0, 3, 32, 32, 4));
+        return images;
     }
 
     @Override
@@ -49,7 +48,6 @@ public class Dog extends SpriteSheet implements Animal {
         return this;
     }
 
-    @Override
     public float getSpeed() {
         return Camera.getInstance().getScaling() * speed;
     }

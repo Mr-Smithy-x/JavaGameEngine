@@ -157,7 +157,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
         return this.points.containsKey(Point.fromLong(pointKey));
     }
 
-    public boolean canMove(Movable sprite, int direction) {
+    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction) {
         int sprite_position_x = sprite.getX().intValue() / GlobalCamera.getInstance().getScaling();
         int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tile_width; //Size of the tile, now scaled
@@ -174,16 +174,16 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
             );*/
         }
         switch (direction) {
-            case SpriteSheet.LEFT:
+            case LEFT:
                 scaled_tile_position_x -= scaled_tile_width;
                 break;
-            case SpriteSheet.RIGHT:
+            case RIGHT:
                 scaled_tile_position_x += scaled_tile_width;
                 break;
-            case SpriteSheet.DOWN:
+            case DOWN:
                 scaled_tile_position_y += scaled_tile_height;
                 break;
-            case SpriteSheet.UP:
+            case UP:
                 scaled_tile_position_y -= scaled_tile_height;
                 break;
         }

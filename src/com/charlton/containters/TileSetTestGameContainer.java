@@ -69,7 +69,7 @@ public class TileSetTestGameContainer extends GameHolder {
 
 
     @Override
-    public void init() {
+    protected void onInitialize() {
         try {
             set = new ZeldaBGTileSet(getContainer());
             tile = set.getTile();
@@ -80,7 +80,7 @@ public class TileSetTestGameContainer extends GameHolder {
 
 
     @Override
-    public void paint(Graphics g) {
+    protected void paint(Graphics g) {
         for (int row = 0; row < map.length; row++) {
             if (row * S > this.getHeight()) {
                 continue;
@@ -107,7 +107,7 @@ public class TileSetTestGameContainer extends GameHolder {
     int S = 16;
 
     @Override
-    public void inGameLoop() {
+    protected void onPlay() {
         int top = link.getY().intValue();
         int bottom = link.getY().intValue() + S - 1;
         int left = link.getX().intValue();
@@ -121,7 +121,7 @@ public class TileSetTestGameContainer extends GameHolder {
                                 map[(top - S / 8) / S].charAt(right / S) == '.') {
                     link.moveBy(0, -(S / 8));
                 }
-                link.setPose(Link.UP);
+                link.setPose(Link.Pose.UP);
             }
             if (pressing[DN]) {
                 if (
@@ -130,7 +130,7 @@ public class TileSetTestGameContainer extends GameHolder {
 
                     link.moveBy(0, (S / 8));
                 }
-                link.setPose(Link.DOWN);
+                link.setPose(Link.Pose.DOWN);
             }
             if (pressing[LT]) {
                 if (
@@ -139,7 +139,7 @@ public class TileSetTestGameContainer extends GameHolder {
 
                     link.moveBy(-(S / 8), 0);
                 }
-                link.setPose(Link.LEFT);
+                link.setPose(Link.Pose.LEFT);
             }
             if (pressing[RT]) {
                 if (
@@ -149,7 +149,7 @@ public class TileSetTestGameContainer extends GameHolder {
                     link.moveBy((S / 8), 0);
 
                 }
-                link.setPose(Link.RIGHT);
+                link.setPose(Link.Pose.RIGHT);
             }
             if ((map[bottom / S].charAt(left + S)) != '.' && (map[bottom / S].charAt(right / S) != '.')) {
 
@@ -161,20 +161,9 @@ public class TileSetTestGameContainer extends GameHolder {
     }
 
 
-    public static GameHolder frame(int width, int height) throws IOException {
-        JFrame frame = new JFrame("Zelda Game");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        Canvas canvas = new Canvas();
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(true);
-        canvas.setPreferredSize(new Dimension(width, height));
-        canvas.setMaximumSize(new Dimension(width, height));
-        canvas.setMinimumSize(new Dimension(width, height));
-        canvas.setFocusable(false);
+    public static GameHolder holder(int width, int height) throws IOException {
+        JFrame frame = frame(width, height);
+        Canvas canvas = canvas(width, height);
         frame.add(canvas);
         frame.pack();
         return new TileSetTestGameContainer(frame, canvas);

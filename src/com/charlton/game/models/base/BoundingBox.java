@@ -4,14 +4,12 @@ import com.charlton.game.contracts.*;
 
 import java.awt.*;
 
-public class BoundingBox extends MovableObject implements Drawable, MovableCollision {
+public class BoundingBox extends AIObject implements Drawable {
 
-    double width;
-    double height;
 
     @Override
     public int getType() {
-        return TYPE_POLY;
+        return 0;
     }
 
     public BoundingBox(int x, int y, int w, int h) {
@@ -33,38 +31,8 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
     }
 
     @Override
-    public void pushes(MovableCollision contract) {
-        double dx = position_x - contract.getX().doubleValue();
-        double dy = position_y - contract.getY().doubleValue();
-        double d = Math.sqrt(dx * dx + dy * dy);
-        double ux = dx / d;
-        double uy = dy / d;
-        double ri = getRadius().doubleValue() + contract.getRadius().doubleValue();
-        double p = ri - d;
-        position_x += ux * p / 2;
-        position_y += uy * p / 2;
-        contract.setX(contract.getX().doubleValue() - (ux * p / 2));
-        contract.setY(contract.getY().doubleValue() - (uy * p / 2));
-
-    }
-
-    @Override
-    public void pushedBackBy(BoundingContractLine line) {
-        double d = line.distanceTo(position_x, position_y).doubleValue();
-        double p = getRadius().doubleValue() - d;
-        this.position_x += p * line.getNormalX().doubleValue();
-        this.position_y += p * line.getNormalY().doubleValue();
-    }
-
-    @Override
-    public void bind(MovableCollision object) {
-
-    }
-
-    @Override
-    public boolean overlaps(MovableCollision box) {
-        boolean collides = false;
-        collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
+    public boolean overlaps(Gravitational box) {
+        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
                 (position_x + width >= box.getX().doubleValue()) &&
                 (box.getY().doubleValue() + box.getHeight().doubleValue() >= position_y) &&
                 (position_y + height >= box.getY().doubleValue());
@@ -91,11 +59,6 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
         return overlaps(line, false);
     }
 
-    @Override
-    public MovableCollision getBoundingObject() {
-        return this;
-    }
-
 
     @Override
     public Number getWidth() {
@@ -109,10 +72,9 @@ public class BoundingBox extends MovableObject implements Drawable, MovableColli
 
     @Override
     public Number getRadius() {
-        return (width + height) / 2;
+        return ((width / 2 + height / 2) / 2);
     }
 
-    @Override
     public float getSpeed() {
         return (float) getCurrentSpeed();
     }

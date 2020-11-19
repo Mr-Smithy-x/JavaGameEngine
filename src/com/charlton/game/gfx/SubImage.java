@@ -1,7 +1,5 @@
 package com.charlton.game.gfx;
 
-import com.charlton.game.helpers.MathHelper;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -32,10 +30,10 @@ public class SubImage {
     public void setImage(BufferedImage image, float scale_aspect) {
         if (this.image == null) {
             BufferedImage subimage = image.getSubimage(spritePositionStartX, spritePositionStartY, width, height);
-            float aspectRatio = MathHelper.getAspectRatio(width, height);
-            float width = MathHelper.newWidth(scale_aspect, aspectRatio);
+            //float aspectRatio = MathHelper.getAspectRatio(width, height);
+            //float width = MathHelper.newWidth(scale_aspect, aspectRatio);
             //float height = MathHelper.newHeight(scale_aspect, aspectRatio);
-            this.image = subimage.getScaledInstance((int) width, (int) scale_aspect, Image.SCALE_AREA_AVERAGING);
+            this.image = subimage; //subimage.getScaledInstance((int) width, (int) scale_aspect, Image.SCALE_AREA_AVERAGING);
         }
     }
 

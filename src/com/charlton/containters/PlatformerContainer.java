@@ -25,7 +25,7 @@ public class PlatformerContainer extends GameHolder {
     BoundingLine line;
 
     @Override
-    protected void init() {
+    protected void onInitialize() {
 
         GlobalCamera.getInstance().setScaling(6);
         try {
@@ -34,10 +34,10 @@ public class PlatformerContainer extends GameHolder {
             e.printStackTrace();
         }
         line = new BoundingLine(getWidth(), getHeight() - 50, 0, getHeight() - 50);
-        link.setAcceleration(0, 1)
-                .setVelocity(0, 1)
-                .setDrag(0, 0.95);
-        link.setPose(SpriteSheet.RIGHT);
+        link.setAcceleration(0, 1);
+                link.setVelocity(0, 1);
+                link.setDrag(0, 0.95);;
+        link.setPose(SpriteSheet.Pose.RIGHT);
         GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
     }
 
@@ -50,10 +50,10 @@ public class PlatformerContainer extends GameHolder {
     }
 
     @Override
-    public void inGameLoop() {
+    protected void onPlay() {
 
         if(pressing[UP]){
-            if (map.canMove(link, SpriteSheet.UP)) {
+            if (map.canMove(link, SpriteSheet.Pose.UP)) {
                 link.jump(25);
             }
         }
@@ -67,7 +67,7 @@ public class PlatformerContainer extends GameHolder {
 
         System.out.printf("Velocity: %s, Acceleration: %s\n", link.getVelocityY(), link.getAccelerationY());
 
-        if(map.canMove(link, SpriteSheet.DOWN)){
+        if(map.canMove(link, SpriteSheet.Pose.DOWN)){
             link.gravitate();
         }
         /*
@@ -94,20 +94,9 @@ public class PlatformerContainer extends GameHolder {
         super(container);
     }
 
-    public static GameHolder frame(int width, int height) throws IOException {
-        JFrame frame = new JFrame("Zelda Game");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        Canvas canvas = new Canvas();
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(true);
-        canvas.setPreferredSize(new Dimension(width, height));
-        canvas.setMaximumSize(new Dimension(width, height));
-        canvas.setMinimumSize(new Dimension(width, height));
-        canvas.setFocusable(false);
+    public static GameHolder holder(int width, int height) throws IOException {
+        JFrame frame = frame(width, height);
+        Canvas canvas = canvas(width, height);
         frame.add(canvas);
         frame.pack();
         return new PlatformerContainer(frame, canvas);

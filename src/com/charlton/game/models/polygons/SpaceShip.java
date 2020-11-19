@@ -1,6 +1,5 @@
 package com.charlton.game.models.polygons;
 
-import com.charlton.game.contracts.MovableCollision;
 import com.charlton.game.models.base.PolygonModel2D;
 
 public class SpaceShip extends PolygonModel2D {
@@ -14,12 +13,4 @@ public class SpaceShip extends PolygonModel2D {
         super(SPACESHIP_STRUCTURE, world_x, world_y, 90);
     }
 
-    @Override
-    public boolean overlaps(MovableCollision box) {
-        boolean fix = super.overlaps(box);
-        if(fix){
-            updateBounds();
-        }
-        return fix;
-    }
 }

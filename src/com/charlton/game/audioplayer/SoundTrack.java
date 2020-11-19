@@ -46,7 +46,7 @@ public class SoundTrack {
         clip.open(source);
 // begin playback of the sound clip
 
-        setVolume(clip, 0.05f);
+        setVolume(clip, 0.2f);
         clip.start();
 
 

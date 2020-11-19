@@ -85,10 +85,14 @@ public class BoundingLine implements Drawable, BoundingContractLine {
 
     @Override
     public void setX(Number x) {
+        this.point_x = x.doubleValue();
+        computeNormal();
     }
 
     @Override
     public void setY(Number y) {
+        this.point_y = y.doubleValue();
+        computeNormal();
     }
 
     @Override

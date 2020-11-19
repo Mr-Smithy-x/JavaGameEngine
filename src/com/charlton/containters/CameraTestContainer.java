@@ -22,17 +22,17 @@ public class CameraTestContainer extends GameHolder {
     }
 
     @Override
-    public void paint(Graphics g) {
+    protected void paint(Graphics g) {
         mountains.draw(g);
     }
 
     @Override
-    public void init() {
+    protected void onInitialize() {
         GlobalCamera.getInstance().setup(0, 0);
     }
 
     @Override
-    public void inGameLoop() {
+    protected void onPlay() {
         if(pressing[LT]){
             GlobalCamera.getInstance().moveLeft(4);
         }
@@ -43,20 +43,9 @@ public class CameraTestContainer extends GameHolder {
 
 
 
-    public static GameHolder frame(int width, int height) throws IOException {
-        JFrame frame = new JFrame("Zelda Game");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        Canvas canvas = new Canvas();
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(true);
-        canvas.setPreferredSize(new Dimension(width, height));
-        canvas.setMaximumSize(new Dimension(width, height));
-        canvas.setMinimumSize(new Dimension(width, height));
-        canvas.setFocusable(false);
+    public static GameHolder holder(int width, int height) throws IOException {
+        JFrame frame = frame(width, height);
+        Canvas canvas = canvas(width, height);
         frame.add(canvas);
         frame.pack();
         return new CameraTestContainer(frame, canvas);
