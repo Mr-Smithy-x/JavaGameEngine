@@ -5,10 +5,11 @@ public class GlobalCamera extends BaseCamera {
     public static boolean DEBUG = false;
     protected static GlobalCamera camera;
 
-    private float vx, vy;
-    private float ay, av;
+    private int vx, vy;
+    private int ay, av;
 
     protected int GRAVITY = 1;
+
 
 
     public static GlobalCamera getInstance(){
@@ -22,7 +23,7 @@ public class GlobalCamera extends BaseCamera {
         this(0,0);
     }
 
-    public GlobalCamera(float x_origin, float y_origin) {
+    public GlobalCamera(int x_origin, int y_origin) {
         super(x_origin, y_origin);
     }
 

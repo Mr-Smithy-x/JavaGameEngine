@@ -4,7 +4,7 @@ import com.charlton.Game;
 
 import java.io.IOException;
 
-public abstract class Creature extends SpriteSheetEntity {
+public abstract class Creature extends SpriteSheet {
 
     public static final int DEFAULT_HEALTH = 10;
     public static final float DEFAULT_SPEED = 1.5f;
@@ -13,36 +13,26 @@ public abstract class Creature extends SpriteSheetEntity {
 
     protected int health;
     protected float speed;
+    protected Game game;
+
+    private int dimension;
+    protected void setForceDimension(int dimension) {
+        this.dimension = dimension;
+    }
 
     public Creature(Game game, String name) throws IOException {
-        super(game, name);
+        super(name);
+        this.game = game;
         health = DEFAULT_HEALTH;
         speed = DEFAULT_SPEED;
     }
 
     public void move() {
-        setWorld(getX().floatValue() + getxMove(), getY().floatValue() + getyMove());
+        moveBy(getVelocityX(), getVelocityY());
     }
 
     //GETTERS SETTERS
 
-
-
-    public float getxMove() {
-        return getVelocityX().floatValue();
-    }
-
-    public void setxMove(float xMove) {
-        setVelocityX(xMove);
-    }
-
-    public float getyMove() {
-        return getVelocityY().floatValue();
-    }
-
-    public void setyMove(float yMove) {
-        setVelocityY(yMove);
-    }
 
     public int getHealth() {
         return health;
@@ -52,7 +42,7 @@ public abstract class Creature extends SpriteSheetEntity {
         this.health = health;
     }
 
-    public float getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
@@ -60,4 +50,6 @@ public abstract class Creature extends SpriteSheetEntity {
         this.speed = speed;
     }
 
+
+    public abstract void tick();
 }

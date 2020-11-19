@@ -15,9 +15,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GameF20Container extends GameHolder  {
-
-
+public class GameF20Container extends GameHolder {
 
 
     private ZeldaBGTileSet zeldaTitles;
@@ -51,16 +49,18 @@ public class GameF20Container extends GameHolder  {
     }
 
     @Override
-    public void init() {
+    protected void onInitialize() {
         try {
             zeldaTitles = new ZeldaBGTileSet(getContainer());
             double gravity = 0.7;
-            link.setAcceleration(0, 0)
-                    .setVelocity(0, 0)
-                    .setDrag(0.01, 0.01);
-            objectList.forEach(obj -> obj.setAcceleration(0, 1)
-                    .setVelocity(0, 0)
-                    .setDrag(0.01, 0.01));
+            link.setAcceleration(0, 0);
+            link.setVelocity(0, 0);
+            link.setDrag(0.01, 0.01);
+            objectList.forEach(obj -> {
+                obj.setAcceleration(0, 1);
+                obj.setVelocity(0, 0);
+                obj.setDrag(0.01, 0.01);
+            });
             double[][] v = {
                     {getWidth(), getHeight() - 200, 0, getHeight() - 200},
                     {getWidth() - 100, 0, getWidth() - 100, getHeight()},
@@ -75,17 +75,15 @@ public class GameF20Container extends GameHolder  {
     }
 
     @Override
-    public void inGameLoop() {
-        super.inGameLoop();
+    protected void onPlay() {
         double multiplier = 1D;
-        if(pressing[_F]){
+        if (pressing[_F]) {
             objectList.forEach(o -> o.setWorld(link.getX().doubleValue(), link.getY().doubleValue()));
         }
 
-        if(pressing[_D]){
+        if (pressing[_D]) {
             link.sendAttackDog();
-        }
-        else if (pressing[SPACE]) {
+        } else if (pressing[SPACE]) {
             link.attack(objectList);
         } else if (pressing[_Z]) {
             link.spin();
@@ -113,7 +111,7 @@ public class GameF20Container extends GameHolder  {
             link.attackDog(dog, obj);
             //z.overlaps(obj);
             if (!obj.inVicinity(link, 80)) {
-                obj.chase(link);
+                obj.chase(link, 4);
             }
             dog.overlaps(obj);
             //z.overlaps(obj);
@@ -124,7 +122,6 @@ public class GameF20Container extends GameHolder  {
             }
 
         });
-
 
 
     }
@@ -173,20 +170,9 @@ public class GameF20Container extends GameHolder  {
         super(applet);
     }
 
-    public static GameHolder frame(int width, int height) throws IOException {
-        JFrame frame = new JFrame("Zelda Game");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        Canvas canvas = new Canvas();
-        canvas.setFocusable(true);
-        canvas.setFocusTraversalKeysEnabled(true);
-        canvas.setPreferredSize(new Dimension(width, height));
-        canvas.setMaximumSize(new Dimension(width, height));
-        canvas.setMinimumSize(new Dimension(width, height));
-        canvas.setFocusable(false);
+    public static GameHolder holder(int width, int height) throws IOException {
+        JFrame frame = frame(width, height);
+        Canvas canvas = canvas(width, height);
         frame.add(canvas);
         frame.pack();
         return new GameF20Container(frame, canvas);
@@ -195,8 +181,6 @@ public class GameF20Container extends GameHolder  {
     public static GameHolder applet(Applet applet) throws IOException {
         return new GameF20Container(applet);
     }
-
-
 
 
 }

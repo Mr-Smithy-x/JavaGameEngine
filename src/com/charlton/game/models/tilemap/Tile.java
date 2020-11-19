@@ -2,17 +2,29 @@ package com.charlton.game.models.tilemap;
 
 import com.charlton.game.algorithms.pathfinding.models.Network;
 import com.charlton.game.algorithms.pathfinding.models.Node;
+import com.charlton.game.contracts.Boundable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Tile extends Node implements Comparable<Node> {
+public class Tile extends Node implements Comparable<Node>, Boundable{
 
 
     public final static int LEVEL_GROUND = 0, LEVEL_MID = 1, LEVEL_SKY = 2;
     public final static int TRANSITION_NONE = 0, TRANSITION_TELEPORT = 1, TRANSITION_ROOM = 2;
     public BufferedImage image;
+    Point point;
+
+    int position_x; // range 0-4095; 0x7FF
+    int position_y;// range 0-4095; 0x7FF
+    int pixel_w;// range 0-255; 0xFF
+    int pixel_h;// range 0-255; //0xFF
+    int transition_reference = 0; // Range; 0-127 // 0x7F
+    int transition_type = 0; // Range 0-3; 0x3;
+    int level = 0; //Range 0-3; //0x3
+    boolean collision;// range 0-1; 0x1
+    boolean object;// range 0-1; 0x1
 
 
     public void setImage(BufferedImage image) {
@@ -57,7 +69,6 @@ public class Tile extends Node implements Comparable<Node> {
         return result;
     }
 
-    Point point;
 
     /**
      * This is just a point reference, this is necessary for A*
@@ -68,15 +79,6 @@ public class Tile extends Node implements Comparable<Node> {
         this.point = point;
     }
 
-    int position_x; // range 0-4095; 0x7FF
-    int position_y;// range 0-4095; 0x7FF
-    int pixel_w;// range 0-255; 0xFF
-    int pixel_h;// range 0-255; //0xFF
-    int transition_reference = 0; // Range; 0-127 // 0x7F
-    int transition_type = 0; // Range 0-3; 0x3;
-    int level = 0; //Range 0-3; //0x3
-    boolean collision;// range 0-1; 0x1
-    boolean object;// range 0-1; 0x1
 
     public int getPixelH() {
         return pixel_h;
@@ -436,6 +438,46 @@ public class Tile extends Node implements Comparable<Node> {
 
     public void render(Graphics g, int x, int y) {
         g.drawImage(image, x, y, pixel_w, pixel_h, null);
+    }
+
+    @Override
+    public void setX(Number x) {
+        //nothing
+    }
+
+    @Override
+    public void setY(Number y) {
+        //nothing
+    }
+
+    @Override
+    public Number getX() {
+        return point.x;
+    }
+
+    @Override
+    public Number getY() {
+        return point.y;
+    }
+
+    @Override
+    public Number getWidth() {
+        return pixel_w;
+    }
+
+    @Override
+    public Number getHeight() {
+        return pixel_h;
+    }
+
+    @Override
+    public Number getRadius() {
+        return pixel_w / 2;
+    }
+
+    @Override
+    public int getType() {
+        return 0;
     }
 
     //endregion

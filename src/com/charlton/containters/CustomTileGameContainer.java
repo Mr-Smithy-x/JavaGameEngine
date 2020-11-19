@@ -35,17 +35,17 @@ public class CustomTileGameContainer extends GameHolder {
 
 
     @Override
-    protected void init() {
+    protected void onInitialize() {
         try {
             tileSet = TileMap.from("collision_with_layer.json");
             aStar = new AStar<>(tileSet);
-            link = new Link(getWidth() / 2, getHeight() / 2, 1) {
+            link = new Link(getWidth() / 2, getHeight() / 2, 2) {
                 {
                     setVelocity(0.0, 0.7);
                     setAcceleration(0, 1);
                 }
             };
-            dog = new Dog(getWidth() / 4, getHeight() / 4, 1) {
+            dog = new Dog(getWidth() / 4, getHeight() / 4, 2) {
                 {
                     setAcceleration(1, 1);
                     setVelocity(0, 0);
@@ -57,7 +57,7 @@ public class CustomTileGameContainer extends GameHolder {
             e.printStackTrace();
         }
         try {
-            SoundTrack s = new SoundTrack("overworld.wav");
+            SoundTrack s = new SoundTrack("soundtrack.wav");
             s.play();
         } catch (IOException | UnsupportedAudioFileException | InvalidMidiDataException | MidiUnavailableException | LineUnavailableException e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class CustomTileGameContainer extends GameHolder {
 
 
     @Override
-    public void paint(Graphics g) {
+    protected void paint(Graphics g) {
         for (Point p : tileSet) {
             Tile tile = tileSet.get(p);
             BufferedImage subimage = tile.getImage();
@@ -114,31 +114,33 @@ public class CustomTileGameContainer extends GameHolder {
         }
         link.render(g);
         dog.render(g);
+
+        GlobalCamera.getInstance().render(g);
     }
 
     @Override
-    public void inGameLoop() {
-        super.inGameLoop();
+    protected void onPlay() {
         dog.gravitate();
+        /*
         if (dog.inVicinity(link, 400)) {
             if (dog.getY().intValue() + 16 * GlobalCamera.getInstance().getScaling() > link.getY().intValue()) {
-                if (tileSet.canMove(dog, SpriteSheet.UP)) {
-                    dog.moveUp();
+                if (tileSet.canMove(dog, SpriteSheet.Pose.UP)) {
+                    dog.moveUp(dog.getSpeed());
                 }
             }
             if (dog.getY().intValue() - 16 * GlobalCamera.getInstance().getScaling() < link.getY().intValue()) {
-                if (tileSet.canMove(dog, SpriteSheet.DOWN)) {
-                    dog.moveDown();
+                if (tileSet.canMove(dog, SpriteSheet.Pose.DOWN)) {
+                    dog.moveDown(dog.getSpeed());
                 }
             }
             if (dog.getX().intValue() + 16 * GlobalCamera.getInstance().getScaling() < link.getX().intValue()) {
-                if (tileSet.canMove(dog, SpriteSheet.RIGHT)) {
-                    dog.moveRight();
+                if (tileSet.canMove(dog, SpriteSheet.Pose.RIGHT)) {
+                    dog.moveRight(dog.getSpeed());
                 }
             }
             if (dog.getX().intValue() - 16 * GlobalCamera.getInstance().getScaling() > link.getX().intValue()) {
-                if (tileSet.canMove(dog, SpriteSheet.LEFT)) {
-                    dog.moveLeft();
+                if (tileSet.canMove(dog, SpriteSheet.Pose.LEFT)) {
+                    dog.moveLeft(dog.getSpeed());
                 }
             }
             if (dog.inVicinity(link, 100)) {
@@ -150,43 +152,46 @@ public class CustomTileGameContainer extends GameHolder {
                 GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
             }
         }
+
+         */
         if (pressing[_Z]) {
             link.spin();
         } else if (pressing[SPACE]) {
             link.attack();
         } else {
             if (pressing[UP]) {
-                link.setPose(SpriteSheet.UP);
-                if (tileSet.canMove(link, SpriteSheet.UP)) {
-                    link.moveUp();
+                link.setPose(SpriteSheet.Pose.UP);
+                if (tileSet.canMove(link, SpriteSheet.Pose.UP)) {
+                    link.moveUp(link.getSpeed());
                     GlobalCamera.getInstance().moveUp(link.getSpeed());
                 }
             }
             if (pressing[DN]) {
 
-                link.setPose(SpriteSheet.DOWN);
-                if (tileSet.canMove(link, SpriteSheet.DOWN)) {
-                    link.moveDown();
+                link.setPose(SpriteSheet.Pose.DOWN);
+                if (tileSet.canMove(link, SpriteSheet.Pose.DOWN)) {
+                    link.moveDown(link.getSpeed());
                     GlobalCamera.getInstance().moveDown(link.getSpeed());
                 }
             }
             if (pressing[LT]) {
 
-                link.setPose(SpriteSheet.LEFT);
-                if (tileSet.canMove(link, SpriteSheet.LEFT)) {
-                    link.moveLeft();
+                link.setPose(SpriteSheet.Pose.LEFT);
+                if (tileSet.canMove(link, SpriteSheet.Pose.LEFT)) {
+                    link.moveLeft(link.getSpeed());
                     GlobalCamera.getInstance().moveLeft(link.getSpeed());
                 }
             }
             if (pressing[RT]) {
 
-                link.setPose(SpriteSheet.RIGHT);
-                if (tileSet.canMove(link, SpriteSheet.RIGHT)) {
-                    link.moveRight();
+                link.setPose(SpriteSheet.Pose.RIGHT);
+                if (tileSet.canMove(link, SpriteSheet.Pose.RIGHT)) {
+                    link.moveRight(link.getSpeed());
                     GlobalCamera.getInstance().moveRight(link.getSpeed());
                 }
             }
         }
+        GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
     }
 
     @Override
@@ -236,13 +241,17 @@ public class CustomTileGameContainer extends GameHolder {
         super(applet);
     }
 
-    public static GameHolder frame(int width, int height) {
-        JFrame frame = new JFrame("Zelda Game");
-        frame.setSize(width, height);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+
+
+    public static GameHolder holder(int width, int height) {
+        JFrame frame = frame(width, height);
+        Canvas canvas = canvas(width, height);
+        frame.add(canvas);
+        frame.pack();
+        return new CustomTileGameContainer(frame, canvas);
+    }
+
+    public static Canvas canvas(int width, int height) {
         Canvas canvas = new Canvas();
         canvas.setFocusable(true);
         canvas.setFocusTraversalKeysEnabled(true);
@@ -250,9 +259,16 @@ public class CustomTileGameContainer extends GameHolder {
         canvas.setMaximumSize(new Dimension(width, height));
         canvas.setMinimumSize(new Dimension(width, height));
         canvas.setFocusable(false);
-        frame.add(canvas);
-        frame.pack();
-        return new CustomTileGameContainer(frame, canvas);
+        return canvas;
+    }
+    public static JFrame frame(int width, int height) {
+        JFrame frame = new JFrame("Zelda Game");
+        frame.setSize(width, height);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        return frame;
     }
 
     public static GameHolder applet(Applet applet) {

@@ -1,7 +1,6 @@
 package com.charlton.game.models;
 
 import com.charlton.game.contracts.Drawable;
-import com.charlton.game.contracts.MovableCollision;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.base.MovableObject;
 import com.charlton.game.models.sprites.Animation;
@@ -76,11 +75,7 @@ public class Sprite extends MovableObject implements Drawable {
 
     @Override
     public int getType() {
-        return TYPE_POLY;
+        return 0;
     }
 
-    @Override
-    public void bind(MovableCollision movable) {
-
-    }
 }

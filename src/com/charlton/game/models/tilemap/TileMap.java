@@ -1,5 +1,6 @@
 package com.charlton.game.models.tilemap;
 
+import com.charlton.game.contracts.Drawable;
 import com.charlton.game.contracts.Movable;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
@@ -9,14 +10,16 @@ import com.sun.istack.internal.NotNull;
 import com.charlton.game.algorithms.pathfinding.models.Network;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class TileMap extends Network<Tile> implements Iterable<Point> {
+public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable {
 
     String map_image;
     LongMap tiles = new LongMap();
@@ -154,45 +157,78 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
         return this.points.containsKey(Point.fromLong(pointKey));
     }
 
-    public boolean canMove(Movable sprite, int direction) {
+    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction) {
+        return canMove(sprite, direction, false);
+    }
+
+    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction, boolean ignoreInvisibles){
         int sprite_position_x = sprite.getX().intValue() / GlobalCamera.getInstance().getScaling();
         int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tile_width; //Size of the tile, now scaled
         int scaled_tile_height = tile_height;
+
+        boolean willOverlap = false;
+        switch (direction) {
+            case LEFT:
+                sprite_position_x -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case RIGHT:
+                sprite_position_x += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case DOWN:
+                sprite_position_y += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case UP:
+                sprite_position_y -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+        }
+
         int scaled_tile_position_x = sprite_position_x - (sprite_position_x % scaled_tile_width);
         int scaled_tile_position_y = sprite_position_y - (sprite_position_y % scaled_tile_height);
+        int real_tile_pos_x = scaled_tile_position_x;
+        int real_tile_pos_y = scaled_tile_position_y;
+        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
 
-        if(Camera.DEBUG) {
-            /*System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
+
+        if (Camera.DEBUG) {
+            System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
                     sprite_position_x,
                     sprite_position_y,
                     scaled_tile_position_x,
                     scaled_tile_position_y
-            );*/
+            );
         }
-        switch (direction) {
-            case SpriteSheet.LEFT:
-                scaled_tile_position_x -= scaled_tile_width;
-                break;
-            case SpriteSheet.RIGHT:
-                scaled_tile_position_x += scaled_tile_width;
-                break;
-            case SpriteSheet.DOWN:
-                scaled_tile_position_y += scaled_tile_height;
-                break;
-            case SpriteSheet.UP:
-                scaled_tile_position_y -= scaled_tile_height;
-                break;
-        }
-        int real_tile_pos_x = scaled_tile_position_x;
-        int real_tile_pos_y = scaled_tile_position_y;
-        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
+
         if (!tiles.containsKey(point)) {
-            //System.out.println("Collision Detection");
+            if (ignoreInvisibles) {
+                return true;
+            }
+            //System.out.printf("Point (%s, %s)\n", real_tile_pos_x, real_tile_pos_y);
             return false;
         }
-        long tileAddress = getTileAddress(point);
-        return !Tile.isCollisionTile(tileAddress);
+        Tile tile = get(real_tile_pos_x, real_tile_pos_y);
+        boolean collisionTile = tile.isCollision();
+        if(collisionTile) {
+            switch (direction) {
+                case UP:
+                    willOverlap = sprite.willOverlap(tile, 0, -sprite.getCurrentSpeed().intValue());
+                    break;
+                case DOWN:
+                    willOverlap = sprite.willOverlap(tile, 0, sprite.getCurrentSpeed().intValue());
+                    break;
+                case LEFT:
+                    willOverlap = sprite.willOverlap(tile, -sprite.getCurrentSpeed().intValue(), 0);
+                    break;
+                case RIGHT:
+                    willOverlap = sprite.willOverlap(tile, sprite.getCurrentSpeed().intValue(), 0);
+                    break;
+            }
+            if(willOverlap){
+                sprite.setVelocityY(0);
+            }
+            return !willOverlap;
+        }
+        return !collisionTile;
     }
 
 
@@ -218,6 +254,45 @@ public class TileMap extends Network<Tile> implements Iterable<Point> {
 
     public Iterable<Point> skyLayerTiles() {
         return layeredTiles(Tile.LEVEL_SKY);
+    }
+
+    @Override
+    public void render(Graphics g) {
+        for (Point p : this) {
+            Tile tile = get(p);
+            BufferedImage subimage = tile.getImage();
+            int scaled_x = GlobalCamera.getInstance().getScaling() * p.getX();
+            int scaled_y = GlobalCamera.getInstance().getScaling() * p.getY();
+            int camera_offset_x = (int) ((int) GlobalCamera.getInstance().getX());
+            int camera_offset_y = (int) ((int) GlobalCamera.getInstance().getY());
+            int scaled_width = subimage.getWidth() * GlobalCamera.getInstance().getScaling();
+            int scaled_height = subimage.getHeight() * GlobalCamera.getInstance().getScaling();
+            g.drawImage(subimage, scaled_x - camera_offset_x, scaled_y - camera_offset_y,
+                    scaled_width, scaled_height,
+                    null);
+
+            if (GlobalCamera.DEBUG) {
+                g.setColor(new Color(0.2f, 0, 0, 0.4f));
+                if (tile.isCollision()) {
+                    g.fillRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+
+                } else {
+                    g.drawRect(scaled_x - camera_offset_x,
+                            scaled_y - camera_offset_y,
+                            scaled_width,
+                            scaled_height);
+                }
+
+                g.setColor(new Color(1, 1, 1));
+                String format = String.format("(%s, %s)", p.getX(), p.getY());
+                int formatWidth = g.getFontMetrics().stringWidth(format);
+
+                g.drawString(format, (scaled_x - camera_offset_x) + (scaled_width / 2) - (formatWidth / 2), (scaled_y - camera_offset_y) + scaled_height / 2);
+            }
+        }
     }
 
 

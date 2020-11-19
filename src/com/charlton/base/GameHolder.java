@@ -30,7 +30,7 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
         container.addMouseMotionListener(this);
     }
 
-    public GameHolder(Applet container) {
+    protected GameHolder(Applet container) {
         this.container = container;
         off_screen_image = container.createImage(container.getWidth(), container.getHeight());
         off_g = off_screen_image.getGraphics();
@@ -41,15 +41,15 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
     }
 
 
-    protected abstract void init();
+    protected abstract void onInitialize();
 
     public void start() {
-        init();
+        onInitialize();
         t = new Thread(this);
         t.start();
     }
 
-    public void repaint() {
+    protected void onRepaint() {
         update(container.getGraphics());
     }
 
@@ -68,7 +68,7 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
         return container;
     }
 
-    public void update(Graphics g) {
+    protected void update(Graphics g) {
         off_g.clearRect(0, 0, container.getWidth(), container.getHeight());
         paint(off_g);
         g.drawImage(off_screen_image, 0, 0, null);
@@ -77,18 +77,16 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
     @Override
     public void run() {
         while (true) {
-            inGameLoop();
-            repaint();  // Ask the OS to call paint (but not directly, paint is called via update)
+            onPlay();
+            onRepaint();  // Ask the OS to call paint (but not directly, paint is called via update)
             try {
                 t.sleep(16);
-            } catch (InterruptedException x) {
+            } catch (InterruptedException ignored) {
             }
-            ;
         }
     }
 
-    public void inGameLoop() {
-    }
+    protected abstract void onPlay();
 
     public void mouseMoved(MouseEvent e) {
     }
@@ -179,4 +177,23 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
     public static final int QUOTE = KeyEvent.VK_QUOTE;
 
 
+    public static Canvas canvas(int width, int height) {
+        Canvas canvas = new Canvas();
+        canvas.setFocusable(true);
+        canvas.setFocusTraversalKeysEnabled(true);
+        canvas.setPreferredSize(new Dimension(width, height));
+        canvas.setMaximumSize(new Dimension(width, height));
+        canvas.setMinimumSize(new Dimension(width, height));
+        canvas.setFocusable(false);
+        return canvas;
+    }
+    public static JFrame frame(int width, int height) {
+        JFrame frame = new JFrame("Zelda Game");
+        frame.setSize(width, height);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        return frame;
+    }
 }
