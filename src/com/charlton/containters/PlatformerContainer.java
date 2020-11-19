@@ -6,8 +6,6 @@ import com.charlton.game.gfx.ImageLayer;
 import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.base.BoundingLine;
 import com.charlton.game.models.sprites.Link;
-import com.charlton.game.models.tilemap.Point;
-import com.charlton.game.models.tilemap.Tile;
 import com.charlton.game.models.tilemap.TileMap;
 
 import javax.swing.*;
@@ -18,7 +16,15 @@ import java.io.IOException;
 
 public class PlatformerContainer extends GameHolder {
 
-    ImageLayer mountains = ImageLayer.from("mountains.gif", 0, 0, 0);
+    ImageLayer mountains;
+
+    {
+        int width = (1032 / 2) - 4;
+        int height = (2174 / 5) - 4;
+        int x = 2;
+        int y = 2;
+        mountains = ImageLayer.create(ImageLayer.sub("backgrounds.png", x, y, width, height));
+    }
 
     TileMap map = null;
     Link link = new Link(getWidth()/4, getHeight() - 50, 1);
@@ -27,16 +33,16 @@ public class PlatformerContainer extends GameHolder {
     @Override
     protected void onInitialize() {
 
-        GlobalCamera.getInstance().setScaling(6);
+        GlobalCamera.getInstance().setScaling(2);
         try {
-            map = TileMap.from("platformer.json");
+            map = TileMap.from("mario2.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
         line = new BoundingLine(getWidth(), getHeight() - 50, 0, getHeight() - 50);
         link.setAcceleration(0, 1);
                 link.setVelocity(0, 1);
-                link.setDrag(0, 0.95);;
+                link.setDrag(0.5,  1);
         link.setPose(SpriteSheet.Pose.RIGHT);
         GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
     }
@@ -46,37 +52,38 @@ public class PlatformerContainer extends GameHolder {
         mountains.draw(g);
         map.render(g);
         link.render(g);
-        line.render(g);
     }
 
     @Override
     protected void onPlay() {
 
         if(pressing[UP]){
-            if (map.canMove(link, SpriteSheet.Pose.UP)) {
-                link.jump(25);
+            //if (map.canMove(link, SpriteSheet.Pose.UP)) {
+            if(Math.abs(link.getVelocityY().intValue()) == 0) {
+                link.jump(22);
+                link.gravitate();
             }
+            //}
         }
         if (pressing[LT]) {
-            link.moveLeft(link.getSpeed() * 2);
-            GlobalCamera.getInstance().moveLeft(link.getSpeed() * 2);
+            if(map.canMove(link, SpriteSheet.Pose.LEFT, true)) {
+                link.moveLeft(link.getSpeed());
+                GlobalCamera.getInstance().moveLeft(link.getSpeed());
+            }
         } else if (pressing[RT]) {
-            link.moveRight(link.getSpeed() * 2);
-            GlobalCamera.getInstance().moveRight(link.getSpeed() * 2);
+            if(map.canMove(link, SpriteSheet.Pose.RIGHT, true)) {
+                link.moveRight(link.getSpeed());
+                GlobalCamera.getInstance().moveLeft(link.getSpeed());
+            }
         }
 
-        System.out.printf("Velocity: %s, Acceleration: %s\n", link.getVelocityY(), link.getAccelerationY());
+       // System.out.printf("Velocity: %s, Acceleration: %s\n", link.getVelocityY(), link.getAccelerationY());
 
-        if(map.canMove(link, SpriteSheet.Pose.DOWN)){
-            link.gravitate();
-        }
-        /*
-        if(!link.overlaps(line, true) && Math.abs(link.getVelocityY().doubleValue()) > 0.07){
+        if(map.canMove(link, SpriteSheet.Pose.DOWN, true)){
             link.gravitate();
         }else{
-            link.pushedBackBy(line);
-            link.bounce();
-        }*/
+        }
+
         GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
     }
 

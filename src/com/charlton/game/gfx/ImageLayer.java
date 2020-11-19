@@ -16,13 +16,27 @@ public class ImageLayer {
     int y;
     int z;
 
-    public static ImageLayer from(String name, int x, int y, int z) throws IOException {
+
+    public static BufferedImage get(String name) throws IOException {
         ClassLoader cl = ImageLayer.class.getClassLoader();
         URL resource = cl.getResource(String.format("assets/images/%s", name));
         System.out.println(resource.getFile());
         File file = new File(resource.getFile());
         BufferedImage read = ImageIO.read(file);
-        return new ImageLayer(read, x, y, z);
+        return read;
+    }
+
+    public static ImageLayer from(String name, int x, int y, int z) throws IOException {
+        return new ImageLayer(get(name), x, y, z);
+    }
+
+    public static BufferedImage sub(String name, int x, int y, int w, int h) throws IOException {
+        BufferedImage bufferedImage = get(name).getSubimage(x, y, w, h);
+        return bufferedImage;
+    }
+
+    public static ImageLayer create(BufferedImage image) {
+        return new ImageLayer(image, 0, 0, 0);
     }
 
 
@@ -36,9 +50,9 @@ public class ImageLayer {
 
     public void draw(Graphics g) {
         for (int i = 0; i < 10; i++) {
-            int width = image.getWidth(null) * 3;
-            int height = image.getHeight(null) * 3;
-            int x = (int) (this.x - GlobalCamera.getInstance().getX()) + (width * i);
+            int width = (int) (image.getWidth(null) * 2);
+            int height = (int) (image.getHeight(null) * 2);
+            int x = (this.x - GlobalCamera.getInstance().getX()) + (width * i);
             g.drawImage(image, x, y, width, height, null);
         }
     }

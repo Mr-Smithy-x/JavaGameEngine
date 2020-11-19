@@ -2,7 +2,7 @@ package com.charlton.game.display;
 
 public class GlobalCamera extends BaseCamera {
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     protected static GlobalCamera camera;
 
     private int vx, vy;

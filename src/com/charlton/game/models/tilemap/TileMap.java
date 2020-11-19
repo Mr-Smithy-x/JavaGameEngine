@@ -158,6 +158,10 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
     }
 
     public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction) {
+        return canMove(sprite, direction, false);
+    }
+
+    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction, boolean ignoreInvisibles){
         int sprite_position_x = sprite.getX().intValue() / GlobalCamera.getInstance().getScaling();
         int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tile_width; //Size of the tile, now scaled
@@ -196,7 +200,10 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
         }
 
         if (!tiles.containsKey(point)) {
-            //System.out.println("Collision Detection");
+            if (ignoreInvisibles) {
+                return true;
+            }
+            //System.out.printf("Point (%s, %s)\n", real_tile_pos_x, real_tile_pos_y);
             return false;
         }
         Tile tile = get(real_tile_pos_x, real_tile_pos_y);
@@ -215,6 +222,9 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
                 case RIGHT:
                     willOverlap = sprite.willOverlap(tile, sprite.getCurrentSpeed().intValue(), 0);
                     break;
+            }
+            if(willOverlap){
+                sprite.setVelocityY(0);
             }
             return !willOverlap;
         }
