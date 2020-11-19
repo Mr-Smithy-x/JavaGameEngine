@@ -1,11 +1,16 @@
 package com.charlton.game.display;
 
+import com.charlton.game.contracts.Boundable;
+import com.charlton.game.contracts.Drawable;
 import com.charlton.game.contracts.Movable;
+import com.charlton.game.models.SpriteSheet;
 
-public abstract class BaseCamera {
+import java.awt.*;
 
-    protected float x, y;
-    protected float x_origin, y_origin;
+public abstract class BaseCamera implements Drawable {
+
+    protected int x, y;
+    protected int x_origin, y_origin;
     protected int scaling = 4;
 
 
@@ -19,15 +24,15 @@ public abstract class BaseCamera {
     }
 
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 
-    public void set(float x, float y) {
+    public void set(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -38,20 +43,19 @@ public abstract class BaseCamera {
     }
 
 
-    public void setOrigin(Movable e, float screen_width, float screen_height) {
-        float x = e.getX().floatValue();
-        float y = e.getY().floatValue();
+    public void setOrigin(Boundable e, int screen_width, int screen_height) {
+        int x = e.getX().intValue();
+        int y = e.getY().intValue();
         //Commented out code would center the pixel onto the screen, but with this dynamic, it works much differently
-        x_origin = x - (screen_width / 2);// + (e.getWidth().floatValue() / 2);
-        y_origin = y - (screen_height / 2);// + (e.getHeight().floatValue() / 2);
+        this.x_origin = x - (screen_width / 2);
+        this.y_origin = y - (screen_height / 2);
 
         this.x = x_origin;
         this.y = y_origin;
-
-       // System.out.printf("(X: %s,Y: %s), ORIGIN: (x: %s, y: %s)", x, y, x_origin, y_origin);
+        // System.out.printf("(X: %s,Y: %s), ORIGIN: (x: %s, y: %s)", x, y, x_origin, y_origin);
     }
 
-    public void setup(float x, float y) {
+    public void setup(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -72,31 +76,39 @@ public abstract class BaseCamera {
         x += dist;
     }
 
-    public BaseCamera(float x_origin, float y_origin) {
+    public BaseCamera(int x_origin, int y_origin) {
         this.x_origin = x_origin;
         this.y_origin = y_origin;
     }
 
-    public void move(float xamt, float yamt) {
+    public void move(int xamt, int yamt) {
         x_origin += xamt;
         y_origin += yamt;
     }
 
-    public float getXOrigin() {
+    public int getXOrigin() {
         return x_origin;
     }
 
-    public void setXOrigin(float x_offset) {
+    public void setXOrigin(int x_offset) {
         this.x_origin = x_offset;
     }
 
-    public float getYOrigin() {
+    public int getYOrigin() {
         return y_origin;
     }
 
-    public void setYOrigin(float y_offset) {
+    public void setYOrigin(int y_offset) {
         this.y_origin = y_offset;
     }
 
 
+    @Override
+    public void render(Graphics g) {
+        g.setColor(Color.RED);
+        g.drawLine(getXOrigin() - 10 * 3, 0, getXOrigin() + 10 * 3, 0);
+        g.drawLine(0, getYOrigin() - 10 * 3, 0, getYOrigin() + 10 * 3);
+        g.drawRect(getXOrigin(), getYOrigin(), 50, 50);
+        System.out.printf("Origin: (%s, %s)\n",getXOrigin() , getYOrigin());
+    }
 }

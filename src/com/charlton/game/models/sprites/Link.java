@@ -38,7 +38,7 @@ public class Link extends SpriteSheet {
     public Link(int position_x, int position_y, int duration) throws IOException {
         super("link.png");
         this.duration = duration;
-        this.circle = new BoundingBox(position_x, position_y, 32, 32);
+        this.circle = new BoundingBox(position_x, position_y, 64, 64);
         this.circle.setWorld(position_x, position_y);
     }
 
@@ -187,6 +187,11 @@ public class Link extends SpriteSheet {
 
     public void sendAttackDog() {
         dogAttack = true;
+    }
+
+    @Override
+    public Number getCurrentSpeed() {
+        return getSpeed();
     }
 
     public float getSpeed() {

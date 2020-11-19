@@ -26,8 +26,7 @@ public class BoundingBox extends AIObject implements Drawable {
 
     @Override
     public void render(Graphics g) {
-
-        g.drawRect((int) position_x, (int) position_y, (int) width, (int) height);
+        g.drawRect(getGlobalCameraOffsetX().intValue(), getGlobalCameraOffsetY().intValue(), (int) width, (int) height);
     }
 
     @Override

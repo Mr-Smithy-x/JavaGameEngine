@@ -2,7 +2,7 @@ package com.charlton.game.contracts;
 
 import com.charlton.game.helpers.TrigLookupHelper;
 
-public interface Movable extends Boundable {
+public interface Movable extends Boundable, CameraContract {
 
     double[] cos = TrigLookupHelper.cos;
     double[] sin = TrigLookupHelper.sin;

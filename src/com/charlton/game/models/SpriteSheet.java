@@ -183,13 +183,13 @@ public abstract class SpriteSheet implements Drawable, AI {
             image = getStillImage();
         }
 
-        int width = getWidth().intValue() * GlobalCamera.getInstance().getScaling();
-        int height = getHeight().intValue() * GlobalCamera.getInstance().getScaling();
+        int width = image.getWidth(null) * GlobalCamera.getInstance().getScaling();
+        int height = image.getHeight(null) * GlobalCamera.getInstance().getScaling();
         g.drawImage(image,
-                (int) (getX().floatValue() - (width  / 4) - GlobalCamera.getInstance().getX()),
-                (int) (getY().floatValue() - (height / 4) - GlobalCamera.getInstance().getY()),
-                image.getWidth(null) * GlobalCamera.getInstance().getScaling(),
-                image.getHeight(null) * GlobalCamera.getInstance().getScaling(),
+                getGlobalCameraOffsetX().intValue(),
+                getGlobalCameraOffsetY().intValue(),
+                width,
+                height,
                 null
         );
         moving = false;
@@ -200,8 +200,8 @@ public abstract class SpriteSheet implements Drawable, AI {
 
     protected void drawBounds(Graphics g) {
         g.drawRect(
-                (int)(getX().doubleValue() - GlobalCamera.getInstance().getX()),
-                (int)(getY().doubleValue() - GlobalCamera.getInstance().getY()),
+                getGlobalCameraOffsetX().intValue(),
+                getGlobalCameraOffsetY().intValue(),
                 circle.getWidth().intValue(),
                 circle.getHeight().intValue()
         );
@@ -259,12 +259,12 @@ public abstract class SpriteSheet implements Drawable, AI {
 
     @Override
     public Number getWidth() {
-        return getImage().getWidth(null);
+        return circle.getWidth();
     }
 
     @Override
     public Number getHeight() {
-        return getImage().getHeight(null);
+        return circle.getHeight();
     }
 
     @Override

@@ -9,6 +9,21 @@ public interface CollisionDetection extends Gravitational {
     }
 
 
+    default boolean isOverlapping(Boundable box) {
+        return (box.getX().doubleValue() + box.getWidth().doubleValue() >= getX().doubleValue()) &&
+                (getX().doubleValue() + getWidth().doubleValue() >= box.getX().doubleValue()) &&
+                (box.getY().doubleValue() + box.getHeight().doubleValue() >= getY().doubleValue()) &&
+                (getY().doubleValue() + getHeight().doubleValue() >= box.getY().doubleValue());
+    }
+
+
+    default boolean willOverlap(Boundable r, int dx, int dy) {
+        return (getX().intValue() + dx > r.getX2().intValue() || getY().intValue() + dy > r.getY2().intValue() ||
+                r.getX().intValue() > getX2().intValue() + dx || r.getY().intValue() > getY2().intValue() + dy);
+    }
+
+
+
     default boolean overlaps(BoundingContractLine line, boolean action) {
         double distance = line.distanceTo(getX(), getY()).doubleValue();
         boolean overlaps = distance < getRadius().doubleValue();

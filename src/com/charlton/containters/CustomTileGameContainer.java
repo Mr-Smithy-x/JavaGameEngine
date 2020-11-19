@@ -114,11 +114,14 @@ public class CustomTileGameContainer extends GameHolder {
         }
         link.render(g);
         dog.render(g);
+
+        GlobalCamera.getInstance().render(g);
     }
 
     @Override
     protected void onPlay() {
         dog.gravitate();
+        /*
         if (dog.inVicinity(link, 400)) {
             if (dog.getY().intValue() + 16 * GlobalCamera.getInstance().getScaling() > link.getY().intValue()) {
                 if (tileSet.canMove(dog, SpriteSheet.Pose.UP)) {
@@ -149,6 +152,8 @@ public class CustomTileGameContainer extends GameHolder {
                 GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
             }
         }
+
+         */
         if (pressing[_Z]) {
             link.spin();
         } else if (pressing[SPACE]) {
@@ -186,6 +191,7 @@ public class CustomTileGameContainer extends GameHolder {
                 }
             }
         }
+        GlobalCamera.getInstance().setOrigin(link, getWidth(), getHeight());
     }
 
     @Override

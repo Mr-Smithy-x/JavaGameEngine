@@ -162,40 +162,63 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
         int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tile_width; //Size of the tile, now scaled
         int scaled_tile_height = tile_height;
+
+        boolean willOverlap = false;
+        switch (direction) {
+            case LEFT:
+                sprite_position_x -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case RIGHT:
+                sprite_position_x += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case DOWN:
+                sprite_position_y += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+            case UP:
+                sprite_position_y -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                break;
+        }
+
         int scaled_tile_position_x = sprite_position_x - (sprite_position_x % scaled_tile_width);
         int scaled_tile_position_y = sprite_position_y - (sprite_position_y % scaled_tile_height);
+        int real_tile_pos_x = scaled_tile_position_x;
+        int real_tile_pos_y = scaled_tile_position_y;
+        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
 
-        if(Camera.DEBUG) {
-            /*System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
+
+        if (Camera.DEBUG) {
+            System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
                     sprite_position_x,
                     sprite_position_y,
                     scaled_tile_position_x,
                     scaled_tile_position_y
-            );*/
+            );
         }
-        switch (direction) {
-            case LEFT:
-                scaled_tile_position_x -= scaled_tile_width;
-                break;
-            case RIGHT:
-                scaled_tile_position_x += scaled_tile_width;
-                break;
-            case DOWN:
-                scaled_tile_position_y += scaled_tile_height;
-                break;
-            case UP:
-                scaled_tile_position_y -= scaled_tile_height;
-                break;
-        }
-        int real_tile_pos_x = scaled_tile_position_x;
-        int real_tile_pos_y = scaled_tile_position_y;
-        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
+
         if (!tiles.containsKey(point)) {
             //System.out.println("Collision Detection");
             return false;
         }
-        long tileAddress = getTileAddress(point);
-        return !Tile.isCollisionTile(tileAddress);
+        Tile tile = get(real_tile_pos_x, real_tile_pos_y);
+        boolean collisionTile = tile.isCollision();
+        if(collisionTile) {
+            switch (direction) {
+                case UP:
+                    willOverlap = sprite.willOverlap(tile, 0, -sprite.getCurrentSpeed().intValue());
+                    break;
+                case DOWN:
+                    willOverlap = sprite.willOverlap(tile, 0, sprite.getCurrentSpeed().intValue());
+                    break;
+                case LEFT:
+                    willOverlap = sprite.willOverlap(tile, -sprite.getCurrentSpeed().intValue(), 0);
+                    break;
+                case RIGHT:
+                    willOverlap = sprite.willOverlap(tile, sprite.getCurrentSpeed().intValue(), 0);
+                    break;
+            }
+            return !willOverlap;
+        }
+        return !collisionTile;
     }
 
 
