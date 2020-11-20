@@ -1,11 +1,13 @@
 package com.charlton.game.models.base;
 
 import com.charlton.game.contracts.*;
+import com.charlton.game.models.base.model2d.AIObject2D;
+import com.charlton.game.models.base.model2d.contracts.CollisionDetection2D;
 
 import java.awt.*;
 import java.util.Arrays;
 
-public class PolygonModel2D extends AIObject implements Drawable, CollisionDetection {
+public class PolygonModel2D extends AIObject2D implements Drawable, CollisionDetection2D {
 
     protected BoundingBox boundingBox = new BoundingBox(0, 0, 0, 0);
     private int[][] structure = {};

@@ -1,6 +1,5 @@
 package com.charlton.game.models.sprites;
 
-import com.charlton.game.contracts.AI;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;

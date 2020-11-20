@@ -1,10 +1,10 @@
-package com.charlton.game.models.base;
+package com.charlton.game.models.base.model3d;
 
-import com.charlton.game.contracts.Movable;
+import com.charlton.game.models.base.model3d.contracts.Movable3D;
 
-public abstract class MovableObject implements Movable {
+public abstract class MovableObject3D implements Movable3D {
 
-    protected double position_x, position_y;
+    protected double position_x, position_y, position_z;
     protected double width, height;
     protected int world_angle;
 

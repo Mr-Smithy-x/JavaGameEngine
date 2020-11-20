@@ -1,6 +1,8 @@
 package com.charlton.game.contracts;
 
-public interface BasicMovable extends Movable {
+import com.charlton.game.models.base.model2d.contracts.Movable2D;
+
+public interface BasicMovable extends Movable2D {
 
     float getSpeed();
 

@@ -1,8 +1,8 @@
-package com.charlton.game.models.base;
+package com.charlton.game.models.base.model2d;
 
-import com.charlton.game.contracts.Gravitational;
+import com.charlton.game.models.base.model2d.contracts.Gravitational2D;
 
-public abstract class GravitationalObject extends MovableObject implements Gravitational {
+public abstract class GravitationalObject2D extends MovableObject2D implements Gravitational2D {
 
     protected double drag_x = 0, drag_y = 0; //Lower the drag the lower the bounce
     protected double velocity_x = 0, velocity_y = 0;

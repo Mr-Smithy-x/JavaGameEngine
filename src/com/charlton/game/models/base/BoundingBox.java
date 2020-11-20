@@ -1,10 +1,12 @@
 package com.charlton.game.models.base;
 
 import com.charlton.game.contracts.*;
+import com.charlton.game.models.base.model2d.AIObject2D;
+import com.charlton.game.models.base.model2d.contracts.Gravitational2D;
 
 import java.awt.*;
 
-public class BoundingBox extends AIObject implements Drawable {
+public class BoundingBox extends AIObject2D implements Drawable {
 
 
     @Override
@@ -30,7 +32,7 @@ public class BoundingBox extends AIObject implements Drawable {
     }
 
     @Override
-    public boolean overlaps(Gravitational box) {
+    public boolean overlaps(Gravitational2D box) {
         boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
                 (position_x + width >= box.getX().doubleValue()) &&
                 (box.getY().doubleValue() + box.getHeight().doubleValue() >= position_y) &&

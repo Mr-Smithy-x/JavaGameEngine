@@ -1,7 +1,9 @@
-package com.charlton.game.contracts;
+package com.charlton.game.models.base.model2d.contracts;
 
 
-public interface CollisionDetection extends Gravitational {
+import com.charlton.game.contracts.BoundingContractLine;
+
+public interface CollisionDetection2D extends Gravitational2D {
     boolean TESTING = true;
 
     default boolean overlaps(BoundingContractLine line) {
@@ -9,7 +11,7 @@ public interface CollisionDetection extends Gravitational {
     }
 
 
-    default boolean isOverlapping(Boundable box) {
+    default boolean isOverlapping(Boundable2D box) {
         return (box.getX().doubleValue() + box.getWidth().doubleValue() >= getX().doubleValue()) &&
                 (getX().doubleValue() + getWidth().doubleValue() >= box.getX().doubleValue()) &&
                 (box.getY().doubleValue() + box.getHeight().doubleValue() >= getY().doubleValue()) &&
@@ -17,7 +19,7 @@ public interface CollisionDetection extends Gravitational {
     }
 
 
-    default boolean willOverlap(Boundable r, int dx, int dy) {
+    default boolean willOverlap(Boundable2D r, int dx, int dy) {
         return (getX().intValue() + dx > r.getX2().intValue() || getY().intValue() + dy > r.getY2().intValue() ||
                 r.getX().intValue() > getX2().intValue() + dx || r.getY().intValue() > getY2().intValue() + dy);
     }
@@ -34,7 +36,7 @@ public interface CollisionDetection extends Gravitational {
         return overlaps;
     }
 
-    default boolean overlaps(Gravitational contract) {
+    default boolean overlaps(Gravitational2D contract) {
         double dx = getX().doubleValue() - contract.getX().doubleValue();
         double dy = getY().doubleValue() - contract.getY().doubleValue();
         double d2 = dx * dx + dy * dy;
@@ -54,7 +56,7 @@ public interface CollisionDetection extends Gravitational {
         moveBy(p * line.getNormalX().doubleValue(), p * line.getNormalY().doubleValue());
     }
 
-    default void pushes(Boundable contract) {
+    default void pushes(Boundable2D contract) {
         double dx = getX().doubleValue() - contract.getX().doubleValue();
         double dy = getY().doubleValue() - contract.getY().doubleValue();
         double d = Math.sqrt(dx * dx + dy * dy);
@@ -68,7 +70,7 @@ public interface CollisionDetection extends Gravitational {
         contract.setWorld(set_pos_x, set_pos_y);
     }
 
-    default void bounceOff(Gravitational contract) {
+    default void bounceOff(Gravitational2D contract) {
         double dx = contract.getX().doubleValue() - getX().doubleValue();
         double dy = contract.getY().doubleValue() - getY().doubleValue();
         double mag = Math.sqrt(dx * dx + dy * dy);

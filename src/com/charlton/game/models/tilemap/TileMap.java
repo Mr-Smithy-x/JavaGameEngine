@@ -1,7 +1,6 @@
 package com.charlton.game.models.tilemap;
 
 import com.charlton.game.contracts.Drawable;
-import com.charlton.game.contracts.Movable;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.SpriteSheet;

@@ -1,9 +1,9 @@
 package com.charlton.game.models;
 
 import com.charlton.game.contracts.*;
-import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
+import com.charlton.game.models.base.model2d.contracts.AI2D;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SpriteSheet implements Drawable, AI {
+public abstract class SpriteSheet implements Drawable, AI2D {
 
     public enum Pose {
         UP, DOWN, LEFT, RIGHT, JUMP, ATTACK_UP, ATTACK_DOWN, ATTACK_LEFT, ATTACK_RIGHT, SPIN_ATTACK
@@ -30,7 +30,7 @@ public abstract class SpriteSheet implements Drawable, AI {
     protected int delay = 0;
     protected int duration = 10;
     protected int current_column = 0;
-    protected AI circle;
+    protected AI2D circle;
 
 
     public SpriteSheet(String name) throws IOException {

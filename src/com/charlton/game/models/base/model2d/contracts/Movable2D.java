@@ -1,8 +1,9 @@
-package com.charlton.game.contracts;
+package com.charlton.game.models.base.model2d.contracts;
 
+import com.charlton.game.contracts.CameraContract;
 import com.charlton.game.helpers.TrigLookupHelper;
 
-public interface Movable extends Boundable, CameraContract {
+public interface Movable2D extends Boundable2D, CameraContract {
 
     double[] cos = TrigLookupHelper.cos;
     double[] sin = TrigLookupHelper.sin;

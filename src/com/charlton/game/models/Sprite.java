@@ -2,12 +2,12 @@ package com.charlton.game.models;
 
 import com.charlton.game.contracts.Drawable;
 import com.charlton.game.display.GlobalCamera;
-import com.charlton.game.models.base.MovableObject;
+import com.charlton.game.models.base.model2d.MovableObject2D;
 import com.charlton.game.models.sprites.Animation;
 
 import java.awt.*;
 
-public class Sprite extends MovableObject implements Drawable {
+public class Sprite extends MovableObject2D implements Drawable {
 
     private int action = 0;
     private boolean moving = false;
