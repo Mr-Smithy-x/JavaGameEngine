@@ -1,6 +1,8 @@
 package com.charlton.base;
 
 
+import com.charlton.game.display.GlobalCamera;
+
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
@@ -115,6 +117,10 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
 
     public void keyReleased(KeyEvent e) {
         pressing[e.getKeyCode()] = false;
+        if(e.getKeyCode() == _D){
+            GlobalCamera.DEBUG = !GlobalCamera.DEBUG;
+        }
+
     }
 
     public final void keyTyped(KeyEvent e) {

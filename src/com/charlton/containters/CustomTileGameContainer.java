@@ -67,61 +67,17 @@ public class CustomTileGameContainer extends GameHolder {
 
     @Override
     protected void paint(Graphics g) {
-        for (Point p : tileSet) {
-            Tile tile = tileSet.get(p);
-            BufferedImage subimage = tile.getImage();
-            int scaled_x = GlobalCamera.getInstance().getScaling() * p.getX();
-            int scaled_y = GlobalCamera.getInstance().getScaling() * p.getY();
-            int camera_offset_x = (int) ((int) GlobalCamera.getInstance().getX());
-            int camera_offset_y = (int) ((int) GlobalCamera.getInstance().getY());
-            int scaled_width = subimage.getWidth() * GlobalCamera.getInstance().getScaling();
-            int scaled_height = subimage.getHeight() * GlobalCamera.getInstance().getScaling();
-            g.drawImage(subimage, scaled_x - camera_offset_x, scaled_y - camera_offset_y,
-                    scaled_width, scaled_height,
-                    null);
-            if (path != null) {
-                if (path.contains(tile)) {
-                    g.setColor(new Color(0, 0.2f, 0, 0.4f));
-                    g.fillRect(scaled_x - camera_offset_x,
-                            scaled_y - camera_offset_y,
-                            scaled_width,
-                            scaled_height);
-                }
-            }
-
-            if (GlobalCamera.DEBUG) {
-                g.setColor(new Color(0.2f, 0, 0, 0.4f));
-                if (tile.isCollision()) {
-                    g.fillRect(scaled_x - camera_offset_x,
-                            scaled_y - camera_offset_y,
-                            scaled_width,
-                            scaled_height);
-
-                } else {
-                    g.drawRect(scaled_x - camera_offset_x,
-                            scaled_y - camera_offset_y,
-                            scaled_width,
-                            scaled_height);
-                }
-
-                g.setColor(new Color(1, 1, 1));
-                String format = String.format("(%s, %s)", p.getX(), p.getY());
-                int formatWidth = g.getFontMetrics().stringWidth(format);
-
-                g.drawString(format, (scaled_x - camera_offset_x) + (scaled_width / 2) - (formatWidth / 2), (scaled_y - camera_offset_y) + scaled_height / 2);
-            }
-
-        }
+        tileSet.render(g);
         link.render(g);
         dog.render(g);
 
-        GlobalCamera.getInstance().render(g);
+        //GlobalCamera.getInstance().render(g);
     }
 
     @Override
     protected void onPlay() {
         dog.gravitate();
-        /*
+
         if (dog.inVicinity(link, 400)) {
             if (dog.getY().intValue() + 16 * GlobalCamera.getInstance().getScaling() > link.getY().intValue()) {
                 if (tileSet.canMove(dog, SpriteSheet.Pose.UP)) {
@@ -153,7 +109,7 @@ public class CustomTileGameContainer extends GameHolder {
             }
         }
 
-         */
+
         if (pressing[_Z]) {
             link.spin();
         } else if (pressing[SPACE]) {
@@ -202,10 +158,6 @@ public class CustomTileGameContainer extends GameHolder {
     @Override
     public void keyReleased(KeyEvent e) {
         super.keyReleased(e);
-        if (e.getKeyCode() == _D) {
-            GlobalCamera.DEBUG = !GlobalCamera.DEBUG;
-        }
-
         if(e.getKeyCode() == _A){
             find();
         }

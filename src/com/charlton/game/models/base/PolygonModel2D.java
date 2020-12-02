@@ -15,8 +15,8 @@ public class PolygonModel2D extends AIObject2D implements Drawable, CollisionDet
 
     public PolygonModel2D(int[][] structure, int world_x, int world_y, int world_angle) {
         this.structure = structure;
-        this.position_x = world_x;
-        this.position_y = world_y;
+        this.x = world_x;
+        this.y = world_y;
         this.world_angle = world_angle;
         updateBounds();
     }
@@ -33,8 +33,8 @@ public class PolygonModel2D extends AIObject2D implements Drawable, CollisionDet
                 for (int vertex = 0; vertex < structure[polygon].length; vertex++) {
                     _x = structure[polygon * 2][vertex];
                     _y = structure[polygon * 2 + 1][vertex];
-                    x_points[vertex] = (int) ((_x * getCosAngle() - _y * getSinAngle()) + position_x);
-                    y_points[vertex] = (int) ((_y * getCosAngle() + _x * getSinAngle()) + position_y);
+                    x_points[vertex] = (int) ((_x * getCosAngle() - _y * getSinAngle()) + x);
+                    y_points[vertex] = (int) ((_y * getCosAngle() + _x * getSinAngle()) + y);
                 }
                 g.drawPolygon(x_points, y_points, structure[polygon].length);
             }
@@ -67,10 +67,9 @@ public class PolygonModel2D extends AIObject2D implements Drawable, CollisionDet
                 }
                 return highest1;
             }).max().getAsInt();
-            boundingBox.position_x = position_x - highest;
-            boundingBox.position_y = position_y - highest;
-            boundingBox.width = Math.abs(lowest) + highest;
-            boundingBox.height = Math.abs(lowest) + highest;
+            boundingBox.setWorld(x - highest, y - highest);
+            boundingBox.setWidth(Math.abs(lowest) + highest);
+            boundingBox.setHeight(Math.abs(lowest) + highest);
             long done = System.currentTimeMillis();
             System.out.printf("end: %s - start: %s = difference: %s\n", done, ms, done - ms);
         }

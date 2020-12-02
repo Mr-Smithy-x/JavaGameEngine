@@ -21,8 +21,8 @@ public class Player extends Creature {
 
     public Player(Game game, float x, float y) throws IOException {
         super(game, "link.png");
-        this.circle = new BoundingCircle(x, y, 20, 90);
-        this.circle.setWorld(x, y);
+        this.box = new BoundingCircle(x, y, 20, 90);
+        this.box.setWorld(x, y);
         setForceDimension(16);
     }
 

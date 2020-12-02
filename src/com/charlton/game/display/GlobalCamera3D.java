@@ -4,8 +4,8 @@ import com.charlton.game.models.base.model3d.contracts.Boundable3D;
 
 public class GlobalCamera3D extends BaseCamera {
 
-    private int zOrigin;
-    private int z;
+    protected int zOrigin;
+    protected int z;
 
     protected static GlobalCamera3D camera;
 

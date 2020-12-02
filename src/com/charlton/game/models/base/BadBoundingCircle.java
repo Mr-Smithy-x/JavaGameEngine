@@ -8,5 +8,9 @@ public class BadBoundingCircle extends BoundingCircle {
     }
 
 
+    public void shoot(){
+        //(x, y, z) -> (d x/z, d y/z)
+    }
+
 
 }

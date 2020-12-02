@@ -3,6 +3,7 @@ package com.charlton.game.models.base;
 import com.charlton.game.contracts.BoundingContractLine;
 import com.charlton.game.contracts.Drawable;
 import com.charlton.game.display.GlobalCamera;
+import com.charlton.game.models.base.model2d.contracts.Boundable2D;
 
 import java.awt.*;
 
@@ -48,6 +49,11 @@ public class BoundingLine implements Drawable, BoundingContractLine {
         //x.doubleValue() * normal_x + y.intValue() * normal_y - c;
         double distance = normal_x * vx + normal_y * vy;
         return distance;
+    }
+
+
+    public Number distanceTo(Boundable2D bound) {
+        return this.distanceTo(bound.getX(), bound.getY());
     }
 
 

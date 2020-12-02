@@ -1,6 +1,8 @@
 package com.charlton.containters;
 
 import com.charlton.base.GameHolder;
+import com.charlton.game.display.GlobalCamera3D;
+import com.charlton.game.models.base.model3d.Cube;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +11,7 @@ import java.io.IOException;
 public class BillboardingContainer extends GameHolder {
 
     Billboard billboard;
+    Cube cube;
 
     protected BillboardingContainer(JFrame container, Canvas canvas) {
         super(container, canvas);
@@ -21,28 +24,49 @@ public class BillboardingContainer extends GameHolder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        cube = new Cube(getWidth()/2, getHeight()/2, 100);
     }
 
     @Override
     protected void paint(Graphics g) {
-        billboard.draw(g);
+        billboard.render(g);
+        cube.render(g);
     }
 
     @Override
     protected void onPlay() {
+
+
+        if(pressing[_U]) GlobalCamera3D.getInstance().moveBy(0, -10,0);
+        if(pressing[_J]) GlobalCamera3D.getInstance().moveBy(0, 10,0);
+        if(pressing[_H]) GlobalCamera3D.getInstance().moveBy(-10, 0,0);
+        if(pressing[_K]) GlobalCamera3D.getInstance().moveBy(10, 0,0);
+        if(pressing[_N]) GlobalCamera3D.getInstance().moveBy(0, 0, -10);
+        if(pressing[_M]) GlobalCamera3D.getInstance().moveBy(0, 0,10);
+
+        cube.turnRight(1);
+
+        GlobalCamera3D.getInstance().setOrigin(cube, getWidth(), getHeight());
         if (pressing[LT]) {
-            billboard.x -= 10;
+            cube.moveBy(-10,0,0);
         }
         if (pressing[RT]) {
-            billboard.x += 10;
+
+            cube.moveBy(10,0,0);
         }
         if (pressing[UP]) {
-
-            billboard.z += 10;
+            cube.moveBy(0,-10,0);
         }
         if (pressing[DN]) {
 
-            billboard.z -= 10;
+            cube.moveBy(0,10,0);
+        }
+        if (pressing[_A]) {
+            cube.moveBy(0,0,-10);
+        }
+        if (pressing[_S]) {
+
+            cube.moveBy(0,0, 10);
         }
     }
 

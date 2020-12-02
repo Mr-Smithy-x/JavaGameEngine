@@ -15,15 +15,15 @@ public class BoundingBox extends AIObject2D implements Drawable {
     }
 
     public BoundingBox(int x, int y, int w, int h) {
-        this.position_x = x;
-        this.position_y = y;
+        this.x = x;
+        this.y = y;
         this.width = w;
         this.height = h;
     }
 
     public boolean contains(int mx, int my) {
-        return (mx > position_x) && (mx < position_x + width) &&
-                (my > position_y) && (my < position_y + height);
+        return (mx > x) && (mx < x + width) &&
+                (my > y) && (my < y + height);
     }
 
     @Override
@@ -33,10 +33,10 @@ public class BoundingBox extends AIObject2D implements Drawable {
 
     @Override
     public boolean overlaps(Gravitational2D box) {
-        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= position_x) &&
-                (position_x + width >= box.getX().doubleValue()) &&
-                (box.getY().doubleValue() + box.getHeight().doubleValue() >= position_y) &&
-                (position_y + height >= box.getY().doubleValue());
+        boolean collides = (box.getX().doubleValue() + box.getWidth().doubleValue() >= x) &&
+                (x + width >= box.getX().doubleValue()) &&
+                (box.getY().doubleValue() + box.getHeight().doubleValue() >= y) &&
+                (y + height >= box.getY().doubleValue());
 
         if (collides) {
             pushes(box);
@@ -46,7 +46,7 @@ public class BoundingBox extends AIObject2D implements Drawable {
 
     @Override
     public boolean overlaps(BoundingContractLine line, boolean action) {
-        double d = line.distanceTo(position_x, position_y).doubleValue();
+        double d = line.distanceTo(x, y).doubleValue();
         boolean overlaps = d < width;
         if (overlaps && action) {
             pushedBackBy(line);
@@ -73,10 +73,18 @@ public class BoundingBox extends AIObject2D implements Drawable {
 
     @Override
     public Number getRadius() {
-        return ((width / 2 + height / 2) / 2);
+        return ((width / 2 + height / 2));
     }
 
     public float getSpeed() {
         return (float) getCurrentSpeed();
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }
