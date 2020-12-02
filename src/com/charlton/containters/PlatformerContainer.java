@@ -28,7 +28,7 @@ public class PlatformerContainer extends GameHolder {
         mountains = ImageLayer.create(ImageLayer.sub("backgrounds.png", x, y, width, height));
     }
 
-    SpriteSheet link = new Link(getWidth() / 4, getHeight() - 50,1);
+    SpriteSheet link = new Link(getWidth() / 4, getHeight() + 50*2,1);
     BoundingLine line;
     TileMap map;
 

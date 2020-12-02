@@ -24,7 +24,7 @@ public class BillboardingContainer extends GameHolder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cube = new Cube(getWidth()/2, getHeight()/2, 200);
+        cube = new Cube(getWidth()/2, getHeight()/2, 100);
         GlobalCamera3D.getInstance().setOrigin(cube, getWidth(), getHeight());
 
     }

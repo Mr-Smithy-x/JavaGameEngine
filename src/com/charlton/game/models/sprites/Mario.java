@@ -14,8 +14,12 @@ import java.util.Map;
 public class Mario extends SpriteSheet {
 
     public Mario(int position_x, int position_y) throws IOException {
+        this(position_x, position_y, 2);
+    }
+
+    public Mario(int position_x, int position_y, int duration) throws IOException {
         super("mario.png");
-        this.duration = 2;
+        this.duration = duration;
         int width = getStillImage().getWidth(null);
         int height = getStillImage().getHeight(null);
         this.box = new BoundingBox(position_x, position_y,
