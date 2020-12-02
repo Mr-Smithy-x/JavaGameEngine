@@ -105,8 +105,8 @@ public class Cube extends AIObject3D implements Drawable {
             if (Nx * Wx + Ny * Wy + Nz * Wz < 0) {
                 for (int vertex = 0; vertex < x_struct[polygon].length; vertex++) {
                     //3d perspective Transformation + shift to the center of the screen
-                    xs[vertex] = (int) (distance * xw[vertex] / zw[vertex]);// + GlobalCamera3D.getInstance().getX();
-                    ys[vertex] = (int) (distance * yw[vertex] / zw[vertex]);// + GlobalCamera3D.getInstance().getY();
+                    xs[vertex] = (int) (distance * xw[vertex] / zw[vertex]) + GlobalCamera3D.getInstance().getX();
+                    ys[vertex] = (int) (distance * yw[vertex] / zw[vertex]) + GlobalCamera3D.getInstance().getY();
                 }
                 double q = 255 * (Nx * Lx + Ny * Ly + Nz * Lz + 1) / 2;
 
