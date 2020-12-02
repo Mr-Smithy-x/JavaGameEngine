@@ -9,6 +9,15 @@ public abstract class MovableObject3D extends MovableObject2D implements Movable
     protected double distance;
 
 
+    public void setDistance(Number distance) {
+        this.distance = distance.doubleValue();
+    }
+
+    @Override
+    public Number getDistance() {
+        return distance;
+    }
+
     @Override
     public Number getZ() {
         return z;

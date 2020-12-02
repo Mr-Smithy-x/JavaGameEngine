@@ -24,11 +24,13 @@ public class BillboardingContainer extends GameHolder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cube = new Cube(getWidth()/2, getHeight()/2, 100);
+        cube = new Cube(getWidth()/2, getHeight()/2, 200);
+        GlobalCamera3D.getInstance().setOrigin(cube, getWidth(), getHeight());
+
     }
 
     @Override
-    protected void paint(Graphics g) {
+    protected void onPaint(Graphics g) {
         billboard.render(g);
         cube.render(g);
     }
@@ -46,7 +48,6 @@ public class BillboardingContainer extends GameHolder {
 
         cube.turnRight(1);
 
-        GlobalCamera3D.getInstance().setOrigin(cube, getWidth(), getHeight());
         if (pressing[LT]) {
             cube.moveBy(-10,0,0);
         }

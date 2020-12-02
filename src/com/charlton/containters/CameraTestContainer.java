@@ -22,7 +22,7 @@ public class CameraTestContainer extends GameHolder {
     }
 
     @Override
-    protected void paint(Graphics g) {
+    protected void onPaint(Graphics g) {
         mountains.draw(g);
     }
 

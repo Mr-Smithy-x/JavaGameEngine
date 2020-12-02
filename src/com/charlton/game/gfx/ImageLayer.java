@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ImageLayer {
     Image image;
@@ -16,14 +18,12 @@ public class ImageLayer {
     int y;
     int z;
 
-
     public static BufferedImage get(String name) throws IOException {
         ClassLoader cl = ImageLayer.class.getClassLoader();
         URL resource = cl.getResource(String.format("assets/images/%s", name));
-        System.out.println(resource.getFile());
+        Logger.getAnonymousLogger().log(Level.FINE, resource.getFile());
         File file = new File(resource.getFile());
-        BufferedImage read = ImageIO.read(file);
-        return read;
+        return ImageIO.read(file);
     }
 
     public static ImageLayer from(String name, int x, int y, int z) throws IOException {
@@ -31,8 +31,7 @@ public class ImageLayer {
     }
 
     public static BufferedImage sub(String name, int x, int y, int w, int h) throws IOException {
-        BufferedImage bufferedImage = get(name).getSubimage(x, y, w, h);
-        return bufferedImage;
+        return get(name).getSubimage(x, y, w, h);
     }
 
     public static ImageLayer create(BufferedImage image) {
@@ -50,8 +49,8 @@ public class ImageLayer {
 
     public void draw(Graphics g) {
         for (int i = 0; i < 10; i++) {
-            int width = (int) (image.getWidth(null) * 2);
-            int height = (int) (image.getHeight(null) * 2);
+            int width = image.getWidth(null) * 2;
+            int height = image.getHeight(null) * 2;
             int x = (this.x - GlobalCamera.getInstance().getX()) + (width * i);
             g.drawImage(image, x, y, width, height, null);
         }

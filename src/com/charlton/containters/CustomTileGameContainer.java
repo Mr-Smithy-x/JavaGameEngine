@@ -59,14 +59,14 @@ public class CustomTileGameContainer extends GameHolder {
         try {
             SoundTrack s = new SoundTrack("soundtrack.wav");
             s.play();
-        } catch (IOException | UnsupportedAudioFileException | InvalidMidiDataException | MidiUnavailableException | LineUnavailableException e) {
+        } catch (IOException | UnsupportedAudioFileException  | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
 
 
     @Override
-    protected void paint(Graphics g) {
+    protected void onPaint(Graphics g) {
         tileSet.render(g);
         link.render(g);
         dog.render(g);

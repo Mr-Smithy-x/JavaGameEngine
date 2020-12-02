@@ -37,7 +37,7 @@ public class GameF20Container extends GameHolder {
     };
 
     @Override
-    protected void paint(Graphics g) {
+    protected void onPaint(Graphics g) {
         zeldaTitles.render(g);
         g.setColor(Color.BLACK);
         for (BoundingLine boundingLine : L) {
