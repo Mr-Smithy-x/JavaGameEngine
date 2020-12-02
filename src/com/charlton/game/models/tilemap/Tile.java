@@ -2,13 +2,13 @@ package com.charlton.game.models.tilemap;
 
 import com.charlton.game.algorithms.pathfinding.models.Network;
 import com.charlton.game.algorithms.pathfinding.models.Node;
-import com.charlton.game.contracts.Boundable;
+import com.charlton.game.models.base.model2d.contracts.Boundable2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Tile extends Node implements Comparable<Node>, Boundable{
+public class Tile extends Node implements Comparable<Node>, Boundable2D {
 
 
     public final static int LEVEL_GROUND = 0, LEVEL_MID = 1, LEVEL_SKY = 2;

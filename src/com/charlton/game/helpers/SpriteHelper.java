@@ -1,9 +1,8 @@
 package com.charlton.game.helpers;
 
-import com.charlton.game.contracts.Movable;
+import com.charlton.game.models.base.model2d.contracts.Movable2D;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
-import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.tilemap.Point;
 import com.charlton.game.models.tilemap.Tile;
 import com.charlton.game.models.tilemap.TileMap;
@@ -28,12 +27,12 @@ public class SpriteHelper {
      * @param sprite
      * @return
      */
-    public static Tile getCurrentTile(TileMap tileSet, Movable sprite) {
+    public static Tile getCurrentTile(TileMap tileSet, Movable2D sprite) {
         Point currentPoint = getCurrentPoint(tileSet, sprite);
         return tileSet.get(currentPoint);
     }
 
-    public static Point getCurrentPoint(TileMap tileSet, Movable sprite) {
+    public static Point getCurrentPoint(TileMap tileSet, Movable2D sprite) {
         int sprite_position_x = sprite.getX().intValue() / GlobalCamera.getInstance().getScaling();
         int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tileSet.getTileWidth(); //Size of the tile, now scaled

@@ -1,12 +1,16 @@
 package com.charlton.containters;
 
+import com.charlton.game.contracts.Drawable;
+import com.charlton.game.display.GlobalCamera;
+import com.charlton.game.display.GlobalCamera3D;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Billboard {
+public class Billboard implements Drawable {
     private final BufferedImage image;
     double x;
     double y;
@@ -29,19 +33,22 @@ public class Billboard {
         this.h = image.getHeight();
     }
 
-    public void draw(Graphics g) {
-        double sx = d * x / z;
-        double sy = d * y / z;
+    @Override
+    public void render(Graphics g) {
+        double sx = d * (x - GlobalCamera3D.getInstance().getX()) / (z - GlobalCamera3D.getInstance().getZ());
+        double sy = d * (y - GlobalCamera3D.getInstance().getZ()) / (z - GlobalCamera3D.getInstance().getZ());
 
-        double sw = d * w / z;
-        double sh = d * h / z;
-        g.drawImage(
-                image,
-                (int) (sx - sw / 2),
-                (int) (sy - sh),
-                (int) sw,
-                (int) sh,
-                null
-        );
+        double sw = d * w / (z - GlobalCamera3D.getInstance().getZ());
+        double sh = d * h / (z - GlobalCamera3D.getInstance().getZ());
+        if (z - GlobalCamera3D.getInstance().getZ() > 10) {
+            g.drawImage(
+                    image,
+                    (int) (sx - sw / 2) + GlobalCamera3D.getInstance().getXOrigin(),
+                    (int) (sy - sh) + GlobalCamera.getInstance().getYOrigin(),
+                    (int) sw,
+                    (int) sh,
+                    null
+            );
+        }
     }
 }

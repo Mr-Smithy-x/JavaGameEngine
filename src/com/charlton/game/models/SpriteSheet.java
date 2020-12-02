@@ -1,9 +1,9 @@
 package com.charlton.game.models;
 
 import com.charlton.game.contracts.*;
-import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
+import com.charlton.game.models.base.model2d.contracts.AI2D;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SpriteSheet implements Drawable, AI {
+public abstract class SpriteSheet implements Drawable, AI2D {
+
+    public double getSpeed() {
+        return 0;
+    }
 
     public enum Pose {
         UP, DOWN, LEFT, RIGHT, JUMP, ATTACK_UP, ATTACK_DOWN, ATTACK_LEFT, ATTACK_RIGHT, SPIN_ATTACK
@@ -30,8 +34,11 @@ public abstract class SpriteSheet implements Drawable, AI {
     protected int delay = 0;
     protected int duration = 10;
     protected int current_column = 0;
-    protected AI circle;
+    protected AI2D box;
 
+    public AI2D getBox() {
+        return box;
+    }
 
     public SpriteSheet(String name) throws IOException {
         initializeSheet(name);
@@ -43,19 +50,19 @@ public abstract class SpriteSheet implements Drawable, AI {
 
     @Override
     public void setWorldAngle(int world_angle) {
-        circle.setWorldAngle(world_angle);
+        box.setWorldAngle(world_angle);
     }
 
     @Override
     public int getWorldAngle() {
-        return circle.getWorldAngle();
+        return box.getWorldAngle();
     }
 
 
     @Override
     public void moveBy(Number dx, Number dy) {
         moving = true;
-        circle.moveBy(dx, dy);
+        box.moveBy(dx, dy);
         if (dx.doubleValue() < dy.doubleValue()) {
             if (dy.doubleValue() > 0) {
                 pose = Pose.DOWN;
@@ -85,17 +92,17 @@ public abstract class SpriteSheet implements Drawable, AI {
         }
         switch (pose) {
             case LEFT:
-                circle.setWorldAngle(180);
+                box.setWorldAngle(180);
                 break;
             case RIGHT:
-                circle.setWorldAngle(0);
+                box.setWorldAngle(0);
                 break;
             case UP:
-                circle.setWorldAngle(270);
+                box.setWorldAngle(270);
                 break;
             case DOWN:
             default:
-                circle.setWorldAngle(90);
+                box.setWorldAngle(90);
         }
         nextImageColumn();
     }
@@ -186,8 +193,8 @@ public abstract class SpriteSheet implements Drawable, AI {
         int width = image.getWidth(null) * GlobalCamera.getInstance().getScaling();
         int height = image.getHeight(null) * GlobalCamera.getInstance().getScaling();
         g.drawImage(image,
-                getGlobalCameraOffsetX().intValue(),
-                getGlobalCameraOffsetY().intValue(),
+                getGlobalCameraOffsetX().intValue(),// - image.getWidth(null),
+                getGlobalCameraOffsetY().intValue(),// - image.getHeight(null),
                 width,
                 height,
                 null
@@ -202,8 +209,8 @@ public abstract class SpriteSheet implements Drawable, AI {
         g.drawRect(
                 getGlobalCameraOffsetX().intValue(),
                 getGlobalCameraOffsetY().intValue(),
-                circle.getWidth().intValue(),
-                circle.getHeight().intValue()
+                box.getWidth().intValue(),
+                box.getHeight().intValue()
         );
     }
 
@@ -213,17 +220,17 @@ public abstract class SpriteSheet implements Drawable, AI {
 
         switch (pose) {
             case LEFT:
-                circle.setWorldAngle(180);
+                box.setWorldAngle(180);
                 break;
             case RIGHT:
-                circle.setWorldAngle(0);
+                box.setWorldAngle(0);
                 break;
             case UP:
-                circle.setWorldAngle(270);
+                box.setWorldAngle(270);
                 break;
             case DOWN:
             default:
-                circle.setWorldAngle(90);
+                box.setWorldAngle(90);
         }
         nextImageColumn();
     }
@@ -239,92 +246,92 @@ public abstract class SpriteSheet implements Drawable, AI {
 
     @Override
     public Number getX() {
-        return circle.getX();
+        return box.getX();
     }
 
     @Override
     public Number getY() {
-        return circle.getY();
+        return box.getY();
     }
 
     @Override
     public void setX(Number x) {
-        circle.setX(x);
+        box.setX(x);
     }
 
     @Override
     public void setY(Number y) {
-        circle.setY(y);
+        box.setY(y);
     }
 
     @Override
     public Number getWidth() {
-        return circle.getWidth();
+        return box.getWidth();
     }
 
     @Override
     public Number getHeight() {
-        return circle.getHeight();
+        return box.getHeight();
     }
 
     @Override
     public Number getRadius() {
-        return circle.getRadius();
+        return box.getRadius();
     }
 
     @Override
     public Number getVelocityX() {
-        return circle.getVelocityX();
+        return box.getVelocityX();
     }
 
     @Override
     public Number getVelocityY() {
-        return circle.getVelocityY();
+        return box.getVelocityY();
     }
 
     @Override
     public void setDragX(Number dragX) {
-        circle.setDragX(dragX);
+        box.setDragX(dragX);
     }
 
     @Override
     public void setDragY(Number dragY) {
-        circle.setDragY(dragY);
+        box.setDragY(dragY);
     }
 
     @Override
     public void setVelocityX(Number velocity_x) {
-        circle.setVelocityX(velocity_x);
+        box.setVelocityX(velocity_x);
     }
 
     @Override
     public void setVelocityY(Number velocity_y) {
-        circle.setVelocityY(velocity_y);
+        box.setVelocityY(velocity_y);
     }
 
     @Override
     public Number getAccelerationX() {
-        return circle.getAccelerationX();
+        return box.getAccelerationX();
     }
 
     @Override
     public Number getAccelerationY() {
-        return circle.getAccelerationY();
+        return box.getAccelerationY();
     }
 
     @Override
     public void setAccelerationX(Number acceleration_x) {
-        this.circle.setAccelerationX(acceleration_x);
+        this.box.setAccelerationX(acceleration_x);
     }
 
     @Override
     public void setAccelerationY(Number acceleration_y) {
-        this.circle.setAccelerationY(acceleration_y);
+        this.box.setAccelerationY(acceleration_y);
     }
 
     @Override
     public void toss(Number velocity_x, Number velocity_y) {
-        circle.toss(velocity_x, velocity_y);
+        box.toss(velocity_x, velocity_y);
         if (velocity_x.intValue() > 0) {
             pose = Pose.RIGHT;
         }
@@ -335,29 +342,39 @@ public abstract class SpriteSheet implements Drawable, AI {
 
     @Override
     public void gravitate() {
-        circle.gravitate();
+        box.gravitate();
         nextImageColumn();
         moving = true;
     }
 
     @Override
     public Number getDragX() {
-        return circle.getDragX();
+        return box.getDragX();
     }
 
     @Override
     public Number getDragY() {
-        return circle.getDragY();
+        return box.getDragY();
     }
 
 
     @Override
     public void setChaseSpeed(int speed) {
-        circle.setChaseSpeed(speed);
+        box.setChaseSpeed(speed);
     }
 
     @Override
     public void setTurnSpeed(int turnspeed) {
-        circle.setTurnSpeed(turnspeed);
+        box.setTurnSpeed(turnspeed);
+    }
+
+    @Override
+    public String toString() {
+        int x = getX().intValue() / GlobalCamera.getInstance().getScaling();
+        int y = getY().intValue() / GlobalCamera.getInstance().getScaling();
+        int x2 = x + getWidth().intValue();
+        int y2 = y + getHeight().intValue();
+        return String.format("SpriteSheet{x:%s y:%s x2:%s, y2:%s, w:%s h:%s}",
+                x, y, x2, y2, getWidth().intValue(), getHeight().intValue());
     }
 }

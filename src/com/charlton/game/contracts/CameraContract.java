@@ -2,8 +2,9 @@ package com.charlton.game.contracts;
 
 import com.charlton.game.display.BaseCamera;
 import com.charlton.game.display.GlobalCamera;
+import com.charlton.game.models.base.model2d.contracts.Boundable2D;
 
-public interface CameraContract extends Boundable {
+public interface CameraContract extends Boundable2D {
 
     default Number getCameraOffsetX(BaseCamera camera) {
         if (camera == null) {

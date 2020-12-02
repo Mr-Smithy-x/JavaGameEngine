@@ -1,6 +1,6 @@
-package com.charlton.game.contracts;
+package com.charlton.game.models.base.model2d.contracts;
 
-public interface Boundable {
+public interface Boundable2D {
 
     void setX(Number x);
     void setY(Number y);

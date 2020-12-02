@@ -1,6 +1,6 @@
-package com.charlton.game.contracts;
+package com.charlton.game.models.base.model2d.contracts;
 
-public interface Gravitational extends Movable {
+public interface Gravitational2D extends Movable2D {
     void setDragX(Number dragX);
 
     void setDragY(Number dragY);

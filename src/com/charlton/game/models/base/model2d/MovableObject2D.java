@@ -1,10 +1,10 @@
-package com.charlton.game.models.base;
+package com.charlton.game.models.base.model2d;
 
-import com.charlton.game.contracts.Movable;
+import com.charlton.game.models.base.model2d.contracts.Movable2D;
 
-public abstract class MovableObject implements Movable {
+public abstract class MovableObject2D implements Movable2D {
 
-    protected double position_x, position_y;
+    protected double x, y;
     protected double width, height;
     protected int world_angle;
 
@@ -18,22 +18,22 @@ public abstract class MovableObject implements Movable {
 
     @Override
     public Number getX() {
-        return position_x;
+        return x;
     }
 
     @Override
     public Number getY() {
-        return position_y;
+        return y;
     }
 
     @Override
     public void setX(Number x) {
-        this.position_x = x.doubleValue();
+        this.x = x.doubleValue();
     }
 
     @Override
     public void setY(Number y) {
-        this.position_y = y.doubleValue();
+        this.y = y.doubleValue();
     }
 
     @Override

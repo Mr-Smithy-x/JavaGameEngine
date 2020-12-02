@@ -1,6 +1,5 @@
 package com.charlton.game.models.sprites;
 
-import com.charlton.game.contracts.AI;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
@@ -38,8 +37,13 @@ public class Link extends SpriteSheet {
     public Link(int position_x, int position_y, int duration) throws IOException {
         super("link.png");
         this.duration = duration;
-        this.circle = new BoundingBox(position_x, position_y, 64, 64);
-        this.circle.setWorld(position_x, position_y);
+        int width = getStillImage().getWidth(null);
+        int height = getStillImage().getHeight(null);
+        System.out.printf("DIMENS: (w: %s, h: %s)\n", width, height);
+        this.box = new BoundingBox(position_x, position_y,
+                width,
+                height);
+        this.box.setWorld(position_x, position_y);
     }
 
     public void spin() {
@@ -194,7 +198,7 @@ public class Link extends SpriteSheet {
         return getSpeed();
     }
 
-    public float getSpeed() {
+    public double getSpeed() {
         return Camera.getInstance().getScaling() * 4;
     }
 }

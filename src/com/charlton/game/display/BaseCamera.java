@@ -1,16 +1,14 @@
 package com.charlton.game.display;
 
-import com.charlton.game.contracts.Boundable;
+import com.charlton.game.models.base.model2d.contracts.Boundable2D;
 import com.charlton.game.contracts.Drawable;
-import com.charlton.game.contracts.Movable;
-import com.charlton.game.models.SpriteSheet;
 
 import java.awt.*;
 
 public abstract class BaseCamera implements Drawable {
 
     protected int x, y;
-    protected int x_origin, y_origin;
+    protected int xOrigin, yOrigin;
     protected int scaling = 4;
 
 
@@ -43,15 +41,15 @@ public abstract class BaseCamera implements Drawable {
     }
 
 
-    public void setOrigin(Boundable e, int screen_width, int screen_height) {
+    public void setOrigin(Boundable2D e, int screenWidth, int screenHeight) {
         int x = e.getX().intValue();
         int y = e.getY().intValue();
         //Commented out code would center the pixel onto the screen, but with this dynamic, it works much differently
-        this.x_origin = x - (screen_width / 2);
-        this.y_origin = y - (screen_height / 2);
+        this.xOrigin = x - (screenWidth / 2);
+        this.yOrigin = y - (screenHeight / 2);
 
-        this.x = x_origin;
-        this.y = y_origin;
+        this.x = xOrigin;
+        this.y = yOrigin;
         // System.out.printf("(X: %s,Y: %s), ORIGIN: (x: %s, y: %s)", x, y, x_origin, y_origin);
     }
 
@@ -76,30 +74,30 @@ public abstract class BaseCamera implements Drawable {
         x += dist;
     }
 
-    public BaseCamera(int x_origin, int y_origin) {
-        this.x_origin = x_origin;
-        this.y_origin = y_origin;
+    public BaseCamera(int xOrigin, int yOrigin) {
+        this.xOrigin = xOrigin;
+        this.yOrigin = yOrigin;
     }
 
-    public void move(int xamt, int yamt) {
-        x_origin += xamt;
-        y_origin += yamt;
+    public void move(int dx, int dy) {
+        xOrigin += dx;
+        yOrigin += dy;
     }
 
     public int getXOrigin() {
-        return x_origin;
+        return xOrigin;
     }
 
-    public void setXOrigin(int x_offset) {
-        this.x_origin = x_offset;
+    public void setXOrigin(int xOffset) {
+        this.xOrigin = xOffset;
     }
 
     public int getYOrigin() {
-        return y_origin;
+        return yOrigin;
     }
 
-    public void setYOrigin(int y_offset) {
-        this.y_origin = y_offset;
+    public void setYOrigin(int yOffset) {
+        this.yOrigin = yOffset;
     }
 
 

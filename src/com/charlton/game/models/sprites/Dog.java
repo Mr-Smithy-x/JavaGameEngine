@@ -21,8 +21,8 @@ public class Dog extends SpriteSheet implements Animal {
     public Dog(int position_x, int position_y, int duration) throws IOException {
         super("dog.png");
         this.duration = duration;
-        this.circle = new BoundingCircle(position_x, position_y, 20, 90);
-        this.circle.setWorld(position_x, position_y);
+        this.box = new BoundingCircle(position_x, position_y, 20, 90);
+        this.box.setWorld(position_x, position_y);
     }
 
 
@@ -48,7 +48,10 @@ public class Dog extends SpriteSheet implements Animal {
         return this;
     }
 
-    public float getSpeed() {
+
+
+    @Override
+    public double getSpeed() {
         return Camera.getInstance().getScaling() * speed;
     }
 }

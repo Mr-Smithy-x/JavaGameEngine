@@ -1,6 +1,8 @@
 package com.charlton.base;
 
 
+import com.charlton.game.display.GlobalCamera;
+
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
@@ -54,7 +56,7 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
     }
 
 
-    protected abstract void paint(Graphics g);
+    protected abstract void onPaint(Graphics g);
 
     public int getWidth() {
         return container.getWidth();
@@ -70,7 +72,7 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
 
     protected void update(Graphics g) {
         off_g.clearRect(0, 0, container.getWidth(), container.getHeight());
-        paint(off_g);
+        onPaint(off_g);
         g.drawImage(off_screen_image, 0, 0, null);
     }
 
@@ -115,6 +117,10 @@ public abstract class GameHolder implements Runnable, KeyListener, MouseListener
 
     public void keyReleased(KeyEvent e) {
         pressing[e.getKeyCode()] = false;
+        if(e.getKeyCode() == _D){
+            GlobalCamera.DEBUG = !GlobalCamera.DEBUG;
+        }
+
     }
 
     public final void keyTyped(KeyEvent e) {

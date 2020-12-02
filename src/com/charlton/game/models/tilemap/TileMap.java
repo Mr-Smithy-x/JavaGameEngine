@@ -1,10 +1,12 @@
 package com.charlton.game.models.tilemap;
 
 import com.charlton.game.contracts.Drawable;
-import com.charlton.game.contracts.Movable;
 import com.charlton.game.display.Camera;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.SpriteSheet;
+import com.charlton.game.models.base.model2d.contracts.Boundable2D;
+import com.charlton.game.models.base.model2d.contracts.Gravitational2D;
+import com.charlton.game.models.sprites.Link;
 import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
 import com.charlton.game.algorithms.pathfinding.models.Network;
@@ -161,34 +163,36 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
         return canMove(sprite, direction, false);
     }
 
-    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction, boolean ignoreInvisibles){
-        int sprite_position_x = sprite.getX().intValue() / GlobalCamera.getInstance().getScaling();
-        int sprite_position_y = sprite.getY().intValue() / GlobalCamera.getInstance().getScaling();
+    public boolean canMove(SpriteSheet sprite, SpriteSheet.Pose direction, boolean ignoreInvisibles) {
+        int sprite_position_x = (direction == SpriteSheet.Pose.LEFT ? sprite.getX() : sprite.getX2()).intValue() / GlobalCamera.getInstance().getScaling();
+        int sprite_position_y = (direction == SpriteSheet.Pose.UP ? sprite.getY() : sprite.getY2()).intValue() / GlobalCamera.getInstance().getScaling();
         int scaled_tile_width = tile_width; //Size of the tile, now scaled
         int scaled_tile_height = tile_height;
 
         boolean willOverlap = false;
         switch (direction) {
             case LEFT:
-                sprite_position_x -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                sprite_position_x -= sprite.getCurrentSpeed().intValue();
                 break;
             case RIGHT:
-                sprite_position_x += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                sprite_position_x += sprite.getCurrentSpeed().intValue();
                 break;
             case DOWN:
-                sprite_position_y += sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                sprite_position_y += sprite.getCurrentSpeed().intValue();
                 break;
             case UP:
-                sprite_position_y -= sprite.getCurrentSpeed().intValue() / GlobalCamera.getInstance().getScaling();
+                sprite_position_y -= sprite.getCurrentSpeed().intValue();
                 break;
         }
 
         int scaled_tile_position_x = sprite_position_x - (sprite_position_x % scaled_tile_width);
         int scaled_tile_position_y = sprite_position_y - (sprite_position_y % scaled_tile_height);
-        int real_tile_pos_x = scaled_tile_position_x;
-        int real_tile_pos_y = scaled_tile_position_y;
-        long point = Point.toLong(real_tile_pos_x, real_tile_pos_y);
-
+        long point = Point.toLong(scaled_tile_position_x, scaled_tile_position_y);
+        if (!tiles.containsKey(point)) {
+            return ignoreInvisibles;
+        }
+        Tile tile = get(scaled_tile_position_x, scaled_tile_position_y);
+        boolean collisionTile = tile.isCollision();
 
         if (Camera.DEBUG) {
             System.out.printf("Character Position: (%s, %s)\nTile Position: (%s, %s)\n",
@@ -199,32 +203,25 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
             );
         }
 
-        if (!tiles.containsKey(point)) {
-            if (ignoreInvisibles) {
-                return true;
-            }
-            //System.out.printf("Point (%s, %s)\n", real_tile_pos_x, real_tile_pos_y);
-            return false;
-        }
-        Tile tile = get(real_tile_pos_x, real_tile_pos_y);
-        boolean collisionTile = tile.isCollision();
-        if(collisionTile) {
+        if (collisionTile) {
+            int speed = sprite.getCurrentSpeed().intValue();
             switch (direction) {
                 case UP:
-                    willOverlap = sprite.willOverlap(tile, 0, -sprite.getCurrentSpeed().intValue());
+                    willOverlap = sprite.willOverlapImproved(tile, 0, -speed);
                     break;
                 case DOWN:
-                    willOverlap = sprite.willOverlap(tile, 0, sprite.getCurrentSpeed().intValue());
+                    willOverlap = sprite.willOverlapImproved(tile, 0, speed);
                     break;
                 case LEFT:
-                    willOverlap = sprite.willOverlap(tile, -sprite.getCurrentSpeed().intValue(), 0);
+                    willOverlap = sprite.willOverlapImproved(tile, -speed, 0);
                     break;
                 case RIGHT:
-                    willOverlap = sprite.willOverlap(tile, sprite.getCurrentSpeed().intValue(), 0);
+                    willOverlap = sprite.willOverlapImproved(tile, speed, 0);
                     break;
             }
-            if(willOverlap){
+            if (willOverlap) {
                 sprite.setVelocityY(0);
+                //    sprite.setWorld(sprite.getX(), (tile.getY().intValue() - tile.getHeight().intValue()) * GlobalCamera.getInstance().getScaling());
             }
             return !willOverlap;
         }
@@ -263,25 +260,23 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
             BufferedImage subimage = tile.getImage();
             int scaled_x = GlobalCamera.getInstance().getScaling() * p.getX();
             int scaled_y = GlobalCamera.getInstance().getScaling() * p.getY();
-            int camera_offset_x = (int) ((int) GlobalCamera.getInstance().getX());
-            int camera_offset_y = (int) ((int) GlobalCamera.getInstance().getY());
+            int camera_x = GlobalCamera.getInstance().getX();
+            int camera_y = GlobalCamera.getInstance().getY();
             int scaled_width = subimage.getWidth() * GlobalCamera.getInstance().getScaling();
             int scaled_height = subimage.getHeight() * GlobalCamera.getInstance().getScaling();
-            g.drawImage(subimage, scaled_x - camera_offset_x, scaled_y - camera_offset_y,
-                    scaled_width, scaled_height,
-                    null);
+            g.drawImage(subimage, scaled_x - camera_x, scaled_y - camera_y, scaled_width, scaled_height, null);
 
             if (GlobalCamera.DEBUG) {
                 g.setColor(new Color(0.2f, 0, 0, 0.4f));
                 if (tile.isCollision()) {
-                    g.fillRect(scaled_x - camera_offset_x,
-                            scaled_y - camera_offset_y,
+                    g.fillRect(scaled_x - camera_x,
+                            scaled_y - camera_y,
                             scaled_width,
                             scaled_height);
 
                 } else {
-                    g.drawRect(scaled_x - camera_offset_x,
-                            scaled_y - camera_offset_y,
+                    g.drawRect(scaled_x - camera_x,
+                            scaled_y - camera_y,
                             scaled_width,
                             scaled_height);
                 }
@@ -290,7 +285,43 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
                 String format = String.format("(%s, %s)", p.getX(), p.getY());
                 int formatWidth = g.getFontMetrics().stringWidth(format);
 
-                g.drawString(format, (scaled_x - camera_offset_x) + (scaled_width / 2) - (formatWidth / 2), (scaled_y - camera_offset_y) + scaled_height / 2);
+                g.drawString(format, (scaled_x - camera_x) + (scaled_width / 2) - (formatWidth / 2), (scaled_y - camera_y) + scaled_height / 2);
+            }
+        }
+    }
+
+    public Tile getTileBelow(Boundable2D bound, boolean jump) {
+        int y = (jump ? bound.getY2() : bound.getY()).intValue() / GlobalCamera.getInstance().getScaling();
+        int x = bound.getX().intValue() / GlobalCamera.getInstance().getScaling();
+
+        x -= (x % tile_width);
+        y -= (y % tile_height);
+        y += tile_height;
+        return get(x, y);
+    }
+
+    public Tile getTileAbove(Boundable2D bound, boolean jump) {
+        int y = (jump ? bound.getY() : bound.getY2()).intValue() / GlobalCamera.getInstance().getScaling();
+        int x = bound.getX().intValue() / GlobalCamera.getInstance().getScaling();
+
+        x += (x % tile_width);
+        y += (y % tile_height);
+        y -= tile_height;
+        return get(x, y);
+    }
+
+
+    public void fixBounds(Gravitational2D bounds) {
+        fixBounds(bounds, false);
+    }
+
+
+    public void fixBounds(Gravitational2D bounds, boolean jump) {
+        Tile tile = getTileBelow(bounds, jump);
+        if (tile != null && tile.isCollision()) {
+            int y = (tile.getY().intValue() - tile_height) * GlobalCamera.getInstance().getScaling();
+            if (Math.abs(bounds.getVelocityY().intValue()) == 0) {
+                bounds.setY(y);
             }
         }
     }

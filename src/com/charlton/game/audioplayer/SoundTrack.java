@@ -1,11 +1,11 @@
 package com.charlton.game.audioplayer;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiUnavailableException;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SoundTrack {
 
@@ -14,9 +14,7 @@ public class SoundTrack {
     public SoundTrack(String filename) {
         ClassLoader cl = SoundTrack.class.getClassLoader();
         URL resource = cl.getResource(String.format("assets/tracks/%s", filename));
-        System.out.println(resource);
         String file = resource.getFile();
-        System.out.println(file);
         this.file = new File(file);
     }
 
@@ -32,24 +30,23 @@ public class SoundTrack {
         gainControl.setValue(20f * (float) Math.log10(volume));
     }
 
-    public void play() throws IOException, UnsupportedAudioFileException, InvalidMidiDataException, MidiUnavailableException, LineUnavailableException {
-        AudioFormat playbackFormat = new AudioFormat(44100, 16, 1, true, false);
+    public void play() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        /**
+         * Best audio format, 44100 hz 16 bit mono stereo
+         * AudioFormat playbackFormat = new AudioFormat(44100, 16, 1, true, false)
+         */
         AudioInputStream source = AudioSystem.getAudioInputStream(file);
         AudioFormat format = source.getFormat();
-        System.out.println(format);
+        Logger.getAnonymousLogger().log(Level.FINE, format.toString());
         source = AudioSystem.getAudioInputStream(format, source);
-
         DataLine.Info info = new DataLine.Info(Clip.class, format);
-// create the line
+        // create the line
         Clip clip = (Clip)AudioSystem.getLine(info);
-// load the samples from the stream
+        // load the samples from the stream
         clip.open(source);
-// begin playback of the sound clip
-
+        // begin playback of the sound clip
         setVolume(clip, 0.2f);
         clip.start();
-
-
     }
 
 }

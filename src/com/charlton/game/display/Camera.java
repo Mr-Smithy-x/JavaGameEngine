@@ -1,7 +1,7 @@
 package com.charlton.game.display;
 
 import com.charlton.Game;
-import com.charlton.game.contracts.Movable;
+import com.charlton.game.models.base.model2d.contracts.Movable2D;
 
 public class Camera extends GlobalCamera {
 
@@ -13,9 +13,9 @@ public class Camera extends GlobalCamera {
         Camera.camera = this;
     }
 
-    public void centerOnEntity(Movable e) {
-        x_origin = e.getX().intValue() - game.getWidth() / 4 + e.getWidth().intValue() / 2;
-        y_origin = e.getY().intValue() - game.getHeight() / 4 + e.getHeight().intValue() / 2;
+    public void centerOnEntity(Movable2D e) {
+        xOrigin = e.getX().intValue() - game.getWidth() / 4 + e.getWidth().intValue() / 2;
+        yOrigin = e.getY().intValue() - game.getHeight() / 4 + e.getHeight().intValue() / 2;
     }
 
 }

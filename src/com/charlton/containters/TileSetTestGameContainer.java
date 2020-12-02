@@ -80,7 +80,7 @@ public class TileSetTestGameContainer extends GameHolder {
 
 
     @Override
-    protected void paint(Graphics g) {
+    protected void onPaint(Graphics g) {
         for (int row = 0; row < map.length; row++) {
             if (row * S > this.getHeight()) {
                 continue;
