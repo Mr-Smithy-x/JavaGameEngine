@@ -19,10 +19,7 @@ public class ImageLayer {
     int z;
 
     public static BufferedImage get(String name) throws IOException {
-        ClassLoader cl = ImageLayer.class.getClassLoader();
-        URL resource = cl.getResource(String.format("assets/images/%s", name));
-        Logger.getAnonymousLogger().log(Level.FINE, resource.getFile());
-        File file = new File(resource.getFile());
+        File file = new File(String.format("assets/images/%s", name));
         return ImageIO.read(file);
     }
 

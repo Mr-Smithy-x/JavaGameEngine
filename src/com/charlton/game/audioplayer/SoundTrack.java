@@ -12,10 +12,7 @@ public class SoundTrack {
     private final File file;
 
     public SoundTrack(String filename) {
-        ClassLoader cl = SoundTrack.class.getClassLoader();
-        URL resource = cl.getResource(String.format("assets/tracks/%s", filename));
-        String file = resource.getFile();
-        this.file = new File(file);
+        this.file = new File(String.format("assets/tracks/%s", filename));
     }
 
     public float getVolume(Clip clip) {

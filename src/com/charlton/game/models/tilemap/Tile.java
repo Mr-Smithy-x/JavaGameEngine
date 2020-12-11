@@ -131,7 +131,7 @@ public class Tile extends Node implements Comparable<Node>, Boundable2D {
         address = (address << 1) + is_object;
         return address;
     }
-
+//128x96 16x16
     public static Tile create(long address) {
         long spos_x = (address >> 41) & 0xfff;
         long spos_y = (address >> 29) & 0xfff;

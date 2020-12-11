@@ -67,6 +67,7 @@ public class PlatformerContainer extends GameHolder {
                 if (tileAbo == null) {
                     link.jump(15);
                     link.gravitate();
+
                 } else {
                     if (tileAbo.isCollision()) {
                         System.out.println("IS COLLISION");
@@ -82,15 +83,11 @@ public class PlatformerContainer extends GameHolder {
             if (map.canMove(link, SpriteSheet.Pose.LEFT, true)) {
                 link.moveLeft(link.getSpeed());
                 GlobalCamera.getInstance().moveLeft(link.getSpeed());
-            } else {
-                System.out.println("NO");
             }
         } else if (pressing[RT]) {
             if (map.canMove(link, SpriteSheet.Pose.RIGHT, true)) {
                 link.moveRight(link.getSpeed());
                 GlobalCamera.getInstance().moveLeft(link.getSpeed());
-            } else {
-                System.out.println("NO 2");
             }
         }
 

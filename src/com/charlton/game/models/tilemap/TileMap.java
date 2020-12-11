@@ -6,7 +6,6 @@ import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.base.model2d.contracts.Boundable2D;
 import com.charlton.game.models.base.model2d.contracts.Gravitational2D;
-import com.charlton.game.models.sprites.Link;
 import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
 import com.charlton.game.algorithms.pathfinding.models.Network;
@@ -32,13 +31,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
 
     public static TileMap from(String json) throws IOException {
         if (json.endsWith(".json")) {
-            ClassLoader cl = TileMap.class.getClassLoader();
-            URL resource = cl.getResource(String.format("assets/maps/%s", json));
-            System.out.println(resource.getFile());
-            File file = new File(resource.getFile());
-
-            //String fileString = String.format("%s/assets/maps/%s", System.getProperty("user.dir"), json);
-            //File file = new File(fileString);
+            File file = new File(String.format("assets/maps/%s", json));
             return from(file);
         }
         TileMap set = new Gson().fromJson(json, TileMap.class);
@@ -74,9 +67,7 @@ public class TileMap extends Network<Tile> implements Iterable<Point>, Drawable 
 
 
     public File getImageFile() {
-        ClassLoader cl = TileMap.class.getClassLoader();
-        URL resource = cl.getResource(String.format("assets/sets/%s", map_image));
-        return new File(resource.getFile());
+        return new File(String.format("assets/sets/%s", map_image));
     }
 
     public Tile find(int x, int y) {

@@ -4,6 +4,7 @@ import com.charlton.game.contracts.*;
 import com.charlton.game.display.GlobalCamera;
 import com.charlton.game.gfx.SubImage;
 import com.charlton.game.models.base.model2d.contracts.AI2D;
+import com.charlton.models.FileFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class SpriteSheet implements Drawable, AI2D {
 
@@ -22,7 +24,7 @@ public abstract class SpriteSheet implements Drawable, AI2D {
     }
 
     public enum Pose {
-        UP, DOWN, LEFT, RIGHT, JUMP, ATTACK_UP, ATTACK_DOWN, ATTACK_LEFT, ATTACK_RIGHT, SPIN_ATTACK
+        UP, DOWN, LEFT, RIGHT, JUMP, ATTACK_UP, ATTACK_DOWN, ATTACK_LEFT, ATTACK_RIGHT, SPIN_ATTACK, DEAD, JUMP_LEFT, JUMP_RIGHT
     }
 
 
@@ -41,9 +43,18 @@ public abstract class SpriteSheet implements Drawable, AI2D {
     }
 
     public SpriteSheet(String name) throws IOException {
-        initializeSheet(name);
-        images.putAll(initializeSheet(spriteSheet));
+        if(name.endsWith(".pose")){
+            FileFormat load = FileFormat.Companion.load(name);
+            initializeSheet(load.getImage());
+            for (FileFormat.AnimationRow pose: load.getPoses()) {
+                images.put(Pose.valueOf(pose.getPose()), pose.getSet().stream().map(SubImage::new).collect(Collectors.toList()));
+            }
+        }else {
+            initializeSheet(name);
+            images.putAll(initializeSheet(spriteSheet));
+        }
     }
+
 
 
     protected abstract Map<Pose, List<SubImage>> initializeSheet(BufferedImage spriteSheet);
@@ -164,7 +175,7 @@ public abstract class SpriteSheet implements Drawable, AI2D {
         if (subImage.size() <= current_column) {
             current_column = 0;
         }
-        SubImage sub = subImage.get(current_column);
+        SubImage sub = subImage.get(current_column / 2);
         sub.setImage(spriteSheet);
         return sub.getImage();
     }
@@ -176,8 +187,7 @@ public abstract class SpriteSheet implements Drawable, AI2D {
     }
 
     protected void initializeSheet(String filename) throws IOException {
-        ClassLoader cl = getClass().getClassLoader();
-        file = new File(cl.getResource("res/" + filename).getFile());
+        file = new File("assets/sheets/" + filename);
         spriteSheet = ImageIO.read(file);
     }
 
@@ -192,9 +202,10 @@ public abstract class SpriteSheet implements Drawable, AI2D {
 
         int width = image.getWidth(null) * GlobalCamera.getInstance().getScaling();
         int height = image.getHeight(null) * GlobalCamera.getInstance().getScaling();
+        int height1 = image.getHeight(null);
         g.drawImage(image,
-                getGlobalCameraOffsetX().intValue(),// - image.getWidth(null),
-                getGlobalCameraOffsetY().intValue(),// - image.getHeight(null),
+                getGlobalCameraOffsetX().intValue(),
+                getGlobalCameraOffsetY().intValue(),
                 width,
                 height,
                 null

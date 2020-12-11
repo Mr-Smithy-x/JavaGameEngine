@@ -9,19 +9,15 @@ import com.charlton.game.helpers.SpriteHelper;
 import com.charlton.game.models.SpriteSheet;
 import com.charlton.game.models.sprites.Dog;
 import com.charlton.game.models.sprites.Link;
-import com.charlton.game.models.tilemap.Point;
 import com.charlton.game.models.tilemap.Tile;
 import com.charlton.game.models.tilemap.TileMap;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiUnavailableException;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.PriorityQueue;
 

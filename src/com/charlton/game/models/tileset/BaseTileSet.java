@@ -11,8 +11,7 @@ public class BaseTileSet {
     private File file;
 
     protected BufferedImage initializeTileSet(String filename) throws IOException {
-        ClassLoader cl = getClass().getClassLoader();
-        file = new File(cl.getResource("res/" + filename).getFile());
+        file = new File("assets/res/" + filename);
         return ImageIO.read(file);
     }
 
