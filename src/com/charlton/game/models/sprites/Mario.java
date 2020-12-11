@@ -18,7 +18,7 @@ public class Mario extends SpriteSheet {
     }
 
     public Mario(int position_x, int position_y, int duration) throws IOException {
-        super("mario.png");
+        super("mario.pose");
         this.duration = duration;
         int width = getStillImage().getWidth(null);
         int height = getStillImage().getHeight(null);
@@ -96,6 +96,19 @@ public class Mario extends SpriteSheet {
                 new SubImage(359, 176, 382 - 359, 31) // RIGHT
         ));*/
         return subImages;
+    }
+
+    @Override
+    public void jump(Number velocity) {
+        super.jump(velocity);
+        switch (pose){
+            case LEFT:
+                setPose(Pose.JUMP_LEFT);
+                break;
+            case RIGHT:
+                setPose(Pose.JUMP_RIGHT);
+                break;
+        }
     }
 
     @Override

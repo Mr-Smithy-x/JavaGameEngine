@@ -1,5 +1,7 @@
 package com.charlton.game.gfx;
 
+import com.charlton.models.FileFormat;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -16,6 +18,13 @@ public class SubImage {
         this.spritePositionStartY = y;
         this.width = width;
         this.height = height;
+    }
+
+    public SubImage(FileFormat.SpriteBounds bound) {
+        this.spritePositionStartX = bound.getX();
+        this.spritePositionStartY = bound.getY();
+        this.width = bound.getW();
+        this.height = bound.getH();
     }
 
     public Image getImage() {

@@ -24,7 +24,7 @@ public class Billboard implements Drawable {
 
     public Billboard(String name, double x, double y, double z) throws IOException {
         ClassLoader cl = getClass().getClassLoader();
-        File file = new File(cl.getResource("res/" + name).getFile());
+        File file = new File("assets/res/" + name);
         this.image = ImageIO.read(file);
         this.x = x;
         this.y = y;

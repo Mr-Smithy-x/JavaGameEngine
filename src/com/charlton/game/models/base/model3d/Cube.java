@@ -4,9 +4,6 @@ import com.charlton.game.contracts.Drawable;
 import com.charlton.game.display.GlobalCamera3D;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.function.LongUnaryOperator;
 
 public class Cube extends AIObject3D implements Drawable {
 
